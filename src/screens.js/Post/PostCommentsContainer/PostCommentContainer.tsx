@@ -1,0 +1,88 @@
+import React, { useMemo } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import PostCommentContent from "./PostCommentContent";
+import { PostComment } from "../../../../types";
+import PostReplyContent from "./PostReplyContent";
+import { List } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import useReplyBottomSheetStore from "../../../store/useReplyBottomSheetStore";
+import { RootStackParamList } from "../../../navigators/RootStackNavigator";
+
+interface IPostCommentContainer {
+  postComment: PostComment;
+  userBookmarkedPostComments?: string[];
+  userId: string;
+}
+
+export default function PostCommentContainer({
+  postComment,
+  userBookmarkedPostComments,
+  userId,
+}: IPostCommentContainer) {
+  const replies = useMemo(() => {
+    if (!postComment.postReplies || postComment.postReplies.length < 1)
+      return null;
+
+    return postComment.postReplies.slice(0, 3);
+  }, [postComment]);
+
+  const navigation = useNavigation() as NativeStackNavigationProp<
+    RootStackParamList,
+    "Post",
+    undefined
+  >;
+
+  const navigateToUserPage = () => {
+    navigation.navigate("OtherUser", {
+      username: postComment.commenter.username,
+      photo: postComment.commenter.photo,
+    });
+  };
+
+  const { setWillReply } = useReplyBottomSheetStore();
+
+  const navigateToPostComment = (willReply: boolean) => {
+    setWillReply(willReply);
+
+    navigation.navigate("PostComment", {
+      postCommentId: postComment._id,
+      postTitle: postComment.post.title,
+    });
+  };
+
+  // console.log(postComment);
+  return (
+    <View>
+      <PostCommentContent
+        postComment={postComment}
+        userBookmarkedPostComments={userBookmarkedPostComments}
+        userId={userId}
+        navigateToPostComment={navigateToPostComment}
+        navigateToUserPage={navigateToUserPage}
+      />
+
+      <View style={styles.list}>
+        <Pressable onPress={() => navigateToPostComment(false)}>
+          <List.Section>
+            {replies &&
+              replies.map((reply) => (
+                <PostReplyContent
+                  reply={reply}
+                  key={reply._id}
+                  navigation={navigation}
+                />
+              ))}
+          </List.Section>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  list: {
+    marginTop: -8,
+    marginBottom: 8,
+  },
+});
