@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TextInput,
-  StyleSheet,
-  Platform,
-  ScrollView,
-  InputAccessoryView,
-} from "react-native";
+import { Platform, ScrollView, InputAccessoryView } from "react-native";
 import React, { useState } from "react";
 import { IconButton } from "react-native-paper";
 import InputAccessoryIconsBar from "./InputAccessoryIconsBar";
@@ -17,7 +8,7 @@ import useCreatePost from "../../react-query-hooks/usePosts/useCreatePost";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { About, ExposedTo } from "../../../types";
-import { useDidUpdate } from "../../hooks/useDidUpdate";
+
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -27,8 +18,9 @@ import axios from "axios";
 import baseUrl from "../../utils/baseUrl";
 import { getItemAsync } from "expo-secure-store";
 import useToastStore from "../../store/useToastStore";
-import { randomUUID } from "expo-crypto";
+
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
+import PollDialog from "../../components/Dialogs/PollDialog";
 // import { TextInput } from "react-native-paper";
 
 const validationSchema = yup.object({
@@ -63,14 +55,16 @@ const exposedToArray = [
 ];
 
 export default function PostCreate({ navigation }: Props) {
-  const [hasPoll, setHasPoll] = useState(false);
-  const [options, setOptions] = useState<string[]>([""]);
+  const [pollVisible, setPollVisible] = useState(false);
+  const [options, setOptions] = useState<string[]>(["", ""]);
   const [about, setAbout] = useState<About>("General");
   const [exposedTo, setExposedTo] = useState<ExposedTo>("public");
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const { mutate: createNewPost, data } = useCreatePost();
   const [isPending, setIsPending] = useState(false);
+
+  console.log(options);
 
   const { onOpenToast } = useToastStore();
 
@@ -86,8 +80,42 @@ export default function PostCreate({ navigation }: Props) {
     setExposedTo(exposedTo);
   };
 
-  const onToggleHasPoll = () => {
-    setHasPoll((prev) => !prev);
+  const onTogglePoll = () => {
+    setPollVisible((prev) => !prev);
+  };
+
+  const onConfirmPoll = () => {
+    setPollVisible(false);
+  };
+
+  const onCancelPoll = () => {
+    setOptions(["", ""]);
+    setPollVisible(false);
+  };
+
+  const onAddOption = () => {
+    setOptions((prev) => {
+      if (prev.length >= 10) {
+        return prev;
+      }
+      return [...prev, ""];
+    });
+  };
+
+  const onSetOption = (index: number, value: string) => {
+    setOptions((prevOptions) => {
+      const newOptions = prevOptions.slice();
+      newOptions[index] = value;
+      return newOptions;
+    });
+  };
+
+  const onDeleteOption = (index: number) => {
+    setOptions((prevOptions) => {
+      const newOptions = prevOptions.slice();
+      newOptions.splice(index, 1);
+      return newOptions;
+    });
   };
 
   const fetchImage = async (uri: string) => {
@@ -180,9 +208,7 @@ export default function PostCreate({ navigation }: Props) {
             // createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             // lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             poll: pollArray,
-            pollEndsAt:
-              Date.now() +
-              (hasPoll ? values.pollDays : 0) * 1000 * 60 * 60 * 24,
+            pollEndsAt: Date.now() + values.pollDays * 1000 * 60 * 60 * 24,
           });
         } else {
           console.log({
@@ -212,36 +238,48 @@ export default function PostCreate({ navigation }: Props) {
       }}
       validationSchema={validationSchema}
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) =>
-        Platform.OS === "ios" ? (
-          <IOS_UI
-            title={values.title}
-            content={values.content}
-            hours={values.hours}
-            onSetHours={handleChange("hours")}
-            onSetContent={handleChange("content")}
-            onSetTitle={handleChange("title")}
-            onSubmit={handleSubmit}
-            isPending={isPending}
-            onSetImageUri={onSetImageUri}
-            imageUri={imageUri}
-            about={about}
-            onSetAbout={onSetAbout}
-            aboutArray={aboutArray}
-            exposedTo={exposedTo}
-            onSetExposedTo={onSetExposedTo}
-            exposedToArray={exposedToArray}
-            onToggleHasPoll={onToggleHasPoll}
+      {({ handleChange, handleBlur, handleSubmit, values }) => (
+        <>
+          <PollDialog
+            pollVisible={pollVisible}
+            onTogglePoll={onTogglePoll}
+            onConfirmPoll={onConfirmPoll}
+            onCancelPoll={onCancelPoll}
+            options={options}
+            onAddOption={onAddOption}
+            onSetOption={onSetOption}
+            onDeleteOption={onDeleteOption}
           />
-        ) : (
-          <Android_UI
-            title={values.title}
-            content={values.content}
-            onSetContent={handleChange("content")}
-            onSetTitle={handleChange("title")}
-          />
-        )
-      }
+          {Platform.OS === "ios" ? (
+            <IOS_UI
+              title={values.title}
+              content={values.content}
+              hours={values.hours}
+              onSetHours={handleChange("hours")}
+              onSetContent={handleChange("content")}
+              onSetTitle={handleChange("title")}
+              onSubmit={handleSubmit}
+              isPending={isPending}
+              onSetImageUri={onSetImageUri}
+              imageUri={imageUri}
+              about={about}
+              onSetAbout={onSetAbout}
+              aboutArray={aboutArray}
+              exposedTo={exposedTo}
+              onSetExposedTo={onSetExposedTo}
+              exposedToArray={exposedToArray}
+              onToggleHasPoll={onTogglePoll}
+            />
+          ) : (
+            <Android_UI
+              title={values.title}
+              content={values.content}
+              onSetContent={handleChange("content")}
+              onSetTitle={handleChange("title")}
+            />
+          )}
+        </>
+      )}
     </Formik>
   );
 }

@@ -100,7 +100,8 @@ const SubmitSideMenu = ({ hours, onSetHours }: ISubmitSideMenu) => {
             <TextInput
               inputMode="numeric"
               onChangeText={onSetHours}
-              placeholder={hours || "0"}
+              // placeholder={hours || "0"}
+              defaultValue={hours}
               autoFocus
             />
           </Dialog.Content>
