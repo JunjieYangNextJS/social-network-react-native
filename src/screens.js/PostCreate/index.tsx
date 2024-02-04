@@ -174,7 +174,7 @@ export default function PostCreate({ navigation }: Props) {
 
         willNotify: true,
         hours: "0",
-        pollDays: 30,
+        pollDays: "30",
       }}
       onSubmit={async (values) => {
         // setIsPending(true);
@@ -208,7 +208,8 @@ export default function PostCreate({ navigation }: Props) {
             // createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             // lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             poll: pollArray,
-            pollEndsAt: Date.now() + values.pollDays * 1000 * 60 * 60 * 24,
+            pollEndsAt:
+              Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
           });
         } else {
           console.log({
@@ -249,6 +250,8 @@ export default function PostCreate({ navigation }: Props) {
             onAddOption={onAddOption}
             onSetOption={onSetOption}
             onDeleteOption={onDeleteOption}
+            pollDays={values.pollDays}
+            onSetPollDays={handleChange("pollDays")}
           />
           {Platform.OS === "ios" ? (
             <IOS_UI

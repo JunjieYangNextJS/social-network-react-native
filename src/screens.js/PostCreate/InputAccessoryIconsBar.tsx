@@ -20,6 +20,7 @@ interface IInputAccessoryIconsBar {
   onSetAbout: (about: About) => void;
   hours: string;
   onSetHours: (hours: string) => void;
+
   aboutArray: SelectArray;
   exposedTo: ExposedTo;
   onSetExposedTo: (exposedTo: ExposedTo) => void;

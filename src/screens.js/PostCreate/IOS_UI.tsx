@@ -21,9 +21,11 @@ interface IIos_UI {
   title: string;
   content: string;
   hours: string;
+
   onSetHours: (hours: string) => void;
   onSetTitle: (title: string) => void;
   onSetContent: (content: string) => void;
+
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
   isPending: boolean;
   onSetImageUri: (uri: string | null) => void;
@@ -44,6 +46,7 @@ export default function IOS_UI({
   onSetContent,
   hours,
   onSetHours,
+
   onSubmit,
   isPending,
   onSetImageUri,

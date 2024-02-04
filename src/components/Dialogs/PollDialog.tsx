@@ -6,6 +6,7 @@ import {
   View,
   TextInput as NativeTextInput,
   Pressable,
+  Keyboard,
 } from "react-native";
 import {
   Button,
@@ -17,6 +18,7 @@ import {
   IconButton,
   TextInputProps,
 } from "react-native-paper";
+import { useAppTheme } from "../../theme";
 
 interface IPollDialog {
   pollVisible: boolean;
@@ -27,6 +29,8 @@ interface IPollDialog {
   onAddOption: () => void;
   onSetOption: (index: number, value: string) => void;
   onDeleteOption: (index: number) => void;
+  pollDays: string;
+  onSetPollDays: (days: string) => void;
 }
 
 const PollDialog = ({
@@ -38,6 +42,8 @@ const PollDialog = ({
   onAddOption,
   onSetOption,
   onDeleteOption,
+  pollDays,
+  onSetPollDays,
 }: IPollDialog) => {
   const generatePlaceholder = (index: number) => {
     let label = "";
@@ -100,6 +106,8 @@ const PollDialog = ({
     return <TextInput.Icon icon="dots-vertical" />;
   };
 
+  const ref = React.useRef<any>({});
+
   return (
     <Portal>
       <Dialog
@@ -107,17 +115,19 @@ const PollDialog = ({
         onDismiss={onConfirmPoll}
         style={styles.dialog}
       >
-        <Dialog.Title>
-          Poll ends in
+        <View style={styles.title}>
+          <Text>Poll ends in </Text>
           <View>
             <NativeTextInput
               inputMode="numeric"
               style={styles.nativeInput}
-              placeholder="bro?"
+              defaultValue={pollDays}
+              onChangeText={onSetPollDays}
             />
           </View>
-          days
-        </Dialog.Title>
+          <Text> days</Text>
+        </View>
+
         <Dialog.Content>
           <ScrollView style={styles.scrollView}>
             <View style={styles.optionWrapper}>
@@ -132,6 +142,22 @@ const PollDialog = ({
                     left={leftIcon(index)}
                     dense
                     key={index}
+                    returnKeyType="next"
+                    ref={(element: any) => {
+                      if (element) {
+                        ref.current[index] = element;
+                      } else {
+                        delete ref.current[index];
+                      }
+                    }}
+                    onSubmitEditing={() => {
+                      const nextIndex = index + 1;
+                      if (nextIndex < options.length) {
+                        ref.current![nextIndex].focus();
+                      } else {
+                        Keyboard.dismiss();
+                      }
+                    }}
                   />
                 );
               })}
@@ -151,16 +177,27 @@ export default PollDialog;
 
 const styles = StyleSheet.create({
   dialog: {
-    height: 300,
-    marginBottom: 300,
+    maxHeight: 300,
+    marginBottom: 200,
   },
 
   scrollView: {
-    height: 200,
+    maxHeight: 170,
+  },
+
+  title: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
 
   nativeInput: {
     borderBottomWidth: 1,
+    borderColor: "rgb(231, 225, 229)",
+    color: "rgb(231, 225, 229)",
+
     // height: 30,
     // width: 100,
   },
@@ -172,5 +209,7 @@ const styles = StyleSheet.create({
 
   optionInput: {
     flex: 1,
+    height: 40,
+    margin: 5,
   },
 });
