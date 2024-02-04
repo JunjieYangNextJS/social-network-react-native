@@ -16,6 +16,7 @@ import { Image } from "expo-image";
 import { Badge, Icon, IconButton } from "react-native-paper";
 import { About, ExposedTo, SelectArray } from "../../../types";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { FormikErrors } from "formik";
 
 interface IIos_UI {
   title: string;

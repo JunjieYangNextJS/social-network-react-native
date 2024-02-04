@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Post: { postId: string };
   PostComment: { postCommentId: string; postTitle?: string };
   PostCreate: any;
+  PostDraft: { postId: string };
   PostsSearch: any;
   Profile: any;
   Notifications: any;

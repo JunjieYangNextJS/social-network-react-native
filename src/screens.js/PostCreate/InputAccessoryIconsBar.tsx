@@ -11,6 +11,7 @@ import ImagePickerIconButton from "../../components/IconButtons/ImagePickerIconB
 import { About, ExposedTo, SelectArray } from "../../../types";
 import SelectMenu from "../../components/Menus/SelectMenu";
 import SubmitSideMenu from "./SubmitSideMenu";
+import { FormikErrors } from "formik";
 
 interface IInputAccessoryIconsBar {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
@@ -83,7 +84,11 @@ export default function InputAccessoryIconsBar({
         />
       </View>
       <View style={styles.submitContainer}>
-        <SubmitSideMenu hours={hours} onSetHours={onSetHours} />
+        <SubmitSideMenu
+          hours={hours}
+          onSetHours={onSetHours}
+          onSubmit={onSubmit}
+        />
 
         <Button
           style={styles.submitButton}

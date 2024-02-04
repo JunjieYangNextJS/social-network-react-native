@@ -12,6 +12,8 @@ import OtherUser from "../screens.js/OtherUser";
 import PostCreate from "../screens.js/PostCreate";
 import PostsSearch from "../screens.js/PostsSearch";
 import PostHeaderRight from "../screens.js/Posts/PostHeaderRight";
+import DraftsOpenButton from "../components/Buttons/DraftsOpenButton";
+import PostDraft from "../screens.js/PostDraft";
 
 export default function PostsStackNavigator() {
   return (
@@ -38,7 +40,18 @@ export default function PostsStackNavigator() {
         <Stack.Screen
           name="PostCreate"
           component={PostCreate}
-          options={{ headerTitle: "Create" }}
+          options={{
+            headerTitle: "Create",
+            headerRight: () => <DraftsOpenButton />,
+          }}
+        />
+        <Stack.Screen
+          name="PostDraft"
+          component={PostDraft}
+          options={{
+            headerTitle: "Draft",
+            headerRight: () => <DraftsOpenButton />,
+          }}
         />
         <Stack.Screen
           name="PostsSearch"

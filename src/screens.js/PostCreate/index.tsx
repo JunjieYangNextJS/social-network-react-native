@@ -21,6 +21,7 @@ import useToastStore from "../../store/useToastStore";
 
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 import PollDialog from "../../components/Dialogs/PollDialog";
+import DraftsDialog from "../../components/Dialogs/DraftsDialog";
 // import { TextInput } from "react-native-paper";
 
 const validationSchema = yup.object({
@@ -63,8 +64,6 @@ export default function PostCreate({ navigation }: Props) {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const { mutate: createNewPost, data } = useCreatePost();
   const [isPending, setIsPending] = useState(false);
-
-  console.log(options);
 
   const { onOpenToast } = useToastStore();
 
@@ -167,120 +166,133 @@ export default function PostCreate({ navigation }: Props) {
   };
 
   return (
-    <Formik
-      initialValues={{
-        title: "",
-        content: "",
+    <>
+      <DraftsDialog navigation={navigation} />
+      <Formik
+        initialValues={{
+          title: "",
+          content: "",
+          draft: false,
+          willNotify: true,
+          hours: "0",
+          pollDays: "30",
+        }}
+        onSubmit={async (values) => {
+          // setIsPending(true);
+          // dealing with poll
+          let pollArray = [] as Record<"label", string>[];
+          const appendOptions = (args: string[]) => {
+            for (const arg of args) {
+              if (arg) pollArray.push({ label: arg });
+            }
+          };
+          appendOptions(options);
 
-        willNotify: true,
-        hours: "0",
-        pollDays: "30",
-      }}
-      onSubmit={async (values) => {
-        // setIsPending(true);
-        // dealing with poll
-        let pollArray = [] as Record<"label", string>[];
-        const appendOptions = (args: string[]) => {
-          for (const arg of args) {
-            if (arg) pollArray.push({ label: arg });
+          // dealing with content
+          let content = values.content;
+
+          if (imageUri) {
+            const imageUrl = await handleImageUpload();
+
+            const newString = `<img src=${imageUrl} />`;
+            content = newString + content;
           }
-        };
-        appendOptions(options);
 
-        // dealing with content
-        let content = values.content;
+          if (pollArray.length > 1) {
+            createNewPost({
+              content: `<p>${content}</p>`,
+              title: values.title,
+              about,
+              exposedTo,
+              willNotify: values.willNotify,
+              createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              lastCommentedAt:
+                Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              poll: pollArray,
+              pollEndsAt:
+                Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+              draft: values.draft,
+            });
+          } else {
+            createNewPost({
+              content: `<p>${content}</p>`,
+              title: values.title,
+              about,
+              exposedTo,
+              willNotify: values.willNotify,
+              createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              lastCommentedAt:
+                Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              draft: values.draft,
+            });
+          }
 
-        if (imageUri) {
-          const imageUrl = await handleImageUpload();
-
-          const newString = `<img src=${imageUrl} />`;
-          content = newString + content;
-        }
-
-        if (pollArray.length > 1) {
-          createNewPost({
-            content: `<p>${content}</p>`,
-            title: values.title,
-            about,
-            exposedTo,
-            willNotify: values.willNotify,
-            createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            poll: pollArray,
-            pollEndsAt:
-              Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
-          });
-        } else {
-          createNewPost({
-            content: `<p>${content}</p>`,
-            title: values.title,
-            about,
-            exposedTo,
-            willNotify: values.willNotify,
-            createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-          });
-        }
-
-        // createNewPost({
-        //   content: `<p>${content}</p>`,
-        //   title: values.title,
-        //   about,
-        //   exposedTo,
-        //   willNotify: values.willNotify,
-        //   createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-        //   lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-        //   poll: pollArray,
-        //   pollEndsAt:
-        //     Date.now() + (hasPoll ? values.pollDays : 0) * 1000 * 60 * 60 * 24,
-        // });
-      }}
-      validationSchema={validationSchema}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <>
-          <PollDialog
-            pollVisible={pollVisible}
-            onTogglePoll={onTogglePoll}
-            onConfirmPoll={onConfirmPoll}
-            onCancelPoll={onCancelPoll}
-            options={options}
-            onAddOption={onAddOption}
-            onSetOption={onSetOption}
-            onDeleteOption={onDeleteOption}
-            pollDays={values.pollDays}
-            onSetPollDays={handleChange("pollDays")}
-          />
-          {Platform.OS === "ios" ? (
-            <IOS_UI
-              title={values.title}
-              content={values.content}
-              hours={values.hours}
-              onSetHours={handleChange("hours")}
-              onSetContent={handleChange("content")}
-              onSetTitle={handleChange("title")}
-              onSubmit={handleSubmit}
-              isPending={isPending}
-              onSetImageUri={onSetImageUri}
-              imageUri={imageUri}
-              about={about}
-              onSetAbout={onSetAbout}
-              aboutArray={aboutArray}
-              exposedTo={exposedTo}
-              onSetExposedTo={onSetExposedTo}
-              exposedToArray={exposedToArray}
-              onToggleHasPoll={onTogglePoll}
+          // createNewPost({
+          //   content: `<p>${content}</p>`,
+          //   title: values.title,
+          //   about,
+          //   exposedTo,
+          //   willNotify: values.willNotify,
+          //   createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+          //   lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+          //   poll: pollArray,
+          //   pollEndsAt:
+          //     Date.now() + (hasPoll ? values.pollDays : 0) * 1000 * 60 * 60 * 24,
+          // });
+        }}
+        validationSchema={validationSchema}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          setFieldValue,
+        }) => (
+          <>
+            <PollDialog
+              pollVisible={pollVisible}
+              onTogglePoll={onTogglePoll}
+              onConfirmPoll={onConfirmPoll}
+              onCancelPoll={onCancelPoll}
+              options={options}
+              onAddOption={onAddOption}
+              onSetOption={onSetOption}
+              onDeleteOption={onDeleteOption}
+              pollDays={values.pollDays}
+              onSetPollDays={handleChange("pollDays")}
             />
-          ) : (
-            <Android_UI
-              title={values.title}
-              content={values.content}
-              onSetContent={handleChange("content")}
-              onSetTitle={handleChange("title")}
-            />
-          )}
-        </>
-      )}
-    </Formik>
+            {Platform.OS === "ios" ? (
+              <IOS_UI
+                title={values.title}
+                content={values.content}
+                hours={values.hours}
+                onSetHours={handleChange("hours")}
+                onSetContent={handleChange("content")}
+                onSetTitle={handleChange("title")}
+                onSubmit={handleSubmit}
+                isPending={isPending}
+                onSetImageUri={onSetImageUri}
+                imageUri={imageUri}
+                about={about}
+                onSetAbout={onSetAbout}
+                aboutArray={aboutArray}
+                exposedTo={exposedTo}
+                onSetExposedTo={onSetExposedTo}
+                exposedToArray={exposedToArray}
+                onToggleHasPoll={onTogglePoll}
+              />
+            ) : (
+              <Android_UI
+                title={values.title}
+                content={values.content}
+                onSetContent={handleChange("content")}
+                onSetTitle={handleChange("title")}
+              />
+            )}
+          </>
+        )}
+      </Formik>
+    </>
   );
 }

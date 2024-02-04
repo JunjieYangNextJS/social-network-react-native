@@ -16,8 +16,8 @@ interface IValues {
   createdAt: number,
   lastCommentedAt: number,
   poll?: Record<'label', string>[],
-  pollEndsAt?: number
-
+  pollEndsAt?: number,
+  draft?: boolean
 }
 
 export default function useCreatePost() {
@@ -38,10 +38,15 @@ export default function useCreatePost() {
         },
       }).then((res) => res.data.data.data as Post)
     },
-    onSuccess: ((data) => {
-      navigation.replace("Post", {
-              postId: data._id,
-            });
+    onSuccess: ((data, variables) => {
+      if (variables.draft) {
+        navigation.replace("Posts");
+      } else {
+        navigation.replace("Post", {
+          postId: data._id,
+        });
+      }
+      
     })
   }
   )} 

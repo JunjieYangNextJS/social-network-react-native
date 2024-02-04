@@ -13,17 +13,21 @@ import {
 } from "react-native-paper";
 import { SelectArray } from "../../../types";
 import { useAppTheme } from "../../theme";
+import { FormikErrors, useFormikContext } from "formik";
 
 interface ISubmitSideMenu {
   hours: string;
   onSetHours: (hours: string) => void;
+  onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
 }
 
-const SubmitSideMenu = ({ hours, onSetHours }: ISubmitSideMenu) => {
+const SubmitSideMenu = ({ hours, onSetHours, onSubmit }: ISubmitSideMenu) => {
   // menu
   const [visible, setVisible] = useState(false);
   const toggleMenu = () => setVisible((prev) => !prev);
   const closeMenu = () => setVisible(false);
+
+  const { setFieldValue } = useFormikContext();
 
   // schedule dialog
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -38,6 +42,12 @@ const SubmitSideMenu = ({ hours, onSetHours }: ISubmitSideMenu) => {
   const onCancelSchedule = () => {
     setDialogVisible(false);
     onSetHours("0");
+  };
+
+  const onSaveDraft = () => {
+    // onSetDraft();
+    setFieldValue("draft", true);
+    onSubmit();
   };
 
   const theme = useAppTheme();
@@ -82,7 +92,7 @@ const SubmitSideMenu = ({ hours, onSetHours }: ISubmitSideMenu) => {
           style={styles.item}
         />
         <Menu.Item
-          onPress={() => {}}
+          onPress={() => onSaveDraft()}
           title="Save draft"
           dense
           leadingIcon={({ size }) => <Icon size={21} source="draw" />}
@@ -95,14 +105,19 @@ const SubmitSideMenu = ({ hours, onSetHours }: ISubmitSideMenu) => {
           onDismiss={onConfirmSchedule}
           style={styles.dialog}
         >
-          <Dialog.Title>Post in [number] hours?</Dialog.Title>
+          <Dialog.Title style={styles.scheduleTitle}>
+            Post in [number] hours?
+          </Dialog.Title>
           <Dialog.Content>
             <TextInput
               inputMode="numeric"
               onChangeText={onSetHours}
               // placeholder={hours || "0"}
+              mode="outlined"
               defaultValue={hours}
               autoFocus
+              dense
+              style={{ height: 40 }}
             />
           </Dialog.Content>
           <Dialog.Actions>
@@ -131,6 +146,10 @@ const styles = StyleSheet.create({
 
   dialog: {
     marginBottom: 100,
+  },
+
+  scheduleTitle: {
+    fontSize: 20,
   },
 });
 

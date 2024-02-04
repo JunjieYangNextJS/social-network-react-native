@@ -27,12 +27,6 @@ export default function OtherNotificationsCard({
 
   navigateToUserPage,
 }: IOtherNotificationsCard) {
-  const navigation = useNavigation() as NativeStackNavigationProp<
-    RootStackParamList,
-    "Notifications",
-    undefined
-  >;
-
   const generateText = (profileName: string) => {
     if (isFollow) return `${profileName} just followed you!`;
     if (isFriendRequest) return `${profileName} wants to add you as a friend!`;
