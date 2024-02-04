@@ -73,7 +73,7 @@ export default function PostPoll({
           <View style={styles.progressBarWrapper} key={_id}>
             <Pressable onPress={() => handleVote(_id)}>
               <ProgressBar
-                progress={votes / totalVotes}
+                progress={votes / totalVotes || 0}
                 style={styles.progressBar}
                 color={voted === _id ? theme.colors.primary : "#e3d2fc"}
               />

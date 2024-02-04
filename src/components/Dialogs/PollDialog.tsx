@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
 
   optionInput: {
     flex: 1,
-    height: 40,
+    height: 38,
     margin: 5,
   },
 });

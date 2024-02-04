@@ -15,8 +15,8 @@ interface IValues {
   willNotify: boolean,
   createdAt: number,
   lastCommentedAt: number,
-  poll: Record<'label', string>[],
-  pollEndsAt: number
+  poll?: Record<'label', string>[],
+  pollEndsAt?: number
 
 }
 

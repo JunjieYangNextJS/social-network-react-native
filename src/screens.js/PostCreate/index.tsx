@@ -197,30 +197,28 @@ export default function PostCreate({ navigation }: Props) {
           content = newString + content;
         }
 
-        if (pollArray.length > 0) {
-          console.log({
+        if (pollArray.length > 1) {
+          createNewPost({
             content: `<p>${content}</p>`,
             title: values.title,
             about,
             exposedTo,
             willNotify: values.willNotify,
-
-            // createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            // lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+            createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+            lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             poll: pollArray,
             pollEndsAt:
               Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
           });
         } else {
-          console.log({
+          createNewPost({
             content: `<p>${content}</p>`,
             title: values.title,
             about,
             exposedTo,
             willNotify: values.willNotify,
-
-            // createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            // lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+            createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+            lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
           });
         }
 
