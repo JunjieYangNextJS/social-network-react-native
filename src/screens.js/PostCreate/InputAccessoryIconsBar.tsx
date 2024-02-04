@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, GestureResponderEvent } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  GestureResponderEvent,
+  Keyboard,
+} from "react-native";
 import React, { useState } from "react";
 import { Button, IconButton } from "react-native-paper";
 import ImagePickerIconButton from "../../components/IconButtons/ImagePickerIconButton";
@@ -37,6 +43,11 @@ export default function InputAccessoryIconsBar({
   onSetHours,
   onToggleHasPoll,
 }: IInputAccessoryIconsBar) {
+  const handlePollPress = () => {
+    Keyboard.dismiss();
+    onToggleHasPoll();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconsContainer}>
@@ -67,7 +78,7 @@ export default function InputAccessoryIconsBar({
           icon="chart-box-outline"
           size={22}
           style={styles.icon}
-          onPress={onToggleHasPoll}
+          onPress={handlePollPress}
         />
       </View>
       <View style={styles.submitContainer}>

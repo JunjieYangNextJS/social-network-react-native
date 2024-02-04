@@ -1,5 +1,12 @@
+import { useFocusEffect } from "@react-navigation/native";
 import * as React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  TextInput as NativeTextInput,
+  Pressable,
+} from "react-native";
 import {
   Button,
   Dialog,
@@ -8,6 +15,7 @@ import {
   Text,
   TextInput,
   IconButton,
+  TextInputProps,
 } from "react-native-paper";
 
 interface IPollDialog {
@@ -72,28 +80,62 @@ const PollDialog = ({
     return label;
   };
 
+  const leftIcon = (index: number) => {
+    if (index === 1)
+      return (
+        <TextInput.Icon
+          icon="plus"
+          forceTextInputFocus={false}
+          onPress={onAddOption}
+        />
+      );
+    if (index > 1)
+      return (
+        <TextInput.Icon
+          icon="delete"
+          onPress={() => onDeleteOption(index)}
+          forceTextInputFocus={false}
+        />
+      );
+    return <TextInput.Icon icon="dots-vertical" />;
+  };
+
   return (
     <Portal>
-      <Dialog visible={pollVisible} onDismiss={onConfirmPoll}>
-        <Dialog.Title>Alert</Dialog.Title>
+      <Dialog
+        visible={pollVisible}
+        onDismiss={onConfirmPoll}
+        style={styles.dialog}
+      >
+        <Dialog.Title>
+          Poll ends in
+          <View>
+            <NativeTextInput
+              inputMode="numeric"
+              style={styles.nativeInput}
+              placeholder="bro?"
+            />
+          </View>
+          days
+        </Dialog.Title>
         <Dialog.Content>
-          <ScrollView>
-            {options.map((option, index) => {
-              return (
-                <View style={styles.optionWrapper}>
-                  {index === 1 && <IconButton icon="plus" />}
-                  {index > 1 && <IconButton icon="delete" />}
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.optionWrapper}>
+              {options.map((option, index) => {
+                return (
                   <TextInput
                     mode="outlined"
                     placeholder={`Option ${generatePlaceholder(index)}`}
-                    key={index}
                     defaultValue={option}
                     onChangeText={(text) => onSetOption(index, text)}
+                    style={styles.optionInput}
+                    left={leftIcon(index)}
+                    dense
+                    key={index}
                   />
-                </View>
-              );
-            })}
-            <Button onPress={onAddOption}>Add Option</Button>
+                );
+              })}
+            </View>
           </ScrollView>
         </Dialog.Content>
         <Dialog.Actions>
@@ -108,8 +150,27 @@ const PollDialog = ({
 export default PollDialog;
 
 const styles = StyleSheet.create({
+  dialog: {
+    height: 300,
+    marginBottom: 300,
+  },
+
+  scrollView: {
+    height: 200,
+  },
+
+  nativeInput: {
+    borderBottomWidth: 1,
+    // height: 30,
+    // width: 100,
+  },
+
   optionWrapper: {
-    display: "flex",
-    flexDirection: "row",
+    // display: "flex",
+    // flexDirection: "row",
+  },
+
+  optionInput: {
+    flex: 1,
   },
 });
