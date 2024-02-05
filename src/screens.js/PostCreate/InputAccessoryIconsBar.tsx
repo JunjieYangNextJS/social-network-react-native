@@ -15,35 +15,37 @@ import { FormikErrors } from "formik";
 
 interface IInputAccessoryIconsBar {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
-  isPending: boolean;
+
   onSetImageUri: (uri: string) => void;
   about: About;
-  onSetAbout: (about: About) => void;
+
   hours: string;
   onSetHours: (hours: string) => void;
 
   aboutArray: SelectArray;
   exposedTo: ExposedTo;
-  onSetExposedTo: (exposedTo: ExposedTo) => void;
+
   exposedToArray: SelectArray;
   title: string;
   onToggleHasPoll: () => void;
+  isSubmitting: boolean;
 }
 
 export default function InputAccessoryIconsBar({
   onSubmit,
-  isPending,
+
   onSetImageUri,
   about,
-  onSetAbout,
+
   aboutArray,
   exposedTo,
-  onSetExposedTo,
+
   exposedToArray,
   title,
   hours,
   onSetHours,
   onToggleHasPoll,
+  isSubmitting,
 }: IInputAccessoryIconsBar) {
   const handlePollPress = () => {
     Keyboard.dismiss();
@@ -65,7 +67,7 @@ export default function InputAccessoryIconsBar({
           iconSize={22}
           style={styles.icon}
           selectValue={about}
-          onSetSelectValue={onSetAbout}
+          type={"about"}
         />
         <SelectMenu
           data={exposedToArray}
@@ -73,7 +75,7 @@ export default function InputAccessoryIconsBar({
           iconSize={22}
           style={styles.icon}
           selectValue={exposedTo}
-          onSetSelectValue={onSetExposedTo}
+          type={"exposedTo"}
         />
 
         <IconButton
@@ -88,11 +90,13 @@ export default function InputAccessoryIconsBar({
           hours={hours}
           onSetHours={onSetHours}
           onSubmit={onSubmit}
+          isSubmitting={isSubmitting}
+          title={title}
         />
 
         <Button
           style={styles.submitButton}
-          disabled={isPending || !title}
+          disabled={isSubmitting || !title}
           onPress={(e: GestureResponderEvent) => onSubmit()}
         >
           Submit

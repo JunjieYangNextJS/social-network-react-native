@@ -32,7 +32,7 @@ const FormData = global.FormData;
 
 type Props = NativeStackScreenProps<RootStackParamList, "PostCreate">;
 
-const aboutArray = [
+export const aboutArray = [
   { value: "General", label: "General" },
   { value: "L", label: "Lesbian" },
   { value: "G", label: "Gay" },
@@ -45,7 +45,7 @@ const aboutArray = [
   { value: "+More", label: "+More" },
 ];
 
-const exposedToArray = [
+export const exposedToArray = [
   { value: "public", label: "Anyone" },
   {
     value: "friendsAndFollowersOnly",
@@ -58,25 +58,14 @@ const exposedToArray = [
 export default function PostCreate({ navigation }: Props) {
   const [pollVisible, setPollVisible] = useState(false);
   const [options, setOptions] = useState<string[]>(["", ""]);
-  const [about, setAbout] = useState<About>("General");
-  const [exposedTo, setExposedTo] = useState<ExposedTo>("public");
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const { mutate: createNewPost, data } = useCreatePost();
-  const [isPending, setIsPending] = useState(false);
 
   const { onOpenToast } = useToastStore();
 
   const onSetImageUri = (uri: string | null) => {
     setImageUri(uri);
-  };
-
-  const onSetAbout = (about: About) => {
-    setAbout(about);
-  };
-
-  const onSetExposedTo = (exposedTo: ExposedTo) => {
-    setExposedTo(exposedTo);
   };
 
   const onTogglePoll = () => {
@@ -172,59 +161,74 @@ export default function PostCreate({ navigation }: Props) {
         initialValues={{
           title: "",
           content: "",
+          about: "General" as About,
+          exposedTo: "public" as ExposedTo,
           draft: false,
           willNotify: true,
           hours: "0",
           pollDays: "30",
         }}
         onSubmit={async (values) => {
-          // setIsPending(true);
-          // dealing with poll
-          let pollArray = [] as Record<"label", string>[];
-          const appendOptions = (args: string[]) => {
-            for (const arg of args) {
-              if (arg) pollArray.push({ label: arg });
-            }
-          };
-          appendOptions(options);
-
-          // dealing with content
-          let content = values.content;
-
-          if (imageUri) {
-            const imageUrl = await handleImageUpload();
-
-            const newString = `<img src=${imageUrl} />`;
-            content = newString + content;
-          }
-
-          if (pollArray.length > 1) {
+          if (values.draft) {
             createNewPost({
-              content: `<p>${content}</p>`,
+              content: `<p>${values.content}</p>`,
               title: values.title,
-              about,
-              exposedTo,
+              about: values.about,
+              exposedTo: values.exposedTo,
               willNotify: values.willNotify,
               createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
               lastCommentedAt:
                 Date.now() + Number(values.hours) * 1000 * 60 * 60,
-              poll: pollArray,
-              pollEndsAt:
-                Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
-              draft: values.draft,
+              draft: true,
             });
           } else {
-            createNewPost({
-              content: `<p>${content}</p>`,
-              title: values.title,
-              about,
-              exposedTo,
-              willNotify: values.willNotify,
-              createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-              lastCommentedAt:
-                Date.now() + Number(values.hours) * 1000 * 60 * 60,
-              draft: values.draft,
-            });
+            // dealing with poll
+            let pollArray = [] as Record<"label", string>[];
+            const appendOptions = (args: string[]) => {
+              for (const arg of args) {
+                if (arg) pollArray.push({ label: arg });
+              }
+            };
+            appendOptions(options);
+
+            // dealing with content
+            let content = values.content;
+
+            if (imageUri) {
+              const imageUrl = await handleImageUpload();
+
+              const newString = `<img src=${imageUrl} />`;
+              content = newString + content;
+            }
+
+            if (pollArray.length > 1) {
+              createNewPost({
+                content: `<p>${content}</p>`,
+                title: values.title,
+                about: values.about,
+                exposedTo: values.exposedTo,
+                willNotify: values.willNotify,
+                createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                lastCommentedAt:
+                  Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                poll: pollArray,
+                pollEndsAt:
+                  Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+                draft: false,
+              });
+            } else {
+              createNewPost({
+                content: `<p>${content}</p>`,
+                title: values.title,
+                about: values.about,
+                exposedTo: values.exposedTo,
+                willNotify: values.willNotify,
+                createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                lastCommentedAt:
+                  Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                draft: false,
+              });
+            }
           }
 
           // createNewPost({
@@ -247,7 +251,8 @@ export default function PostCreate({ navigation }: Props) {
           handleBlur,
           handleSubmit,
           values,
-          setFieldValue,
+
+          isSubmitting,
         }) => (
           <>
             <PollDialog
@@ -271,16 +276,14 @@ export default function PostCreate({ navigation }: Props) {
                 onSetContent={handleChange("content")}
                 onSetTitle={handleChange("title")}
                 onSubmit={handleSubmit}
-                isPending={isPending}
                 onSetImageUri={onSetImageUri}
                 imageUri={imageUri}
-                about={about}
-                onSetAbout={onSetAbout}
+                about={values.about}
                 aboutArray={aboutArray}
-                exposedTo={exposedTo}
-                onSetExposedTo={onSetExposedTo}
+                exposedTo={values.exposedTo}
                 exposedToArray={exposedToArray}
                 onToggleHasPoll={onTogglePoll}
+                isSubmitting={isSubmitting}
               />
             ) : (
               <Android_UI

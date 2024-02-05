@@ -6,6 +6,7 @@ import { About, ExposedTo, Post } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigators/RootStackNavigator';
+import useToastStore from '../../store/useToastStore';
 
 interface IValues {
   content: string,
@@ -27,6 +28,8 @@ export default function useCreatePost() {
     "PostCreate",
     undefined
   >;
+    const queryClient = useQueryClient()
+  const {onOpenToast} = useToastStore()
 
   return useMutation({
     mutationFn: async (values: IValues) => {
@@ -40,7 +43,9 @@ export default function useCreatePost() {
     },
     onSuccess: ((data, variables) => {
       if (variables.draft) {
-        navigation.replace("Posts");
+        queryClient.setQueryData(['draftPosts'], (prev: Post[]) => [...prev, data])
+        onOpenToast("success", "Your draft is saved!")
+        
       } else {
         navigation.replace("Post", {
           postId: data._id,

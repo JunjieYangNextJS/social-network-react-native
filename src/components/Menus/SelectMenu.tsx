@@ -3,23 +3,26 @@ import { View } from "react-native";
 import { Button, Menu, Divider, IconButton } from "react-native-paper";
 import { SelectArray } from "../../../types";
 import { useAppTheme } from "../../theme";
+import { useFormikContext } from "formik";
 
 interface ISelectMenu {
   data: SelectArray;
   selectValue: string;
-  onSetSelectValue: (value: any) => void;
+
   icon: string;
   iconSize: number;
   style: Record<string, string | number>;
+  type: "exposedTo" | "about";
 }
 
 const SelectMenu = ({
   data,
   selectValue,
-  onSetSelectValue,
+
   icon,
   iconSize,
   style,
+  type,
 }: ISelectMenu) => {
   const [visible, setVisible] = useState(false);
 
@@ -27,8 +30,10 @@ const SelectMenu = ({
 
   const closeMenu = () => setVisible(false);
 
+  const { setFieldValue } = useFormikContext();
+
   const handlePressItem = (value: string) => {
-    onSetSelectValue(value);
+    setFieldValue(type, value);
     closeMenu();
   };
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import {
   Button,
   Dialog,
@@ -28,7 +28,6 @@ const DraftsDialog = ({ navigation }: IDraftsDialog) => {
   const { data } = useDraftPosts();
 
   if (!data) return <ActivityIndicator />;
-  if (data.length === 0) return null;
 
   const navigateToDraft = (postId: string) => {
     onCloseDrafts();
@@ -40,17 +39,29 @@ const DraftsDialog = ({ navigation }: IDraftsDialog) => {
   return (
     <View>
       <Portal>
-        <Dialog visible={draftsIsOpen} onDismiss={onCloseDrafts}>
+        <Dialog
+          visible={draftsIsOpen}
+          onDismiss={onCloseDrafts}
+          style={styles.dialog}
+        >
           {/* <Dialog.Title>{title}</Dialog.Title> */}
-          <Dialog.Content>
-            {data.map(({ title, _id }) => (
-              <Pressable onPress={() => navigateToDraft(_id)} key={_id}>
-                <View>
-                  <Text>{title}</Text>
-                </View>
-              </Pressable>
-            ))}
-          </Dialog.Content>
+          {data.length === 0 ? (
+            <Dialog.Content>
+              <Text style={{ fontSize: 16 }}>
+                You currently don't have any drafts.
+              </Text>
+            </Dialog.Content>
+          ) : (
+            <Dialog.Content>
+              {data.map(({ title, _id }) => (
+                <Pressable onPress={() => navigateToDraft(_id)} key={_id}>
+                  <View>
+                    <Text>{title}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </Dialog.Content>
+          )}
         </Dialog>
       </Portal>
     </View>
@@ -58,3 +69,10 @@ const DraftsDialog = ({ navigation }: IDraftsDialog) => {
 };
 
 export default DraftsDialog;
+
+const styles = StyleSheet.create({
+  dialog: {
+    minHeight: 200,
+    maxHeight: 445,
+  },
+});

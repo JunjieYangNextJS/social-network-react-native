@@ -22,6 +22,7 @@ import useToastStore from "../../store/useToastStore";
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 import PollDialog from "../../components/Dialogs/PollDialog";
 import useDraftPost from "../../react-query-hooks/usePosts/useDraftPost";
+import { aboutArray, exposedToArray } from "../PostCreate";
 // import { TextInput } from "react-native-paper";
 
 const validationSchema = yup.object({
@@ -31,41 +32,17 @@ const validationSchema = yup.object({
 
 type Props = NativeStackScreenProps<RootStackParamList, "PostDraft">;
 
-const aboutArray = [
-  { value: "General", label: "General" },
-  { value: "L", label: "Lesbian" },
-  { value: "G", label: "Gay" },
-  { value: "B", label: "Bisexual" },
-  { value: "T", label: "Transgender" },
-  { value: "Q", label: "Queer/ ?" },
-  { value: "I", label: "Intersex" },
-  { value: "A", label: "Asexual" },
-  { value: "2S", label: "Two-Spirit" },
-  { value: "+More", label: "+More" },
-];
-
-const exposedToArray = [
-  { value: "public", label: "Anyone" },
-  {
-    value: "friendsAndFollowersOnly",
-    label: "Only my friends and followers",
-  },
-  { value: "friendsOnly", label: "Only my friends" },
-  { value: "private", label: "Only me" },
-];
-
 export default function PostDraft({ navigation, route }: Props) {
+  // get initial data from draft
   const { postId } = route.params;
   const { data: post } = useDraftPost(postId);
 
+  // states
   const [pollVisible, setPollVisible] = useState(false);
   const [options, setOptions] = useState<string[]>(["", ""]);
-  const [about, setAbout] = useState<About>("General");
-  const [exposedTo, setExposedTo] = useState<ExposedTo>("public");
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const { mutate: createNewPost } = useCreatePost();
-  const [isPending, setIsPending] = useState(false);
 
   const { onOpenToast } = useToastStore();
 
@@ -73,14 +50,6 @@ export default function PostDraft({ navigation, route }: Props) {
 
   const onSetImageUri = (uri: string | null) => {
     setImageUri(uri);
-  };
-
-  const onSetAbout = (about: About) => {
-    setAbout(about);
-  };
-
-  const onSetExposedTo = (exposedTo: ExposedTo) => {
-    setExposedTo(exposedTo);
   };
 
   const onTogglePoll = () => {
@@ -172,75 +141,82 @@ export default function PostDraft({ navigation, route }: Props) {
   return (
     <Formik
       initialValues={{
-        title: "",
-        content: "",
-
-        willNotify: true,
+        title: post.title,
+        content: post.content.replace(/<\/?p>/g, ""),
+        about: post.about,
+        exposedTo: post.exposedTo,
+        willNotify: post.willNotify,
+        draft: post.draft,
         hours: "0",
         pollDays: "30",
       }}
       onSubmit={async (values) => {
         // setIsPending(true);
         // dealing with poll
-        let pollArray = [] as Record<"label", string>[];
-        const appendOptions = (args: string[]) => {
-          for (const arg of args) {
-            if (arg) pollArray.push({ label: arg });
-          }
-        };
-        appendOptions(options);
-
-        // dealing with content
-        let content = values.content;
-
-        if (imageUri) {
-          const imageUrl = await handleImageUpload();
-
-          const newString = `<img src=${imageUrl} />`;
-          content = newString + content;
-        }
-
-        if (pollArray.length > 1) {
+        if (values.draft) {
           createNewPost({
-            content: `<p>${content}</p>`,
+            content: `<p>${values.content}</p>`,
             title: values.title,
-            about,
-            exposedTo,
+            about: values.about,
+            exposedTo: values.exposedTo,
             willNotify: values.willNotify,
             createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
             lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            poll: pollArray,
-            pollEndsAt:
-              Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+            draft: true,
           });
         } else {
-          createNewPost({
-            content: `<p>${content}</p>`,
-            title: values.title,
-            about,
-            exposedTo,
-            willNotify: values.willNotify,
-            createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-            lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-          });
-        }
+          // dealing with poll
+          let pollArray = [] as Record<"label", string>[];
+          const appendOptions = (args: string[]) => {
+            for (const arg of args) {
+              if (arg) pollArray.push({ label: arg });
+            }
+          };
+          appendOptions(options);
 
-        // createNewPost({
-        //   content: `<p>${content}</p>`,
-        //   title: values.title,
-        //   about,
-        //   exposedTo,
-        //   willNotify: values.willNotify,
-        //   createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-        //   lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-        //   poll: pollArray,
-        //   pollEndsAt:
-        //     Date.now() + (hasPoll ? values.pollDays : 0) * 1000 * 60 * 60 * 24,
-        // });
+          // dealing with content
+          let content = values.content;
+
+          if (imageUri) {
+            const imageUrl = await handleImageUpload();
+
+            const newString = `<img src=${imageUrl} />`;
+            content = newString + content;
+          }
+
+          if (pollArray.length > 1) {
+            createNewPost({
+              content: `<p>${content}</p>`,
+              title: values.title,
+              about: values.about,
+              exposedTo: values.exposedTo,
+              willNotify: values.willNotify,
+              createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              lastCommentedAt:
+                Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              poll: pollArray,
+              pollEndsAt:
+                Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+              draft: false,
+            });
+          } else {
+            createNewPost({
+              content: `<p>${content}</p>`,
+              title: values.title,
+              about: values.about,
+              exposedTo: values.exposedTo,
+              willNotify: values.willNotify,
+              createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              lastCommentedAt:
+                Date.now() + Number(values.hours) * 1000 * 60 * 60,
+              draft: false,
+            });
+          }
+        }
       }}
       validationSchema={validationSchema}
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
+      {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
         <>
           <PollDialog
             pollVisible={pollVisible}
@@ -263,16 +239,14 @@ export default function PostDraft({ navigation, route }: Props) {
               onSetContent={handleChange("content")}
               onSetTitle={handleChange("title")}
               onSubmit={handleSubmit}
-              isPending={isPending}
               onSetImageUri={onSetImageUri}
               imageUri={imageUri}
-              about={about}
-              onSetAbout={onSetAbout}
+              about={values.about}
               aboutArray={aboutArray}
-              exposedTo={exposedTo}
-              onSetExposedTo={onSetExposedTo}
+              exposedTo={values.exposedTo}
               exposedToArray={exposedToArray}
               onToggleHasPoll={onTogglePoll}
+              isSubmitting={isSubmitting}
             />
           ) : (
             <Android_UI

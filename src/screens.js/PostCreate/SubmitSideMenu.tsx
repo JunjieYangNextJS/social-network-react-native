@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, View } from "react-native";
 import {
   Button,
   Menu,
@@ -19,9 +19,17 @@ interface ISubmitSideMenu {
   hours: string;
   onSetHours: (hours: string) => void;
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
+  isSubmitting: boolean;
+  title: string;
 }
 
-const SubmitSideMenu = ({ hours, onSetHours, onSubmit }: ISubmitSideMenu) => {
+const SubmitSideMenu = ({
+  hours,
+  onSetHours,
+  onSubmit,
+  isSubmitting,
+  title,
+}: ISubmitSideMenu) => {
   // menu
   const [visible, setVisible] = useState(false);
   const toggleMenu = () => setVisible((prev) => !prev);
@@ -44,8 +52,11 @@ const SubmitSideMenu = ({ hours, onSetHours, onSubmit }: ISubmitSideMenu) => {
     onSetHours("0");
   };
 
+  // draft
   const onSaveDraft = () => {
     // onSetDraft();
+    closeMenu();
+    Keyboard.dismiss();
     setFieldValue("draft", true);
     onSubmit();
   };
@@ -97,6 +108,7 @@ const SubmitSideMenu = ({ hours, onSetHours, onSubmit }: ISubmitSideMenu) => {
           dense
           leadingIcon={({ size }) => <Icon size={21} source="draw" />}
           style={styles.item}
+          disabled={isSubmitting || !title}
         />
       </Menu>
       <Portal>

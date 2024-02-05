@@ -28,16 +28,17 @@ interface IIos_UI {
   onSetContent: (content: string) => void;
 
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
-  isPending: boolean;
+
   onSetImageUri: (uri: string | null) => void;
   imageUri: string | null;
   about: About;
-  onSetAbout: (about: About) => void;
+
   aboutArray: SelectArray;
   exposedTo: ExposedTo;
-  onSetExposedTo: (exposedTo: ExposedTo) => void;
+
   exposedToArray: SelectArray;
   onToggleHasPoll: () => void;
+  isSubmitting: boolean;
 }
 
 export default function IOS_UI({
@@ -49,16 +50,17 @@ export default function IOS_UI({
   onSetHours,
 
   onSubmit,
-  isPending,
+
   onSetImageUri,
   imageUri,
   about,
-  onSetAbout,
+
   aboutArray,
   exposedTo,
-  onSetExposedTo,
+
   exposedToArray,
   onToggleHasPoll,
+  isSubmitting,
 }: IIos_UI) {
   const inputAccessoryViewID = "uniqueID";
   const inputRef = useRef<TextInput | null>(null); // Create a ref for the TextInput
@@ -130,18 +132,16 @@ export default function IOS_UI({
       <InputAccessoryView nativeID={inputAccessoryViewID}>
         <InputAccessoryIconsBar
           onSubmit={onSubmit}
-          isPending={isPending}
           title={title}
           onSetImageUri={onSetImageUri}
           about={about}
-          onSetAbout={onSetAbout}
           hours={hours}
           onSetHours={onSetHours}
           aboutArray={aboutArray}
           exposedTo={exposedTo}
-          onSetExposedTo={onSetExposedTo}
           exposedToArray={exposedToArray}
           onToggleHasPoll={onToggleHasPoll}
+          isSubmitting={isSubmitting}
         />
       </InputAccessoryView>
     </SafeAreaView>
