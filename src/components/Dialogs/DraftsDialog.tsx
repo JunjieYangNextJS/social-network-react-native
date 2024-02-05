@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   Dialog,
@@ -8,6 +8,7 @@ import {
   Text,
   ActivityIndicator,
   IconButton,
+  Divider,
 } from "react-native-paper";
 import useDialogStore from "../../store/useDialogStore";
 import useDraftsStore from "../../store/useDraftsStore";
@@ -65,26 +66,36 @@ const DraftsDialog = ({ navigation, currentScreenPostId }: IDraftsDialog) => {
             </Dialog.Content>
           ) : (
             <Dialog.Content>
-              {data.map(({ title, _id }) => (
-                <View key={_id} style={styles.wrapper}>
-                  <IconButton
-                    icon="trash-can-outline"
-                    iconColor={theme.colors.trash}
-                    size={16}
-                    onPress={() =>
-                      onDeleteDraftPost({ postId: _id, currentScreenPostId })
-                    }
-                  />
+              <ScrollView>
+                {data.map(({ title, _id }) => (
+                  <View key={_id}>
+                    <View style={styles.wrapper}>
+                      <IconButton
+                        icon="trash-can-outline"
+                        iconColor={theme.colors.trash}
+                        size={16}
+                        onPress={() =>
+                          onDeleteDraftPost({
+                            postId: _id,
+                            currentScreenPostId,
+                          })
+                        }
+                      />
 
-                  <Text
-                    onPress={() => navigateToDraft(_id)}
-                    key={_id}
-                    style={styles.text}
-                  >
-                    {title}
-                  </Text>
-                </View>
-              ))}
+                      <Text
+                        onPress={() => navigateToDraft(_id)}
+                        key={_id}
+                        style={styles.text}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {title}
+                      </Text>
+                    </View>
+                    <Divider />
+                  </View>
+                ))}
+              </ScrollView>
             </Dialog.Content>
           )}
         </Dialog>
@@ -106,6 +117,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginBottom: 5,
+    paddingRight: 20,
   },
 
   // IconButton: {
@@ -116,5 +129,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     flex: 1,
+    // overflow: "hidden",
   },
 });

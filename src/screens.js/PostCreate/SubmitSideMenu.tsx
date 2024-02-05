@@ -13,7 +13,12 @@ import {
 } from "react-native-paper";
 import { SelectArray } from "../../../types";
 import { useAppTheme } from "../../theme";
-import { FormikErrors, useFormikContext } from "formik";
+import { FormikErrors, FormikValues, useFormikContext } from "formik";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { RootStackParamList } from "../../navigators/RootStackNavigator";
+import usePatchPost, {
+  useUpdateDraftPost,
+} from "../../react-query-hooks/usePosts/usePatchPost";
 
 interface ISubmitSideMenu {
   hours: string;
@@ -21,6 +26,8 @@ interface ISubmitSideMenu {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
   isSubmitting: boolean;
   title: string;
+  draft: boolean;
+  draftPostId?: string;
 }
 
 const SubmitSideMenu = ({
@@ -29,13 +36,17 @@ const SubmitSideMenu = ({
   onSubmit,
   isSubmitting,
   title,
+  draft,
+  draftPostId,
 }: ISubmitSideMenu) => {
   // menu
   const [visible, setVisible] = useState(false);
   const toggleMenu = () => setVisible((prev) => !prev);
   const closeMenu = () => setVisible(false);
 
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<FormikValues>();
+
+  const { mutate: patchDraft, isPending } = useUpdateDraftPost(draftPostId);
 
   // schedule dialog
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -61,6 +72,20 @@ const SubmitSideMenu = ({
     onSubmit();
   };
 
+  const onUpdateDraft = () => {
+    closeMenu();
+    Keyboard.dismiss();
+    patchDraft({
+      content: `<p>${values.content}</p>`,
+      title: values.title,
+      about: values.about,
+      exposedTo: values.exposedTo,
+      willNotify: values.willNotify,
+      createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+      lastCommentedAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+    });
+  };
+
   const theme = useAppTheme();
 
   return (
@@ -72,8 +97,9 @@ const SubmitSideMenu = ({
     >
       <Menu
         visible={visible}
-        onDismiss={onConfirmSchedule}
+        onDismiss={closeMenu}
         style={{ margin: 0, padding: 0 }}
+        anchorPosition="top"
         anchor={
           !visible ? (
             <IconButton
@@ -102,14 +128,37 @@ const SubmitSideMenu = ({
           )}
           style={styles.item}
         />
-        <Menu.Item
-          onPress={() => onSaveDraft()}
-          title="Save draft"
-          dense
-          leadingIcon={({ size }) => <Icon size={21} source="draw" />}
-          style={styles.item}
-          disabled={isSubmitting || !title}
-        />
+        {draft && draftPostId ? (
+          <>
+            <Menu.Item
+              onPress={() => onUpdateDraft()}
+              title="Update draft"
+              dense
+              leadingIcon={({ size }) => (
+                <Icon size={21} source="note-edit-outline" />
+              )}
+              style={styles.item}
+              disabled={isSubmitting || !title || isPending}
+            />
+            <Menu.Item
+              onPress={() => onSaveDraft()}
+              title="Save as new"
+              dense
+              leadingIcon={({ size }) => <Icon size={21} source="draw" />}
+              style={styles.item}
+              disabled={isSubmitting || !title || isPending}
+            />
+          </>
+        ) : (
+          <Menu.Item
+            onPress={() => onSaveDraft()}
+            title="Save draft"
+            dense
+            leadingIcon={({ size }) => <Icon size={21} source="draw" />}
+            style={styles.item}
+            disabled={isSubmitting || !title || isPending}
+          />
+        )}
       </Menu>
       <Portal>
         <Dialog

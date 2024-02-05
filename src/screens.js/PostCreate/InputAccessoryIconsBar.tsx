@@ -11,7 +11,8 @@ import ImagePickerIconButton from "../../components/IconButtons/ImagePickerIconB
 import { About, ExposedTo, SelectArray } from "../../../types";
 import SelectMenu from "../../components/Menus/SelectMenu";
 import SubmitSideMenu from "./SubmitSideMenu";
-import { FormikErrors } from "formik";
+import { FormikErrors, FormikValues, useFormikContext } from "formik";
+import { usePatchDraftToPost } from "../../react-query-hooks/usePosts/usePatchPost";
 
 interface IInputAccessoryIconsBar {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
@@ -29,17 +30,19 @@ interface IInputAccessoryIconsBar {
   title: string;
   onToggleHasPoll: () => void;
   isSubmitting: boolean;
+  draft: boolean;
+  draftPostId?: string;
 }
 
 export default function InputAccessoryIconsBar({
   onSubmit,
-
+  draft,
   onSetImageUri,
   about,
 
   aboutArray,
   exposedTo,
-
+  draftPostId,
   exposedToArray,
   title,
   hours,
@@ -50,6 +53,18 @@ export default function InputAccessoryIconsBar({
   const handlePollPress = () => {
     Keyboard.dismiss();
     onToggleHasPoll();
+  };
+
+  const { setFieldValue } = useFormikContext<FormikValues>();
+
+  const handleSubmit = () => {
+    if (draft) {
+      setFieldValue("readyToSubmit", true);
+      setFieldValue("draft", false);
+      onSubmit();
+    } else {
+      onSubmit();
+    }
   };
 
   return (
@@ -92,12 +107,14 @@ export default function InputAccessoryIconsBar({
           onSubmit={onSubmit}
           isSubmitting={isSubmitting}
           title={title}
+          draft={draft}
+          draftPostId={draftPostId}
         />
 
         <Button
           style={styles.submitButton}
           disabled={isSubmitting || !title}
-          onPress={(e: GestureResponderEvent) => onSubmit()}
+          onPress={(e: GestureResponderEvent) => handleSubmit()}
         >
           Submit
         </Button>

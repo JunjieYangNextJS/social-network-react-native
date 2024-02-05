@@ -39,6 +39,8 @@ interface IIos_UI {
   exposedToArray: SelectArray;
   onToggleHasPoll: () => void;
   isSubmitting: boolean;
+  draft: boolean;
+  draftPostId?: string;
 }
 
 export default function IOS_UI({
@@ -48,13 +50,13 @@ export default function IOS_UI({
   onSetContent,
   hours,
   onSetHours,
-
+  draft,
   onSubmit,
 
   onSetImageUri,
   imageUri,
   about,
-
+  draftPostId,
   aboutArray,
   exposedTo,
 
@@ -142,6 +144,8 @@ export default function IOS_UI({
           exposedToArray={exposedToArray}
           onToggleHasPoll={onToggleHasPoll}
           isSubmitting={isSubmitting}
+          draft={draft}
+          draftPostId={draftPostId}
         />
       </InputAccessoryView>
     </SafeAreaView>

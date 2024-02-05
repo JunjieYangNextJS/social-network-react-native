@@ -20,7 +20,6 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import useGetWillNotifyNotifications from "../react-query-hooks/useNotifications/useGetWillNotifyNotifications";
 import { View } from "react-native";
 import { Stack } from "./RootStackNavigator";
-
 import OtherUser from "../screens.js/OtherUser";
 import OtherUserStackNavigator from "./OtherUserNavigator";
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';

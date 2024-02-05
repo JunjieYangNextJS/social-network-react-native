@@ -24,6 +24,7 @@ import PollDialog from "../../components/Dialogs/PollDialog";
 import useDraftPost from "../../react-query-hooks/usePosts/useDraftPost";
 import { aboutArray, exposedToArray } from "../PostCreate";
 import DraftsDialog from "../../components/Dialogs/DraftsDialog";
+import { usePatchDraftToPost } from "../../react-query-hooks/usePosts/usePatchPost";
 // import { TextInput } from "react-native-paper";
 
 const validationSchema = yup.object({
@@ -37,6 +38,8 @@ export default function PostDraft({ navigation, route }: Props) {
   // get initial data from draft
   const { postId } = route.params;
   const { data: post } = useDraftPost(postId);
+
+  const { mutate: patchDraftToPost } = usePatchDraftToPost(postId, navigation);
 
   // states
   const [pollVisible, setPollVisible] = useState(false);
@@ -149,9 +152,10 @@ export default function PostDraft({ navigation, route }: Props) {
           about: post.about,
           exposedTo: post.exposedTo,
           willNotify: post.willNotify,
-          draft: post.draft,
+          draft: true,
           hours: "0",
           pollDays: "30",
+          readyToSubmit: false,
         }}
         onSubmit={async (values) => {
           // setIsPending(true);
@@ -189,32 +193,63 @@ export default function PostDraft({ navigation, route }: Props) {
             }
 
             if (pollArray.length > 1) {
-              createNewPost({
-                content: `<p>${content}</p>`,
-                title: values.title,
-                about: values.about,
-                exposedTo: values.exposedTo,
-                willNotify: values.willNotify,
-                createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-                lastCommentedAt:
-                  Date.now() + Number(values.hours) * 1000 * 60 * 60,
-                poll: pollArray,
-                pollEndsAt:
-                  Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
-                draft: false,
-              });
+              if (values.readyToSubmit) {
+                patchDraftToPost({
+                  content: `<p>${content}</p>`,
+                  title: values.title,
+                  about: values.about,
+                  exposedTo: values.exposedTo,
+                  willNotify: values.willNotify,
+                  createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  lastCommentedAt:
+                    Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  poll: pollArray,
+                  pollEndsAt:
+                    Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+                  draft: false,
+                });
+              } else {
+                createNewPost({
+                  content: `<p>${content}</p>`,
+                  title: values.title,
+                  about: values.about,
+                  exposedTo: values.exposedTo,
+                  willNotify: values.willNotify,
+                  createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  lastCommentedAt:
+                    Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  poll: pollArray,
+                  pollEndsAt:
+                    Date.now() + Number(values.pollDays) * 1000 * 60 * 60 * 24,
+                  draft: false,
+                });
+              }
             } else {
-              createNewPost({
-                content: `<p>${content}</p>`,
-                title: values.title,
-                about: values.about,
-                exposedTo: values.exposedTo,
-                willNotify: values.willNotify,
-                createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
-                lastCommentedAt:
-                  Date.now() + Number(values.hours) * 1000 * 60 * 60,
-                draft: false,
-              });
+              if (values.readyToSubmit) {
+                patchDraftToPost({
+                  content: `<p>${content}</p>`,
+                  title: values.title,
+                  about: values.about,
+                  exposedTo: values.exposedTo,
+                  willNotify: values.willNotify,
+                  createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  lastCommentedAt:
+                    Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  draft: false,
+                });
+              } else {
+                createNewPost({
+                  content: `<p>${content}</p>`,
+                  title: values.title,
+                  about: values.about,
+                  exposedTo: values.exposedTo,
+                  willNotify: values.willNotify,
+                  createdAt: Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  lastCommentedAt:
+                    Date.now() + Number(values.hours) * 1000 * 60 * 60,
+                  draft: false,
+                });
+              }
             }
           }
         }}
@@ -251,6 +286,8 @@ export default function PostDraft({ navigation, route }: Props) {
                 exposedToArray={exposedToArray}
                 onToggleHasPoll={onTogglePoll}
                 isSubmitting={isSubmitting}
+                draft={values.draft}
+                draftPostId={post._id}
               />
             ) : (
               <Android_UI
@@ -260,6 +297,21 @@ export default function PostDraft({ navigation, route }: Props) {
                 onSetTitle={handleChange("title")}
               />
             )}
+            <InputAccessoryIconsBar
+              onSubmit={handleSubmit}
+              title={values.title}
+              onSetImageUri={onSetImageUri}
+              about={values.about}
+              hours={values.hours}
+              onSetHours={handleChange("hours")}
+              aboutArray={aboutArray}
+              exposedTo={values.exposedTo}
+              exposedToArray={exposedToArray}
+              onToggleHasPoll={onTogglePoll}
+              isSubmitting={isSubmitting}
+              draft={values.draft}
+              draftPostId={post._id}
+            />
           </>
         )}
       </Formik>

@@ -1,4 +1,9 @@
-import { Platform, ScrollView, InputAccessoryView } from "react-native";
+import {
+  Platform,
+  ScrollView,
+  InputAccessoryView,
+  SafeAreaView,
+} from "react-native";
 import React, { useState } from "react";
 import { IconButton } from "react-native-paper";
 import InputAccessoryIconsBar from "./InputAccessoryIconsBar";
@@ -284,6 +289,7 @@ export default function PostCreate({ navigation }: Props) {
                 exposedToArray={exposedToArray}
                 onToggleHasPoll={onTogglePoll}
                 isSubmitting={isSubmitting}
+                draft={values.draft}
               />
             ) : (
               <Android_UI
@@ -293,6 +299,20 @@ export default function PostCreate({ navigation }: Props) {
                 onSetTitle={handleChange("title")}
               />
             )}
+            <InputAccessoryIconsBar
+              onSubmit={handleSubmit}
+              title={values.title}
+              onSetImageUri={onSetImageUri}
+              about={values.about}
+              hours={values.hours}
+              onSetHours={handleChange("hours")}
+              aboutArray={aboutArray}
+              exposedTo={values.exposedTo}
+              exposedToArray={exposedToArray}
+              onToggleHasPoll={onTogglePoll}
+              isSubmitting={isSubmitting}
+              draft={values.draft}
+            />
           </>
         )}
       </Formik>
