@@ -63,6 +63,7 @@ export default function PostsStackNavigator() {
         <Stack.Screen
           name="OtherUser"
           component={OtherUser}
+          options={{ gestureEnabled: false }}
           // options={() => ({ headerBackVisible: false })}
         />
       </Stack.Group>

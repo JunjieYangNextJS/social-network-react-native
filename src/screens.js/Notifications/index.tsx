@@ -19,6 +19,7 @@ import useDialogStore from "../../store/useDialogStore";
 import useFriendRequestDialogStore from "../../store/useFriendRequestDialogStore";
 import usePatchWillNotifyNotifications from "../../react-query-hooks/useNotifications/usePatchWillNotify";
 import { useQueryClient } from "@tanstack/react-query";
+import useNavStore from "../../store/useNavStore";
 
 export default function Notifications() {
   const { data: user } = useUser();
@@ -33,6 +34,7 @@ export default function Notifications() {
 
   const { onOpenFriendRequestDialog } = useFriendRequestDialogStore();
   const queryClient = useQueryClient();
+  const { onSetPreviousScreen } = useNavStore();
 
   useFocusEffect(
     useCallback(() => {
@@ -118,6 +120,7 @@ export default function Notifications() {
     }
 
     const navigateToUserPage = () => {
+      onSetPreviousScreen("Notifications");
       navigation.navigate("PostsStackNavigator", {
         screen: "OtherUser",
         params: { username: sender.username, photo: user.photo },

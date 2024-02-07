@@ -11,6 +11,7 @@ export default function OtherUserStackNavigator() {
       <Stack.Screen
         name="OtherUser"
         component={OtherUser}
+        options={{ gestureEnabled: false }}
         // options={() => ({ headerBackVisible: false })}
       />
     </Stack.Navigator>
