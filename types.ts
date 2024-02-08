@@ -2,7 +2,7 @@ export type About = "L" | "I" | "G" | "A" | "B" | "2S" | "T" | "Others" | "Q" | 
 
 export type BackendRoutes = "posts" | "stories" | "secrets" 
 | "postComments" | "storyComments" | "secretComments"
-| "postReplies" | "storyReplies" | "secretReplies" 
+| "postReplies" | "storyReplies" | "secretReplies" | "users"
 
 export type Role = "user" | "admin" | "dev" | "bot"
 

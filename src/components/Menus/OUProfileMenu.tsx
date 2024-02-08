@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Button, Menu, Divider, IconButton } from "react-native-paper";
 import { OtherUser, User } from "../../../types";
 import BlockUserDialog from "../Dialogs/BlockUserDialog";
+import ReportDialog from "../Dialogs/ReportDialog";
 
 interface IOUProfileMenu {
   me: User;
@@ -21,6 +22,7 @@ const OUProfileMenu = ({
 }: IOUProfileMenu) => {
   const [visible, setVisible] = useState(false);
   const [blockOpened, setBlockOpened] = useState(false);
+  const [reportOpened, setReportOpened] = useState(false);
 
   const openMenu = () => setVisible(true);
 
@@ -30,19 +32,19 @@ const OUProfileMenu = ({
     {
       label: "View complete bio",
       icon: "eye-outline",
-      onPress: () => handleViewBio(),
+      onPress: () => onViewBio(),
     },
     {
       label: `Report @${username}`,
       icon: "flag-outline",
-      onPress: () => handleReport(),
+      onPress: () => onReport(),
     },
     {
       label: me?.blockedUsers?.includes(id)
         ? `Unblock @${username}`
         : `Block @${username}`,
       icon: "cancel",
-      onPress: () => handleBlockUser(),
+      onPress: () => onBlockUser(),
     },
   ];
 
@@ -50,19 +52,27 @@ const OUProfileMenu = ({
     MenuItems.push({
       label: `Unfriend @${username}`,
       icon: "hand-back-right-off-outline",
-      onPress: () => handleDeleteFriend(),
+      onPress: () => onDeleteFriend(),
     });
 
-  const handleViewBio = () => {};
-  const handleReport = () => {};
-  const handleBlockUser = () => {
+  const onViewBio = () => {};
+
+  const onReport = () => {
+    closeMenu();
+    setReportOpened(true);
+  };
+  const onCancelReport = () => {
+    setReportOpened(false);
+  };
+
+  const onBlockUser = () => {
     closeMenu();
     setBlockOpened(true);
   };
-  const handleCancelBlockUser = () => {
+  const onCancelBlockUser = () => {
     setBlockOpened(false);
   };
-  const handleDeleteFriend = () => {};
+  const onDeleteFriend = () => {};
 
   return (
     <View>
@@ -85,11 +95,18 @@ const OUProfileMenu = ({
       </Menu>
       <BlockUserDialog
         opened={blockOpened}
-        onOpen={handleBlockUser}
-        onClose={handleCancelBlockUser}
+        onOpen={onBlockUser}
+        onClose={onCancelBlockUser}
         username={username}
         id={id}
         myBlockedUsers={me.blockedUsers}
+      />
+      <ReportDialog
+        opened={reportOpened}
+        onOpen={onReport}
+        onClose={onCancelReport}
+        itemId={id}
+        itemEndpoint="users"
       />
     </View>
   );
