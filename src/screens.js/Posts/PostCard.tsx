@@ -92,7 +92,7 @@ export default function PostCard({
   const navigateToUserPage = () => {
     navigation.navigate("OtherUser", {
       username: poster.username,
-      photo: poster.photo,
+      profileImage: poster.profileImage,
     });
   };
 

@@ -65,7 +65,7 @@ import { getItemAsync } from 'expo-secure-store';
   }
 
 
-  export function usePatchArrayMethod(method: string, keepOg: any) {
+  export function usePatchArrayMethod(method: string, keepOg?: any) {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: async (item: any) => {

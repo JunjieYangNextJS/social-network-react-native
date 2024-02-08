@@ -137,7 +137,7 @@ export type User = {
     // passwordChangedAt: string
     createdAt: string,
     blockedUsers: string[],
-    friendList: User[],
+    friendList: OtherUser[],
     profileName: string,
     incomingFriendRequests: IncomingFriendRequest[],
     bookmarkedPosts: string[],

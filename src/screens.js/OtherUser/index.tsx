@@ -1,14 +1,15 @@
 import React, { useCallback, useLayoutEffect, useState } from "react";
-import { SafeAreaView, View } from "react-native";
-import { ActivityIndicator, Button, Text } from "react-native-paper";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { ImageBackground } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import useUser from "../../react-query-hooks/useUser/useUser";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useOtherUser from "../../react-query-hooks/useOtherUsers/useOtherUser";
 import { useFocusEffect } from "@react-navigation/native";
+import OUProfileMenu from "../../components/Menus/OUProfileMenu";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -17,7 +18,7 @@ type Props = NativeStackScreenProps<
 
 export default function OtherUser({ route, navigation }: Props) {
   const { data: user } = useUser();
-  const { username, profileImage } = route.params;
+  const { username: ouUsername, profileImage } = route.params;
 
   const insets = useSafeAreaInsets();
 
@@ -27,7 +28,7 @@ export default function OtherUser({ route, navigation }: Props) {
     error,
     refetch,
     isError,
-  } = useOtherUser(username);
+  } = useOtherUser(ouUsername);
 
   useLayoutEffect(() => {
     const statusBarHeight = insets.top;
@@ -47,6 +48,18 @@ export default function OtherUser({ route, navigation }: Props) {
               onPress={() => navigation.goBack()}
               style={{ marginTop: statusBarHeight }}
             />
+            <Avatar.Image
+              size={100}
+              source={() => (
+                <Image
+                  source={{
+                    uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
+                  }}
+                  style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+                />
+              )}
+              style={styles.avatar}
+            />
           </ImageBackground>
         );
       }
@@ -64,6 +77,18 @@ export default function OtherUser({ route, navigation }: Props) {
             onPress={() => navigation.goBack()}
             style={{ marginTop: statusBarHeight }}
           />
+          <Avatar.Image
+            size={100}
+            source={() => (
+              <Image
+                source={{
+                  uri: otherUser?.photo,
+                }}
+                style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+              />
+            )}
+            style={styles.avatar}
+          />
         </ImageBackground>
       );
     };
@@ -80,16 +105,70 @@ export default function OtherUser({ route, navigation }: Props) {
   // );
 
   if (error) {
-    return <Text>{error?.toString()}</Text>;
+    return <Text style={styles.error}>{error?.toString()}</Text>;
   }
 
-  if (!otherUser) {
+  if (!otherUser || !user) {
     return <ActivityIndicator />;
   }
 
+  const { profileName, username, id, bio, friendList } = otherUser;
+
   return (
     <SafeAreaView>
-      <Text>{username}</Text>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.nameMenuWrapper}>
+          <View>
+            <Text
+              style={{ fontSize: 20, marginBottom: 2 }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {profileName}
+            </Text>
+            <Text
+              style={{ color: "#b3b3b3" }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              @{username}
+            </Text>
+          </View>
+
+          <OUProfileMenu
+            me={user}
+            username={username}
+            id={id}
+            bio={bio}
+            friendList={friendList}
+          />
+        </View>
+        <View>
+          <Text>haha</Text>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  error: {
+    fontSize: 20,
+    margin: 30,
+    marginTop: 60,
+    marginLeft: 35,
+    lineHeight: 30,
+  },
+  avatar: {
+    position: "absolute",
+    marginTop: 150,
+    marginLeft: 10,
+  },
+  nameMenuWrapper: {
+    marginLeft: 120,
+    marginTop: 5,
+    display: "flex",
+    flexDirection: "row",
+  },
+  nameWrapper: {},
+});
