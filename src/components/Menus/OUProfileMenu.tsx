@@ -59,6 +59,9 @@ const OUProfileMenu = ({
     closeMenu();
     setBlockOpened(true);
   };
+  const handleCancelBlockUser = () => {
+    setBlockOpened(false);
+  };
   const handleDeleteFriend = () => {};
 
   return (
@@ -80,7 +83,14 @@ const OUProfileMenu = ({
           ))}
         </View>
       </Menu>
-      <BlockUserDialog opened={blockOpened} onOpen={handleBlockUser} />
+      <BlockUserDialog
+        opened={blockOpened}
+        onOpen={handleBlockUser}
+        onClose={handleCancelBlockUser}
+        username={username}
+        id={id}
+        myBlockedUsers={me.blockedUsers}
+      />
     </View>
   );
 };
