@@ -4,7 +4,7 @@ import PostCommentContent from "./PostCommentContent";
 import { PostComment } from "../../../../types";
 import PostReplyContent from "./PostReplyContent";
 import { List } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import useReplyBottomSheetStore from "../../../store/useReplyBottomSheetStore";
 import { RootStackParamList } from "../../../navigators/RootStackNavigator";
@@ -27,14 +27,34 @@ export default function PostCommentContainer({
     return postComment.postReplies.slice(0, 3);
   }, [postComment]);
 
+  const route = useRoute();
+  const stackName = route.name;
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Post",
+    "Post" | "N_Post",
     undefined
   >;
 
+  let userScreenRoute: "OtherUser" | "N_OtherUser";
+  let postCommentScreenRoute: "PostComment" | "N_PostComment";
+
+  switch (stackName) {
+    case "Post":
+      userScreenRoute = "OtherUser";
+      postCommentScreenRoute = "PostComment";
+      break;
+    case "N_Post":
+      userScreenRoute = "N_OtherUser";
+      postCommentScreenRoute = "N_PostComment";
+      break;
+
+    default:
+      null;
+      break;
+  }
+
   const navigateToUserPage = () => {
-    navigation.navigate("OtherUser", {
+    navigation.navigate(userScreenRoute, {
       username: postComment.commenter.username,
       photo: postComment.commenter.photo,
     });
@@ -45,7 +65,7 @@ export default function PostCommentContainer({
   const navigateToPostComment = (willReply: boolean) => {
     setWillReply(willReply);
 
-    navigation.navigate("PostComment", {
+    navigation.navigate(postCommentScreenRoute, {
       postCommentId: postComment._id,
       postTitle: postComment.post.title,
     });

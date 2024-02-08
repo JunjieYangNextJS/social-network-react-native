@@ -23,7 +23,7 @@ import PostCommentsContainer from "./PostCommentsContainer";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { HeaderBackButton } from "@react-navigation/elements";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Post">;
+type Props = NativeStackScreenProps<RootStackParamList, "Post" | "N_Post">;
 
 export default function Post({ navigation, route }: Props) {
   const postId = route.params.postId;
@@ -31,19 +31,19 @@ export default function Post({ navigation, route }: Props) {
   const { data: post } = usePost(postId);
   const { data: user } = useUser();
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerBackTitle: "Posts",
-      headerLeft: (props) => (
-        <HeaderBackButton
-          {...props}
-          onPress={() => {
-            navigation.navigate("Posts");
-          }}
-        />
-      ),
-    });
-  }, []);
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerBackTitle: "Posts",
+  //     headerLeft: (props) => (
+  //       <HeaderBackButton
+  //         {...props}
+  //         onPress={() => {
+  //           navigation.navigate("Posts");
+  //         }}
+  //       />
+  //     ),
+  //   });
+  // }, []);
 
   if (!post || !user) {
     return <ActivityIndicator />;

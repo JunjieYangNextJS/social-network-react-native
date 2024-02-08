@@ -28,7 +28,11 @@ interface IPostContent {
   userBookmarkedPosts: string[];
   userId: string;
   myVotes: string[];
-  navigation: NativeStackNavigationProp<RootStackParamList, "Post", undefined>;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "Post" | "N_Post",
+    undefined
+  >;
 }
 
 // const customRenderer = {

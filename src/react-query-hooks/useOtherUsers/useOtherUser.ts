@@ -2,23 +2,33 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
+import { OtherUser } from '../../../types';
 
 export default function useOtherUser(username: string, setErrorMessage: (message: string | number) => void) {
   return useQuery({
     queryKey:  ['user', username],
-    queryFn:() =>
-    axios
+    queryFn: async () => {
+      const token = await getItemAsync("token");
+      return axios
       .get(`${baseUrl}/users/${username}`, {
-        withCredentials: true
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         // credentials: "include",
       })
-      .then(res => res.data.data.data)
       .catch(err => {
-        if (err.response.status === 403)
-          setErrorMessage('Ouch, You have been forbidden to view this page');
-        if (err.response.status === 404) setErrorMessage(404);
-        if (err.response.status === 302) setErrorMessage(302);
+        // console.log(err.response.status)
+        // if (err.response.status === 403)
+        //   setErrorMessage('Ouch, You have been forbidden to view this page');
+        // if (err.response.status === 404) setErrorMessage(404);
+        // if (err.response.status === 302) setErrorMessage(302);
+        return Promise.reject(err.response.status)
       })
+      .then(res => res.data.data.data as OtherUser)
+      
+    }
+    
   } 
   );
 }

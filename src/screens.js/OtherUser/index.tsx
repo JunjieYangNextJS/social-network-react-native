@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
@@ -7,33 +7,39 @@ import { ImageBackground } from "expo-image";
 import useUser from "../../react-query-hooks/useUser/useUser";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useNavStore from "../../store/useNavStore";
-import {
-  Swipeable,
-  PanGestureHandler,
-  GestureEvent,
-  PanGestureHandlerEventPayload,
-} from "react-native-gesture-handler";
+import useOtherUser from "../../react-query-hooks/useOtherUsers/useOtherUser";
 
-type Props = NativeStackScreenProps<RootStackParamList, "OtherUser">;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  "OtherUser" | "N_OtherUser"
+>;
 
 export default function OtherUser({ route, navigation }: Props) {
   const { data: user } = useUser();
   const { username, photo } = route.params;
 
   const insets = useSafeAreaInsets();
-  const { previousScreen, onSetPreviousScreen } = useNavStore();
+  const [errorMessage, setErrorMessage] = useState<string | number>("");
 
-  const navigateToPrevious = () => {
-    if (!previousScreen) {
-      navigation.goBack();
-    } else {
-      navigation.navigate(previousScreen);
-      navigation.pop();
+  const {
+    data: otherUser,
+    status,
+    error,
+  } = useOtherUser(username, setErrorMessage);
 
-      onSetPreviousScreen("");
-    }
-  };
+  // console.log(errorMessage);
+  console.log(error, "error");
+
+  // const navigateToPrevious = () => {
+  //   if (!previousScreen) {
+  //     navigation.goBack();
+  //   } else {
+  //     navigation.navigate(previousScreen);
+  //     navigation.pop();
+
+  //     onSetPreviousScreen("");
+  //   }
+  // };
 
   useLayoutEffect(() => {
     const statusBarHeight = insets.top;
@@ -43,7 +49,7 @@ export default function OtherUser({ route, navigation }: Props) {
         <HeaderBackButton
           canGoBack={true}
           label="Back"
-          onPress={() => navigateToPrevious()}
+          onPress={() => navigation.goBack()}
           style={{ marginTop: statusBarHeight }}
         />
       </ImageBackground>
@@ -52,7 +58,7 @@ export default function OtherUser({ route, navigation }: Props) {
     navigation.setOptions({
       header: MyHeader,
     });
-  }, [navigation, username]);
+  }, [navigation]);
 
   return (
     <SafeAreaView>

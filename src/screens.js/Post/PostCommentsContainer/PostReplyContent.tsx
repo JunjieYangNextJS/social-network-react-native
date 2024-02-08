@@ -8,10 +8,15 @@ import injectHTMLViewStyle from "../../../utils/injectHTMLViewStyles";
 import { RootStackParamList } from "../../../navigators/RootStackNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import PressableAvatar from "../../../components/PressableAvatar";
+import { useRoute } from "@react-navigation/native";
 
 interface IPostReplyContent {
   reply: PostReply;
-  navigation: NativeStackNavigationProp<RootStackParamList, "Post", undefined>;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "Post" | "N_Post",
+    undefined
+  >;
 }
 
 export default function PostReplyContent({
@@ -19,9 +24,28 @@ export default function PostReplyContent({
   navigation,
 }: IPostReplyContent) {
   const { content, replier } = reply;
+  const route = useRoute();
+  const stackName = route.name;
+
+  let userScreenRoute: "OtherUser" | "N_OtherUser";
+
+  switch (stackName) {
+    case "Post":
+      userScreenRoute = "OtherUser";
+
+      break;
+    case "N_Post":
+      userScreenRoute = "N_OtherUser";
+
+      break;
+
+    default:
+      null;
+      break;
+  }
 
   const navigateToUserPage = () => {
-    navigation.navigate("OtherUser", {
+    navigation.navigate(userScreenRoute, {
       username: replier.username,
       photo: replier.photo,
     });

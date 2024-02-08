@@ -17,7 +17,10 @@ import PostRepliesContainer from "./PostRepliesContainer";
 import ReplyBottomSheet from "../../components/BottomSheets/ReplyBottomSheet";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 
-type Props = NativeStackScreenProps<RootStackParamList, "PostComment">;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  "PostComment" | "N_PostComment"
+>;
 
 export default function PostComment({ route, navigation }: Props) {
   const { postCommentId, postTitle } = route.params;
@@ -30,19 +33,20 @@ export default function PostComment({ route, navigation }: Props) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: postTitle || " ",
-      headerBackVisible: !!postTitle,
+      // headerBackVisible: !!postTitle,
     });
 
-    if (data && !postTitle) {
+    if (!postTitle) {
       navigation.setOptions({
-        headerTitle: data.post.title,
+        headerTitle: data?.post.title || " ",
         headerRight: () => (
           <Button
-            onPress={() =>
-              navigation.navigate("Post", {
-                postId: data.post._id,
-              })
-            }
+            onPress={() => {
+              if (data)
+                navigation.navigate("N_Post", {
+                  postId: data.post._id,
+                });
+            }}
           >
             View
           </Button>

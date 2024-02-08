@@ -35,7 +35,11 @@ export default function PostsStackNavigator() {
             headerRight: () => <PostHeaderRight navigation={navigation} />,
           })}
         />
-        <Stack.Screen name="Post" component={Post} options={{}} />
+        <Stack.Screen
+          name="Post"
+          component={Post}
+          options={{ headerTitle: "Post" }}
+        />
         <Stack.Screen name="PostComment" component={PostComment} />
         <Stack.Screen
           name="PostCreate"
@@ -63,7 +67,7 @@ export default function PostsStackNavigator() {
         <Stack.Screen
           name="OtherUser"
           component={OtherUser}
-          options={{ gestureEnabled: false }}
+          // options={{ gestureEnabled: false }}
           // options={() => ({ headerBackVisible: false })}
         />
       </Stack.Group>
