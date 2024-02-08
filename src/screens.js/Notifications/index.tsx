@@ -121,7 +121,7 @@ export default function Notifications() {
       // onSetPreviousScreen("Notifications");
       navigation.navigate("N_OtherUser", {
         username: sender.username,
-        photo: user.photo,
+        profileImage: user.profileImage,
       });
       // navigation.navigate("OtherUser", {
       //   username: sender.username,

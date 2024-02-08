@@ -29,12 +29,17 @@ interface IPostReplyContent {
   postReply: PostReply;
   userId: string;
   userUsername: string;
+  navigateToUserPage: (
+    username: string,
+    profileImage: string | undefined
+  ) => void;
 }
 
 export default function PostReplyContainer({
   postReply,
   userId,
   userUsername,
+  navigateToUserPage,
 }: IPostReplyContent) {
   const {
     _id: id,
@@ -53,24 +58,11 @@ export default function PostReplyContainer({
     postComment
   );
 
-  const navigation = useNavigation() as NativeStackNavigationProp<
-    RootStackParamList,
-    "PostComment",
-    undefined
-  >;
-
   const { setWillReply, setReplyTo } = useReplyBottomSheetStore();
 
   const handleReplyToUsername = () => {
     if (userUsername !== replier.username) setReplyTo(replier.username);
     setWillReply(true);
-  };
-
-  const navigateToUserPage = () => {
-    navigation.navigate("OtherUser", {
-      username: replier.username,
-      photo: replier.photo,
-    });
   };
 
   return (
@@ -86,7 +78,9 @@ export default function PostReplyContainer({
             <PressableAvatar
               photo={replier.photo}
               size={42}
-              navigateToUserPage={navigateToUserPage}
+              navigateToUserPage={() =>
+                navigateToUserPage(replier.username, replier.profileImage)
+              }
             />
           )}
         />

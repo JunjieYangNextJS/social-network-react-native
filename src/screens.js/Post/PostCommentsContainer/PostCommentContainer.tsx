@@ -13,12 +13,16 @@ interface IPostCommentContainer {
   postComment: PostComment;
   userBookmarkedPostComments?: string[];
   userId: string;
+  navigateToUserPage: (username: string, profileImage?: string) => void;
+  postCommentScreenRoute: "PostComment" | "N_PostComment";
 }
 
 export default function PostCommentContainer({
   postComment,
   userBookmarkedPostComments,
   userId,
+  navigateToUserPage,
+  postCommentScreenRoute,
 }: IPostCommentContainer) {
   const replies = useMemo(() => {
     if (!postComment.postReplies || postComment.postReplies.length < 1)
@@ -34,31 +38,6 @@ export default function PostCommentContainer({
     "Post" | "N_Post",
     undefined
   >;
-
-  let userScreenRoute: "OtherUser" | "N_OtherUser";
-  let postCommentScreenRoute: "PostComment" | "N_PostComment";
-
-  switch (stackName) {
-    case "Post":
-      userScreenRoute = "OtherUser";
-      postCommentScreenRoute = "PostComment";
-      break;
-    case "N_Post":
-      userScreenRoute = "N_OtherUser";
-      postCommentScreenRoute = "N_PostComment";
-      break;
-
-    default:
-      null;
-      break;
-  }
-
-  const navigateToUserPage = () => {
-    navigation.navigate(userScreenRoute, {
-      username: postComment.commenter.username,
-      photo: postComment.commenter.photo,
-    });
-  };
 
   const { setWillReply } = useReplyBottomSheetStore();
 
@@ -79,7 +58,12 @@ export default function PostCommentContainer({
         userBookmarkedPostComments={userBookmarkedPostComments}
         userId={userId}
         navigateToPostComment={navigateToPostComment}
-        navigateToUserPage={navigateToUserPage}
+        navigateToUserPage={() =>
+          navigateToUserPage(
+            postComment.commenter.username,
+            postComment.commenter.profileImage
+          )
+        }
       />
 
       <View style={styles.list}>
@@ -91,6 +75,7 @@ export default function PostCommentContainer({
                   reply={reply}
                   key={reply._id}
                   navigation={navigation}
+                  navigateToUserPage={navigateToUserPage}
                 />
               ))}
           </List.Section>

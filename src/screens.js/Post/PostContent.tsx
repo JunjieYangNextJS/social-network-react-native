@@ -33,6 +33,10 @@ interface IPostContent {
     "Post" | "N_Post",
     undefined
   >;
+  navigateToUserPage: (
+    username: string,
+    profileImage: string | undefined
+  ) => void;
 }
 
 // const customRenderer = {
@@ -83,6 +87,7 @@ export default function PostContent({
   userId,
   myVotes,
   navigation,
+  navigateToUserPage,
 }: IPostContent) {
   const {
     _id: id,
@@ -102,13 +107,6 @@ export default function PostContent({
 
   const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
 
-  const navigateToUserPage = () => {
-    navigation.navigate("OtherUser", {
-      username: poster.username,
-      photo: poster.photo,
-    });
-  };
-
   return (
     <Card style={styles.card}>
       <View style={styles.wrapper}>
@@ -122,7 +120,9 @@ export default function PostContent({
             <PressableAvatar
               photo={poster.photo}
               size={42}
-              navigateToUserPage={navigateToUserPage}
+              navigateToUserPage={() =>
+                navigateToUserPage(poster.username, poster.profileImage)
+              }
             />
           )}
         />

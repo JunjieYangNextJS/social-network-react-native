@@ -13,12 +13,12 @@ export type RootStackParamList = {
   Profile: any;
   // Noti stack
   Notifications: any;
-  N_OtherUser: { username: string; photo: string };
+  N_OtherUser: { username: string; profileImage?: string };
   N_Post: { postId: string };
   N_PostComment: { postCommentId: string; postTitle?: string };
 
   Chat: any;
-  OtherUser: { username: string; photo: string };
+  OtherUser: { username: string; profileImage?: string };
 
   ProfileStackNavigator: any;
   NotificationsStackNavigator: any;

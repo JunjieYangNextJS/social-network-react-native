@@ -5,7 +5,7 @@ import baseUrl from '../../utils/baseUrl';
 import { getItemAsync } from 'expo-secure-store';
 import { OtherUser } from '../../../types';
 
-export default function useOtherUser(username: string, setErrorMessage: (message: string | number) => void) {
+export default function useOtherUser(username: string) {
   return useQuery({
     queryKey:  ['user', username],
     queryFn: async () => {
@@ -23,7 +23,7 @@ export default function useOtherUser(username: string, setErrorMessage: (message
         //   setErrorMessage('Ouch, You have been forbidden to view this page');
         // if (err.response.status === 404) setErrorMessage(404);
         // if (err.response.status === 302) setErrorMessage(302);
-        return Promise.reject(err.response.status)
+        return Promise.reject(err.response.data.error.message)
       })
       .then(res => res.data.data.data as OtherUser)
       

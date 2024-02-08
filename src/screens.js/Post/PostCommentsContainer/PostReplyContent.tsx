@@ -17,39 +17,15 @@ interface IPostReplyContent {
     "Post" | "N_Post",
     undefined
   >;
+  navigateToUserPage: (username: string, profileImage?: string) => void;
 }
 
 export default function PostReplyContent({
   reply,
   navigation,
+  navigateToUserPage,
 }: IPostReplyContent) {
   const { content, replier } = reply;
-  const route = useRoute();
-  const stackName = route.name;
-
-  let userScreenRoute: "OtherUser" | "N_OtherUser";
-
-  switch (stackName) {
-    case "Post":
-      userScreenRoute = "OtherUser";
-
-      break;
-    case "N_Post":
-      userScreenRoute = "N_OtherUser";
-
-      break;
-
-    default:
-      null;
-      break;
-  }
-
-  const navigateToUserPage = () => {
-    navigation.navigate(userScreenRoute, {
-      username: replier.username,
-      photo: replier.photo,
-    });
-  };
 
   return (
     <>
@@ -68,7 +44,9 @@ export default function PostReplyContent({
           <PressableAvatar
             photo={replier.photo}
             size={38}
-            navigateToUserPage={navigateToUserPage}
+            navigateToUserPage={() =>
+              navigateToUserPage(replier.username, replier.profileImage)
+            }
           />
         )}
       />

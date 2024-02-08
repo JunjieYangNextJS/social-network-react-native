@@ -59,12 +59,40 @@ export default function PostComment({ route, navigation }: Props) {
     return <ActivityIndicator />;
   }
 
-  const navigateToUserPage = () => {
-    navigation.navigate("OtherUser", {
-      username: data.commenter.username,
-      photo: data.commenter.photo,
+  const stackName = route.name;
+  let userScreenRoute: "OtherUser" | "N_OtherUser";
+
+  switch (stackName) {
+    case "PostComment":
+      userScreenRoute = "OtherUser";
+
+      break;
+    case "N_PostComment":
+      userScreenRoute = "N_OtherUser";
+
+      break;
+
+    default:
+      null;
+      break;
+  }
+
+  const navigateToUserPage = (
+    username: string,
+    profileImage: string | undefined
+  ) => {
+    navigation.navigate(userScreenRoute, {
+      username,
+      profileImage,
     });
   };
+
+  // const navigateToUserPage = () => {
+  //   navigation.navigate("OtherUser", {
+  //     username: replier.username,
+  //     photo: replier.photo,
+  //   });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,7 +103,12 @@ export default function PostComment({ route, navigation }: Props) {
           userId={user._id}
           withoutIconsGroup={true}
           navigateToPostComment={() => {}}
-          navigateToUserPage={navigateToUserPage}
+          navigateToUserPage={() =>
+            navigateToUserPage(
+              data.commenter.username,
+              data.commenter.profileImage
+            )
+          }
         />
         <Divider />
         {data.postReplies.length > 0 && (
@@ -83,6 +116,7 @@ export default function PostComment({ route, navigation }: Props) {
             postReplies={data.postReplies}
             userId={user._id}
             userUsername={user.username}
+            navigateToUserPage={navigateToUserPage}
           />
         )}
       </ScrollView>

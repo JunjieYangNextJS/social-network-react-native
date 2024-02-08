@@ -49,6 +49,35 @@ export default function Post({ navigation, route }: Props) {
     return <ActivityIndicator />;
   }
 
+  let userScreenRoute: "OtherUser" | "N_OtherUser";
+  let postCommentScreenRoute: "PostComment" | "N_PostComment";
+
+  switch (route.name) {
+    case "Post":
+      userScreenRoute = "OtherUser";
+      postCommentScreenRoute = "PostComment";
+      break;
+    case "N_Post":
+      userScreenRoute = "N_OtherUser";
+      postCommentScreenRoute = "N_PostComment";
+      break;
+
+    default:
+      postCommentScreenRoute = "PostComment";
+      null;
+      break;
+  }
+
+  const navigateToUserPage = (
+    username: string,
+    profileImage: string | undefined
+  ) => {
+    navigation.navigate(userScreenRoute, {
+      username,
+      profileImage,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -58,6 +87,7 @@ export default function Post({ navigation, route }: Props) {
           userBookmarkedPosts={user.bookmarkedPosts}
           myVotes={user.myVotes}
           navigation={navigation}
+          navigateToUserPage={navigateToUserPage}
         />
         <Divider />
         {/* use filter/ order bar as separator */}
@@ -68,6 +98,8 @@ export default function Post({ navigation, route }: Props) {
           sortByValue="createdAt"
           userId={user._id}
           userBookmarkedPostComments={user.bookmarkedPostComments}
+          navigateToUserPage={navigateToUserPage}
+          postCommentScreenRoute={postCommentScreenRoute}
         />
       </ScrollView>
       <CommentBottomSheet postId={postId} poster={post.poster._id} />

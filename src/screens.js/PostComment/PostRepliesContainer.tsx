@@ -9,12 +9,17 @@ interface IPostRepliesContainer {
   postReplies: PostReply[];
   userId: string;
   userUsername: string;
+  navigateToUserPage: (
+    username: string,
+    profileImage: string | undefined
+  ) => void;
 }
 
 export default function PostRepliesContainer({
   postReplies,
   userId,
   userUsername,
+  navigateToUserPage,
 }: IPostRepliesContainer) {
   const renderPostItem = (itemData: any) => {
     return (
@@ -22,6 +27,7 @@ export default function PostRepliesContainer({
         postReply={itemData.item}
         userId={userId}
         userUsername={userUsername}
+        navigateToUserPage={navigateToUserPage}
       />
     );
   };

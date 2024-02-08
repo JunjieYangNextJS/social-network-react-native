@@ -15,6 +15,8 @@ interface IPostComments {
   sortByValue: string;
   userId: string;
   userBookmarkedPostComments?: string[];
+  navigateToUserPage: (username: string, profileImage?: string) => void;
+  postCommentScreenRoute: "PostComment" | "N_PostComment";
 }
 
 export default function PostCommentsContainer({
@@ -23,6 +25,8 @@ export default function PostCommentsContainer({
   sortByValue,
   userId,
   userBookmarkedPostComments,
+  navigateToUserPage,
+  postCommentScreenRoute,
 }: IPostComments) {
   const fetchPostComments = async () => {
     const token = await getItemAsync("token");
@@ -58,6 +62,8 @@ export default function PostCommentsContainer({
         postComment={itemData.item}
         userId={userId}
         userBookmarkedPostComments={userBookmarkedPostComments}
+        navigateToUserPage={navigateToUserPage}
+        postCommentScreenRoute={postCommentScreenRoute}
       />
     );
   };
