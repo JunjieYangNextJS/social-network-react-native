@@ -35,14 +35,6 @@ const validationSchema = yup.object({
 
 export default function Login({ navigation }: Props) {
   // const theme = useAppTheme();
-  const styles = StyleSheet.create({
-    LoginContainer: {
-      flex: 1,
-      paddingTop: 50,
-      paddingHorizontal: 50,
-      // backgroundColor: theme.colors.warmGrey,
-    },
-  });
 
   const setAuthenticated = useUserTokenStore((state) => state.setAuthenticated);
 
@@ -114,3 +106,12 @@ export default function Login({ navigation }: Props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  LoginContainer: {
+    flex: 1,
+    paddingTop: 50,
+    paddingHorizontal: 50,
+    // backgroundColor: theme.colors.warmGrey,
+  },
+});

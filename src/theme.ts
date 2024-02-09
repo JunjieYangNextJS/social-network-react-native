@@ -18,7 +18,8 @@ const theme = {
       liked: "#F22625",
       trash: "#ba0000",
       bookmarked: "#DBD33E",
-      card: "#222"
+      card: "#222",
+      dimmed: "#b3b3b3"
     },
   };
   

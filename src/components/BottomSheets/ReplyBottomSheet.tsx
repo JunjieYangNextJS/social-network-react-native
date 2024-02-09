@@ -129,6 +129,8 @@ const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
   );
 };
 
+export default ReplyBottomSheet;
+
 const styles = StyleSheet.create({
   // container: {
   //   flex: 1,
@@ -170,5 +172,3 @@ const HTMLViewStyles = StyleSheet.create({
     color: "#FFF",
   },
 });
-
-export default ReplyBottomSheet;

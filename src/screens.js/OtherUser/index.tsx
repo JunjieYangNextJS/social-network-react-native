@@ -10,6 +10,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useOtherUser from "../../react-query-hooks/useOtherUsers/useOtherUser";
 import { useFocusEffect } from "@react-navigation/native";
 import OUProfileMenu from "../../components/Menus/OUProfileMenu";
+import OtherUserIntroSection from "./OtherUserIntroSection";
+import { useAppTheme } from "../../theme";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -21,6 +23,7 @@ export default function OtherUser({ route, navigation }: Props) {
   const { username: ouUsername, profileImage } = route.params;
 
   const insets = useSafeAreaInsets();
+  const theme = useAppTheme();
 
   const {
     data: otherUser,
@@ -40,7 +43,7 @@ export default function OtherUser({ route, navigation }: Props) {
             source={{
               uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
             }}
-            style={{ height: 200 }}
+            style={{ height: 160 }}
           >
             <HeaderBackButton
               canGoBack={true}
@@ -69,7 +72,7 @@ export default function OtherUser({ route, navigation }: Props) {
           source={{
             uri: profileImage || otherUser?.profileImage,
           }}
-          style={{ height: 200 }}
+          style={{ height: 160 }}
         >
           <HeaderBackButton
             canGoBack={true}
@@ -98,12 +101,6 @@ export default function OtherUser({ route, navigation }: Props) {
     });
   }, [navigation, otherUser, isError]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refetch();
-  //   }, [refetch])
-  // );
-
   if (error) {
     return <Text style={styles.error}>{error?.toString()}</Text>;
   }
@@ -116,18 +113,18 @@ export default function OtherUser({ route, navigation }: Props) {
 
   return (
     <SafeAreaView>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View>
         <View style={styles.nameMenuWrapper}>
           <View>
             <Text
-              style={{ fontSize: 20, marginBottom: 2 }}
+              style={{ fontSize: 20, marginBottom: 2, color: "white" }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               {profileName}
             </Text>
             <Text
-              style={{ color: "#b3b3b3" }}
+              style={{ color: theme.colors.dimmed }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
@@ -143,10 +140,12 @@ export default function OtherUser({ route, navigation }: Props) {
             friendList={friendList}
           />
         </View>
-        <View>
-          <Text>haha</Text>
-        </View>
-      </ScrollView>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, marginHorizontal: 15 }}
+        >
+          <OtherUserIntroSection otherUser={otherUser} user={user} />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     position: "absolute",
-    marginTop: 150,
+    marginTop: 110,
     marginLeft: 10,
   },
   nameMenuWrapper: {
@@ -169,6 +168,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     display: "flex",
     flexDirection: "row",
+    marginRight: 10,
   },
   nameWrapper: {},
 });

@@ -65,14 +65,6 @@ type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
 export default function SignUp({ navigation }: Props) {
   // const theme = useAppTheme();
-  const styles = StyleSheet.create({
-    LoginContainer: {
-      flex: 1,
-      paddingTop: 50,
-      paddingHorizontal: 50,
-      // backgroundColor: theme.colors.warmGrey,
-    },
-  });
 
   const [hidePassword, setHidePassword] = useState(true);
   const { mutate: SignUpUser, status, data, error } = useSignUp();
@@ -211,3 +203,12 @@ export default function SignUp({ navigation }: Props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  LoginContainer: {
+    flex: 1,
+    paddingTop: 50,
+    paddingHorizontal: 50,
+    // backgroundColor: theme.colors.warmGrey,
+  },
+});

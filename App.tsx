@@ -14,6 +14,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import Root from "./src/Root";
 
+// react-query would refetch by default upon refocusing a screen
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

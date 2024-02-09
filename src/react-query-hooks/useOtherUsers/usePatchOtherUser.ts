@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import baseUrl from '../../utils/baseUrl';
-import { User } from '../../../types';
+import { Role, User } from '../../../types';
+import { getItemAsync } from 'expo-secure-store';
 
 
 
@@ -39,24 +40,33 @@ export function usePatchOtherUserFriendRequest(
   otherUserUsername: string,
   method: string,
   otherUserId: string,
-  keep: string | number | boolean
+ 
 ) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: friendRequest =>
-        axios.patch(
+    mutationFn: async (friendRequest: {
+      userId: string,
+      username: string,
+      profileName: string,
+      photo: string,
+      role: Role,
+      message: string,
+    }) => {
+      return axios.patch(
         `${baseUrl}/users/${otherUserId}/${method}`,
         friendRequest,
         {
             withCredentials: true,
     
         }
-        ),
+        )
+    }
+        ,
 
     onSuccess: () => {
-        queryClient.invalidateQueries({queryKey:['user', otherUserUsername]});
+        queryClient.invalidateQueries({queryKey:['user', otherUserUsername], exact: true});
 
-        !keep && queryClient.invalidateQueries({queryKey:['user']});
+        queryClient.invalidateQueries({queryKey:['user'], exact: true});
       }
   }
     
@@ -75,17 +85,23 @@ export function useFollowOtherUser(
 ) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-    axios
+    mutationFn: async () => {
+      const token = await getItemAsync("token");
+
+      return axios
       .patch(
         `${baseUrl}/users/${otherUserId}/followOtherUser`,
         {},
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
     
         }
       )
-      .then(res => res.data.data),
+      .then(res => res.data.data)
+    }
+    ,
 
     onMutate: async () => {
         // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -137,17 +153,22 @@ export function useUnfollowOtherUser(
 ) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-        axios
-        .patch(
-            `${baseUrl}/users/${otherUserId}/unfollowOtherUser`,
-            {},
-            {
-            withCredentials: true,
-        
-            }
-        )
-        .then(res => res.data.data),
+    mutationFn: async () => {
+      const token = await getItemAsync("token");
+      return axios
+      .patch(
+          `${baseUrl}/users/${otherUserId}/unfollowOtherUser`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+      
+          }
+      )
+      .then(res => res.data.data)
+    }
+        ,
 
     onMutate: async () => {
             // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
