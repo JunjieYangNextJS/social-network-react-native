@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "react-native-paper";
 import { usePatchOtherUserFriendRequest } from "../../react-query-hooks/useOtherUsers/usePatchOtherUser";
-// import AddFriendModal from "../Modals/UserRelated/AddFriendModal";
+// import AddFriendDialog from "../Dialogs/UserRelated/AddFriendDialog";
 import { OtherUser, User } from "../../../types";
+import AddFriendDialog from "../Dialogs/AddFriendDialog";
 
 interface IAddFriendButton {
   user: User;
@@ -10,71 +11,60 @@ interface IAddFriendButton {
 }
 
 export default function AddFriendButton({ user, otherUser }: IAddFriendButton) {
-  const {
-    mutate: patchOtherUserReceiveFriendRequest,
+  //   const [friendStatus, setFriendStatus] = useState("Pending");
+  const [dialogOpened, setDialogOpened] = useState(false);
 
-    isSuccess,
-  } = usePatchOtherUserFriendRequest(
-    otherUser.username,
-    `receiveFriendRequest`,
-    otherUser.id
-  );
+  //   useEffect(() => {
 
-  const [friendStatus, setFriendStatus] = useState("Pending");
-  const [modalOpened, setModalOpened] = useState(false);
-  const [value, setValue] = useState("Nice to meet you.");
+  //       if (user.friendList.find((user) => user.id === otherUser._id))
+  //         // return setFriendStatus("Friended");
+  //       if (
+  //         otherUser?.incomingFriendRequests.some(
+  //           (request) => request.userId === user?.id
+  //         )
+  //       )
+  //     //     return setFriendStatus("Pending");
+  //     //   return setFriendStatus("Add friend");
 
-  useEffect(() => {
-    if (user && otherUser) {
-      if (user.friendList.find((user) => user.id === otherUser._id))
-        return setFriendStatus("Friended");
-      if (
-        otherUser?.incomingFriendRequests.some(
-          (request) => request.userId === user?.id
-        )
+  //   }, [user, otherUser]);
+
+  const friendStatus = useMemo(() => {
+    if (
+      otherUser.incomingFriendRequests.some(
+        (request) => request.userId === user.id
       )
-        return setFriendStatus("Pending");
-      return setFriendStatus("Add friend");
-    }
+    )
+      return "Pending";
+    if (user.friendList.find((user) => user.id === otherUser._id))
+      return "Friended";
+
+    return "Add friend";
   }, [user, otherUser]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      setModalOpened(false);
-    }
-  }, [isSuccess]);
-
-  const handleSendFriendRequest = () => {
-    if (friendStatus === "Pending" || friendStatus === "Friended") return;
-
-    patchOtherUserReceiveFriendRequest({
-      userId: user.id,
-      username: user.username,
-      profileName: user.profileName,
-      photo: user.photo,
-      role: user.role,
-      message: value,
-    });
-    setFriendStatus("Pending");
+  const onOpen = () => {
+    setDialogOpened(true);
+  };
+  const onClose = () => {
+    setDialogOpened(false);
   };
 
   return (
     <>
       <Button
         disabled={friendStatus === "Pending" || friendStatus === "Friended"}
+        onPress={onOpen}
       >
         {friendStatus}
       </Button>
 
-      {/* <AddFriendModal
-        otherUserUsername={otherUser?.username}
-        opened={modalOpened}
-        setOpened={setModalOpened}
-        value={value}
-        setValue={setValue}
-        isLoading={isLoading}
-        handleSendFriendRequest={handleSendFriendRequest}
-      /> */}
+      <AddFriendDialog
+        // username={otherUser.username}
+        opened={dialogOpened}
+        onOpen={onOpen}
+        onClose={onClose}
+        user={user}
+        otherUser={otherUser}
+      />
     </>
   );
 }

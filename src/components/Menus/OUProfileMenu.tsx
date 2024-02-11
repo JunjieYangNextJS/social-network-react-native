@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Button, Menu, Divider, IconButton } from "react-native-paper";
 import { OtherUser, User } from "../../../types";
 import BlockUserDialog from "../Dialogs/BlockUserDialog";
 import ReportDialog from "../Dialogs/ReportDialog";
+import useDialogStore from "../../store/useDialogStore";
+import { useRemoveFriend } from "../../react-query-hooks/useUser/usePatchUser";
+import GeneralModal from "../Modals/GeneralModal";
+import GeneralDialog from "../Dialogs/GeneralDialog";
 
 interface IOUProfileMenu {
   me: User;
@@ -23,17 +27,15 @@ const OUProfileMenu = ({
   const [visible, setVisible] = useState(false);
   const [blockOpened, setBlockOpened] = useState(false);
   const [reportOpened, setReportOpened] = useState(false);
+  const [bioOpened, setBioOpened] = useState(false);
+  const { onOpenDialog } = useDialogStore();
+  const { mutate: removeFriend } = useRemoveFriend(username, id);
 
   const openMenu = () => setVisible(true);
 
   const closeMenu = () => setVisible(false);
 
   const MenuItems = [
-    {
-      label: "View complete bio",
-      icon: "eye-outline",
-      onPress: () => onViewBio(),
-    },
     {
       label: `Report @${username}`,
       icon: "flag-outline",
@@ -48,14 +50,27 @@ const OUProfileMenu = ({
     },
   ];
 
-  friendList?.includes(me?._id) &&
+  friendList.includes(me._id) &&
     MenuItems.push({
       label: `Unfriend @${username}`,
       icon: "hand-back-right-off-outline",
       onPress: () => onDeleteFriend(),
     });
 
-  const onViewBio = () => {};
+  !!bio &&
+    MenuItems.unshift({
+      label: "View complete bio",
+      icon: "eye-outline",
+      onPress: () => onViewBio(),
+    });
+
+  const onViewBio = () => {
+    closeMenu();
+    setBioOpened(true);
+  };
+  const onCloseBio = () => {
+    setBioOpened(false);
+  };
 
   const onReport = () => {
     closeMenu();
@@ -72,7 +87,15 @@ const OUProfileMenu = ({
   const onCancelBlockUser = () => {
     setBlockOpened(false);
   };
-  const onDeleteFriend = () => {};
+  const onDeleteFriend = () => {
+    onOpenDialog(
+      `Remove @${username} from your friend list?`,
+      "You can always add them back.",
+      () => removeFriend()
+    );
+
+    closeMenu();
+  };
 
   return (
     <View>
@@ -108,6 +131,9 @@ const OUProfileMenu = ({
         itemId={id}
         itemEndpoint="users"
       />
+      {bio && (
+        <GeneralDialog text={bio} opened={bioOpened} onClose={onCloseBio} />
+      )}
     </View>
   );
 };

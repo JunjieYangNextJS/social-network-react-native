@@ -10,7 +10,7 @@ import {
 import useDialogStore from "../../store/useDialogStore";
 import useFriendRequestDialogStore from "../../store/useFriendRequestDialogStore";
 import {
-  usePatchUserFriendList,
+  useAcceptFriendRequest,
   useRemoveUserFriendRequest,
 } from "../../react-query-hooks/useUser/usePatchUser";
 
@@ -32,11 +32,10 @@ const FriendRequestDialog = () => {
   } = useRemoveUserFriendRequest();
 
   const { mutate: patchUserAcceptFriendRequest, isPending: acceptIsLoading } =
-    usePatchUserFriendList();
+    useAcceptFriendRequest();
 
   const onConfirmFriendRequest = () => {
     patchUserAcceptFriendRequest({
-      method: `acceptFriendRequest`,
       otherUserId: requesterId,
       notificationId,
     });

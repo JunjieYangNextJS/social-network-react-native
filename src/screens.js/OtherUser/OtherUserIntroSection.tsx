@@ -150,6 +150,7 @@ const makeStyles = (colors: any) =>
     buttonWrapper: {
       display: "flex",
       flexDirection: "row",
+      marginTop: 5,
     },
     button: {
       display: "flex",

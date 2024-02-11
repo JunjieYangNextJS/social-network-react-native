@@ -40,7 +40,7 @@ export function usePatchOtherUserFriendRequest(
   otherUserUsername: string,
   method: string,
   otherUserId: string,
- 
+  onClose: () => void
 ) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -52,11 +52,14 @@ export function usePatchOtherUserFriendRequest(
       role: Role,
       message: string,
     }) => {
+      const token = await getItemAsync("token");
       return axios.patch(
         `${baseUrl}/users/${otherUserId}/${method}`,
         friendRequest,
         {
-            withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
     
         }
         )
@@ -65,8 +68,8 @@ export function usePatchOtherUserFriendRequest(
 
     onSuccess: () => {
         queryClient.invalidateQueries({queryKey:['user', otherUserUsername], exact: true});
-
         queryClient.invalidateQueries({queryKey:['user'], exact: true});
+        onClose()
       }
   }
     

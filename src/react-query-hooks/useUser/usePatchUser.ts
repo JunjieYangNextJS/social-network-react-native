@@ -88,14 +88,14 @@ import { getItemAsync } from 'expo-secure-store';
     );
   }
 
-  export function usePatchUserFriendList() {
+  export function useAcceptFriendRequest() {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: async(values: {method: string, otherUserId: string, notificationId: string}) => {
+      mutationFn: async(values: {otherUserId: string, notificationId: string}) => {
         const token = await getItemAsync("token");
 
         return axios
-        .patch(`${baseUrl}/users/${values.otherUserId}/${values.method}`, {notificationId: values.notificationId}, {
+        .patch(`${baseUrl}/users/${values.otherUserId}/acceptFriendRequest`, {notificationId: values.notificationId}, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -106,9 +106,39 @@ import { getItemAsync } from 'expo-secure-store';
 
       onSuccess: (data, {notificationId}) => {
         queryClient.setQueryData(["notifications"], (prev: Notification[]) => prev.filter((noti) => noti._id !== notificationId));
-           queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+        queryClient.invalidateQueries({queryKey: ['user'], exact: true});
         }
     },
+    );
+  }
+
+  export function useRemoveFriend(otherUserUsername: string, otherUserId: string) {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async () => {
+        const token = await getItemAsync("token");
+        return axios
+        .patch(
+          `${baseUrl}/users/${otherUserId}/removeFriend`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then(res => res.data)
+      }
+      
+    
+      ,
+      
+        onSuccess: data => {
+          queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+  
+          queryClient.invalidateQueries({queryKey: ['user', otherUserUsername], exact: true});
+        }
+    }
     );
   }
   

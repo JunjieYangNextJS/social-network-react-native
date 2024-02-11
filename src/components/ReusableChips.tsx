@@ -9,8 +9,6 @@ interface IReusableChips {
 }
 
 function ReusableChips({ chipsArray, onPress, value }: IReusableChips) {
-  console.log(value);
-
   return (
     <View style={styles.row}>
       {chipsArray.map((chip: string) => (
