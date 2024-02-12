@@ -9,6 +9,14 @@ import { BackendRoutes } from "../../../types";
 import { useUpdateOpenComments } from "../../react-query-hooks/useStories/usePatchStory";
 import { useClipboard } from "../../hooks/useClipboard";
 import useDialogStore from "../../store/useDialogStore";
+import ReportDialog from "../Dialogs/ReportDialog";
+import findGenre from "../../utils/findGenre";
+import useDeletePost from "../../react-query-hooks/usePosts/useDeletePost";
+import { useAppTheme } from "../../theme";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { RootStackParamList } from "../../navigators/RootStackNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface IPostStoryActionMenu {
   itemId: string;
@@ -46,7 +54,7 @@ const PostStoryActionMenu = ({
   const closeMenu = () => setVisible(false);
 
   const [reportOpen, setReportOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [isNotifying, setIsNotifying] = useState(true);
   const [isOpenComments, setIsOpenComments] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -54,8 +62,35 @@ const PostStoryActionMenu = ({
   const itemUrl = `https://www.priders.net/${itemEndpoint}/${itemId}`;
 
   const { copiedText, copying, copy } = useClipboard();
+  const { colors } = useAppTheme();
 
   const { onOpenDialog } = useDialogStore((state) => state);
+  const route = useRoute();
+  const stackName = route.name;
+
+  let originRoute: "Posts" | "Notifications" | "Profile";
+
+  switch (route.name) {
+    case "Post":
+      originRoute = "Posts";
+      break;
+    case "N_Post":
+      originRoute = "Notifications";
+      break;
+    case "P_Post":
+      originRoute = "Profile";
+      break;
+
+    default:
+      originRoute = "Posts";
+      null;
+      break;
+  }
+  const navigation = useNavigation() as NativeStackNavigationProp<
+    RootStackParamList,
+    "Posts" | "Notifications" | "Profile",
+    undefined
+  >;
 
   useEffect(() => {
     setIsNotifying(!!willNotify);
@@ -77,6 +112,12 @@ const PostStoryActionMenu = ({
   );
   const { mutate: patchOpenComments } = useUpdateOpenComments(itemId);
 
+  const { mutate: deletePost, isSuccess: deleteIsSuccess } = useDeletePost();
+
+  useDidUpdate(() => {
+    navigation.replace(originRoute);
+  }, [deleteIsSuccess]);
+
   const handleClipboard = (text: string) => {
     copy(text);
     setTimeout(() => {
@@ -84,6 +125,7 @@ const PostStoryActionMenu = ({
     }, 500);
   };
 
+  // for viewers
   const handleHide = () => {
     onOpenDialog(
       "Hide this post?",
@@ -94,20 +136,32 @@ const PostStoryActionMenu = ({
     closeMenu();
   };
 
-  const handleReport = () => {
-    setReportOpen(true);
+  // const handleReport = () => {
+  //   setReportOpen(true);
+  //   closeMenu();
+  // };
+
+  const onReport = () => {
     closeMenu();
+    setReportOpen(true);
+  };
+  const onCancelReport = () => {
+    setReportOpen(false);
   };
 
   const handlePatchSubscribers = () => {
     patchSubscribers({ isSubscribed });
-    setIsSubscribed(!isSubscribed);
-
     closeMenu();
+    setIsSubscribed(!isSubscribed);
   };
 
+  // for creators
   const handleDelete = () => {
-    setDeleteOpen(true);
+    onOpenDialog(
+      "Delete this post?",
+      "Note that this action is irreversible.",
+      () => deletePost(itemId)
+    );
 
     closeMenu();
   };
@@ -155,17 +209,48 @@ const PostStoryActionMenu = ({
               }
               //   disabled={copying}
             />
-            <Menu.Item
-              onPress={() => handleHide()}
-              title="Hide"
-              leadingIcon="eye-off"
-            />
+
+            {itemCreatorId !== userId ? (
+              <>
+                <Menu.Item
+                  onPress={() => handleHide()}
+                  title="Hide"
+                  leadingIcon="eye-off"
+                />
+                <Menu.Item
+                  onPress={onReport}
+                  title="Report"
+                  leadingIcon="flag-outline"
+                />
+                <Menu.Item
+                  leadingIcon="bullhorn-outline"
+                  onPress={() => handlePatchSubscribers()}
+                  title={isSubscribed ? "Unsubscribe" : "Subscribe"}
+                />
+              </>
+            ) : (
+              <>
+                <Menu.Item
+                  leadingIcon="delete-outline"
+                  onPress={() => handleDelete()}
+                  title="Delete"
+                  titleStyle={{ color: colors.trash }}
+                />
+              </>
+            )}
           </>
         )}
 
         {/* <Divider />
         <Menu.Item onPress={() => {}} title="Item 3" /> */}
       </Menu>
+      <ReportDialog
+        opened={reportOpen}
+        onOpen={onReport}
+        onClose={onCancelReport}
+        itemId={itemId}
+        itemEndpoint={itemEndpoint}
+      />
     </View>
   );
 };

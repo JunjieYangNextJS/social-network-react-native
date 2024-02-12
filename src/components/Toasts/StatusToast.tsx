@@ -49,7 +49,7 @@ const StatusToast = () => {
         label: "Dismiss",
         onPress: () => onCloseToast(),
       }}
-      duration={1000}
+      duration={2000}
       style={styles.snackbar}
     >
       <Text style={styles.snackbarText}>{statusText}</Text>

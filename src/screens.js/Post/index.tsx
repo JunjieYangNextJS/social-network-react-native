@@ -23,7 +23,10 @@ import PostCommentsContainer from "./PostCommentsContainer";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { HeaderBackButton } from "@react-navigation/elements";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Post" | "N_Post">;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  "Post" | "N_Post" | "P_Post"
+>;
 
 export default function Post({ navigation, route }: Props) {
   const postId = route.params.postId;

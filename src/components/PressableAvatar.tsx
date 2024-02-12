@@ -1,12 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 import { Pressable } from "react-native";
 import { Avatar } from "react-native-paper";
-import {
-  RootStackParamList,
-  RootStackParamParent,
-} from "../navigators/RootStackNavigator";
+
 import { Image } from "expo-image";
 
 interface IPressableAvatar {

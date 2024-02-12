@@ -1,10 +1,9 @@
 import { View } from "react-native";
 import React, { useState } from "react";
-import useDialogStore from "../../store/useDialogStore";
+
 import { usePatchArrayMethod } from "../../react-query-hooks/useUser/usePatchUser";
-import { useDidUpdate } from "../../hooks/useDidUpdate";
+
 import { Button, Dialog, Portal, Text } from "react-native-paper";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface IBlockUserDialog {
   opened: boolean;
@@ -23,7 +22,6 @@ export default function BlockUserDialog({
   myBlockedUsers,
   id,
 }: IBlockUserDialog) {
-  //   const { onOpenDialog } = useDialogStore((state) => state);
   const { mutate: addBlockUser, isPending: addLoading } =
     usePatchArrayMethod("addBlockedUser");
   const { mutate: removeBlockUser, isPending: removeLoading } =

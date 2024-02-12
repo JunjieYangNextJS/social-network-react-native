@@ -15,11 +15,7 @@ import HTMLView from "react-native-htmlview";
 import calcTimeAgo from "../../../utils/calcTimeAgo";
 import BookmarkLikeMoreIconGroups from "../../../components/IconButtonGroups/BookmarkLikeMoreIconGroups";
 import useDeletePostComment from "../../../react-query-hooks/usePostComments/useDeletePostComment";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import useDeletePostReply from "../../../react-query-hooks/usePostReplies/useDeletePostReply";
-import { RootStackParamList } from "../../../navigators/RootStackNavigator";
 import injectHTMLViewStyle from "../../../utils/injectHTMLViewStyles";
 import PressableAvatar from "../../../components/PressableAvatar";
 

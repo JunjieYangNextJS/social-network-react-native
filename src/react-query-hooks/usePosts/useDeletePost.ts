@@ -3,8 +3,10 @@ import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
 import { getItemAsync } from 'expo-secure-store';
 
+
 export default function useDeletePost() {
   const queryClient = useQueryClient();
+ 
 
   return useMutation({
     mutationFn: async (postId: string) => {
@@ -14,7 +16,8 @@ export default function useDeletePost() {
           Authorization: `Bearer ${token}`,
         },
       }).then((res) => res.data)
-    }
+    },
+   
       
   }
     // (postId: string) =>

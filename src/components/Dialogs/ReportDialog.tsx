@@ -1,8 +1,6 @@
 import { View } from "react-native";
 import React, { useState } from "react";
-import useDialogStore from "../../store/useDialogStore";
-import { usePatchArrayMethod } from "../../react-query-hooks/useUser/usePatchUser";
-import { useDidUpdate } from "../../hooks/useDidUpdate";
+
 import { Button, Dialog, Portal, Text } from "react-native-paper";
 import { useQueryClient } from "@tanstack/react-query";
 import ReusableChips from "../ReusableChips";

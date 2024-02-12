@@ -31,8 +31,8 @@ export default function PostCommentContainer({
     return postComment.postReplies.slice(0, 3);
   }, [postComment]);
 
-  const route = useRoute();
-  const stackName = route.name;
+  // const route = useRoute();
+  // const stackName = route.name;
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
     "Post" | "N_Post",

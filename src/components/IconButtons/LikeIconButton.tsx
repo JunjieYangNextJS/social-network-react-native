@@ -74,7 +74,8 @@ export default function LikeIconButton({
   }, [itemLikes, status, userId]);
 
   useDidUpdate(() => {
-    if (isFocused)
+    if (isFocused) {
+      setClickable(false);
       if (itemLikes.includes(userId)) {
         setLiked(true);
         setClickable(true);
@@ -82,6 +83,7 @@ export default function LikeIconButton({
         setLiked(false);
         setClickable(true);
       }
+    }
   }, [isFocused]);
 
   //   useDidUpdate(() => {

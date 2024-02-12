@@ -3,6 +3,7 @@ import React from "react";
 import Profile from "../screens.js/Profile";
 import { Stack } from "./RootStackNavigator";
 import OtherUser from "../screens.js/OtherUser";
+import Post from "../screens.js/Post";
 
 export default function ProfileStackNavigator() {
   return (
@@ -11,6 +12,11 @@ export default function ProfileStackNavigator() {
         name="Profile"
         component={Profile}
         options={() => ({ headerBackVisible: false })}
+      />
+      <Stack.Screen
+        name="P_Post"
+        component={Post}
+        options={{ headerTitle: "Post" }}
       />
       {/* <Stack.Screen
         name="OtherUser"

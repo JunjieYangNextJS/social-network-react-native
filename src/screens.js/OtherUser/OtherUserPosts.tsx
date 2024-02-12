@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { usePosts } from "../../react-query-hooks/usePosts/usePosts";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+
 import PostCard from "../Posts/PostCard";
 import {
   OtherUser,

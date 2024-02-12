@@ -30,7 +30,7 @@ interface IPostContent {
   myVotes: string[];
   navigation: NativeStackNavigationProp<
     RootStackParamList,
-    "Post" | "N_Post",
+    "Post" | "N_Post" | "P_Post",
     undefined
   >;
   navigateToUserPage: (
