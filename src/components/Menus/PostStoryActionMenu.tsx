@@ -66,7 +66,6 @@ const PostStoryActionMenu = ({
 
   const { onOpenDialog } = useDialogStore((state) => state);
   const route = useRoute();
-  const stackName = route.name;
 
   let originRoute: "Posts" | "Notifications" | "Profile";
 

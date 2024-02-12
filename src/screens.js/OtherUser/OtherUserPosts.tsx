@@ -77,6 +77,7 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
       editedAt: item.editedAt,
       userId: user._id,
       userBookmarkedPosts: user.bookmarkedPosts,
+      photoNotPressable: true,
     };
 
     return <PostCard {...postCardProps} />;

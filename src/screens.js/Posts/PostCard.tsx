@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text as NativeText, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import {
@@ -15,7 +15,7 @@ import HTMLView from "react-native-htmlview";
 import calcTimeAgo from "../../utils/calcTimeAgo";
 import BookmarkLikeMoreIconGroups from "../../components/IconButtonGroups/BookmarkLikeMoreIconGroups";
 import useDeletePost from "../../react-query-hooks/usePosts/useDeletePost";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
@@ -37,6 +37,7 @@ interface IPostCard {
   editedAt?: string;
   userBookmarkedPosts?: string[];
   userId: string;
+  photoNotPressable?: boolean;
 }
 
 // function renderNode(
@@ -75,21 +76,46 @@ export default function PostCard({
   userBookmarkedPosts,
   editedAt,
   userId,
+  photoNotPressable,
 }: IPostCard) {
-  //   console.log(poster);
+  const route = useRoute();
+
+  const postRoute = useMemo(() => {
+    let postRoute: "Post" | "N_Post" | "P_Post";
+
+    switch (route.name) {
+      case "OtherUser":
+        postRoute = "Post";
+        break;
+      case "N_OtherUser":
+        postRoute = "N_Post";
+        break;
+      case "Profile":
+        postRoute = "P_Post";
+        break;
+
+      default:
+        postRoute = "Post";
+        null;
+        break;
+    }
+    return postRoute;
+  }, [route]);
+
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts",
+    "Posts" | "Profile" | "Notifications",
     undefined
   >;
 
   const navigateToPost = () => {
-    navigation.navigate("Post", {
+    navigation.navigate(postRoute, {
       postId: id,
     });
   };
 
   const navigateToUserPage = () => {
+    if (photoNotPressable) return;
     navigation.navigate("OtherUser", {
       username: poster.username,
       profileImage: poster.profileImage,
