@@ -7,46 +7,42 @@ import {
   StatusBar,
   Image,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import { usePosts } from "../../react-query-hooks/usePosts/usePosts";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import PostCard from "./PostCard";
-import { Post, PostFilterAbout, SortByValue } from "../../../types";
+import { useNavigation } from "@react-navigation/native";
+import PostCard from "../Posts/PostCard";
+import {
+  OtherUser,
+  Post,
+  PostFilterAbout,
+  SortByValue,
+  User,
+} from "../../../types";
 import useUser from "../../react-query-hooks/useUser/useUser";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { FlashList } from "@shopify/flash-list";
 import * as SplashScreen from "expo-splash-screen";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
-import { useQueryClient } from "@tanstack/react-query";
+import { useOtherUserPosts } from "../../react-query-hooks/useOtherUsers/useOtherUserPosts";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Posts">;
 
 SplashScreen.preventAutoHideAsync();
 
-const Posts = ({}: Props) => {
-  const [sortByValue, setSortByValue] =
-    useState<SortByValue>("-lastCommentedAt");
-  const [about, setAbout] = useState<PostFilterAbout>("general");
+interface IOtherUserPosts {
+  otherUser: OtherUser;
+  user: User;
+}
 
-  const {
-    data: posts,
-    isSuccess,
-    refetch: refetchPosts,
-  } = usePosts(about, sortByValue);
-  const { data: user, refetch: refetchUsers } = useUser();
-  const queryClient = useQueryClient();
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (!posts || !user) return;
-  //     queryClient.invalidateQueries({ queryKey: [["posts"], ["user"]] });
-  //   }, [posts, user])
-  // );
+const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
+  const { data: posts, isSuccess } = useOtherUserPosts(otherUser.id);
+  const { height } = useWindowDimensions();
 
   const shownPosts = useMemo(() => {
-    if (!user || !posts) return;
+    if (!posts) return;
     const filtered = posts.filter(
       (post: Post) => !user.hiddenPosts.includes(post._id)
     );
@@ -54,26 +50,15 @@ const Posts = ({}: Props) => {
     return filtered;
   }, [posts, user]);
 
-  const onLayout = useCallback(async () => {
-    if (shownPosts) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
-
-      await SplashScreen.hideAsync();
-    }
-  }, [shownPosts]);
-
-  if (!shownPosts || !user || !posts) {
+  if (!posts || !shownPosts) {
     return <ActivityIndicator />;
   }
 
+  if (posts.length < 1) {
+    return null;
+  }
+
   const renderPostItem = (itemData: any) => {
-    // const onPress = () => {
-    //   navigation.navigate("Post")
-    // }
     const { item } = itemData;
 
     const postCardProps = {
@@ -108,22 +93,28 @@ const Posts = ({}: Props) => {
   // }, [shownPosts]);
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayout}>
+    <View
+      style={{
+        flex: 1,
+        marginTop: 5,
+        height: height - 210,
+      }}
+    >
       <FlashList
         data={shownPosts}
         keyExtractor={(item: Post) => item._id}
         renderItem={renderPostItem}
         estimatedItemSize={posts.length}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: 5,
   },
 });
 
-export default Posts;
+export default OtherUserPosts;

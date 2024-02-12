@@ -120,6 +120,7 @@ const makeStyles = (colors: any) =>
       //   marginTop: 5,
       display: "flex",
       flexDirection: "column",
+      marginHorizontal: 15,
     },
     iconTextWithIconWrapper: {
       display: "flex",

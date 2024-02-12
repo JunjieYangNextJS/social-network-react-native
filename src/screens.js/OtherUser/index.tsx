@@ -1,5 +1,11 @@
 import React, { useCallback, useLayoutEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -12,6 +18,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import OUProfileMenu from "../../components/Menus/OUProfileMenu";
 import OtherUserIntroSection from "./OtherUserIntroSection";
 import { useAppTheme } from "../../theme";
+import OtherUserPosts from "./OtherUserPosts";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -112,7 +119,7 @@ export default function OtherUser({ route, navigation }: Props) {
   const { profileName, username, id, bio, friendList } = otherUser;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View>
         <View style={styles.nameMenuWrapper}>
           <View>
@@ -142,10 +149,9 @@ export default function OtherUser({ route, navigation }: Props) {
             friendList={friendList}
           />
         </View>
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1, marginHorizontal: 15 }}
-        >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <OtherUserIntroSection otherUser={otherUser} user={user} />
+          <OtherUserPosts otherUser={otherUser} user={user} />
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -153,6 +159,10 @@ export default function OtherUser({ route, navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
   error: {
     fontSize: 20,
     margin: 30,

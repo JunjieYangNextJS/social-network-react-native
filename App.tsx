@@ -20,6 +20,7 @@ const queryClient = new QueryClient({
     queries: {
       // ✅ turns retries off
       retry: false,
+      // refetchOnMount: "always",
     },
   },
 });

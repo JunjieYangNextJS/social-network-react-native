@@ -21,7 +21,7 @@ import useGetWillNotifyNotifications from "../react-query-hooks/useNotifications
 import { View } from "react-native";
 import { Stack } from "./RootStackNavigator";
 import OtherUser from "../screens.js/OtherUser";
-import OtherUserStackNavigator from "./OtherUserNavigator";
+
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();

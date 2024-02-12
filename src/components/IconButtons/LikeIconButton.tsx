@@ -7,6 +7,8 @@ import axios from "axios";
 import { View, StyleSheet } from "react-native";
 import { getItemAsync } from "expo-secure-store";
 import { useAppTheme } from "../../theme";
+import { useIsFocused } from "@react-navigation/native";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
 
 interface ILikeIconButton {
   userId: string;
@@ -27,6 +29,7 @@ export default function LikeIconButton({
   const theme = useAppTheme();
   const [liked, setLiked] = useState(false);
   const [clickable, setClickable] = useState(false);
+  const isFocused = useIsFocused();
 
   const [mutableItemLikes, setMutableItemLikes] = useState(0);
 
@@ -52,13 +55,16 @@ export default function LikeIconButton({
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryName, ["user"]] });
+      // queryClient.invalidateQueries({ queryKey: [queryName, ["user"]] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: queryName });
     },
   });
 
   useEffect(() => {
     if (status !== "idle") return;
-    if (itemLikes?.includes(userId)) {
+
+    if (itemLikes.includes(userId)) {
       setLiked(true);
       setClickable(true);
     } else {
@@ -66,6 +72,17 @@ export default function LikeIconButton({
       setClickable(true);
     }
   }, [itemLikes, status, userId]);
+
+  useDidUpdate(() => {
+    if (isFocused)
+      if (itemLikes.includes(userId)) {
+        setLiked(true);
+        setClickable(true);
+      } else {
+        setLiked(false);
+        setClickable(true);
+      }
+  }, [isFocused]);
 
   //   useDidUpdate(() => {
   //     if (status === 'error') {

@@ -4,12 +4,12 @@ import baseUrl from '../../utils/baseUrl';
 import { getItemAsync } from 'expo-secure-store';
 import { Post, PostFilterAbout, SortByValue } from '../../../types';
 
-export function usePosts (option: PostFilterAbout ,sortByValue: SortByValue) {
+export function useOtherUserPosts (id: string) {
   
-    return useQuery({queryKey: ['posts'], queryFn: async () => {
+    return useQuery({queryKey: ['otherUserPosts', id], queryFn: async () => {
         const token = await getItemAsync("token");
 
-        return axios.get(`${baseUrl}/posts?about=${option}&sort=${sortByValue}`, {
+        return axios.get(`${baseUrl}/posts/poster/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

@@ -50,9 +50,9 @@ export default function FollowButton({
         <Button
           onPress={() => unfollowOtherUser()}
           disabled={unfollowIsPending}
-          mode="outlined"
-          textColor={colors.onSurface}
-          labelStyle={{ marginVertical: 6, marginHorizontal: 20 }}
+          // mode="outlined"
+          // textColor={colors.onSurface}
+          // labelStyle={{ marginVertical: 6, marginHorizontal: 20 }}
 
           //   style={{ height: 40 }}
         >

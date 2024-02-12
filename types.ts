@@ -1,4 +1,5 @@
 export type About = "L" | "I" | "G" | "A" | "B" | "2S" | "T" | "Others" | "Q" | "General";
+export type PostFilterAbout = "L" | "G" | "B" | "T" | "Q" | "I" | "A" | "2S" | "+More" | "general"
 
 export type BackendRoutes = "posts" | "stories" | "secrets" 
 | "postComments" | "storyComments" | "secretComments"
@@ -9,6 +10,8 @@ export type Role = "user" | "admin" | "dev" | "bot"
 export type ExposedTo = 'public' | 'friendsOnly' | 'friendsAndFollowersOnly' | 'private'
 
 export type SelectArray = { value: string; label: string }[];
+
+export type SortByValue = "-lastCommentedAt"
 
 export type Post = {
     _id: string,
