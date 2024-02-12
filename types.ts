@@ -27,15 +27,15 @@ export type Post = {
     editedAt?: string,
     willNotify: boolean,
     pinned?: string | undefined,
-    reports?: Report[],
-    subscribers?: string[],
+    reports: Report[],
+    subscribers: string[],
     likes: string[],
-    likeCount?: number,
-    commentCount?: number,
-    lastCommentedAt?: string,
+    likeCount: number,
+    commentCount: number,
+    lastCommentedAt: string,
     banned?: boolean,
-    sticky?: boolean,
-    modFavored?: boolean
+    sticky: boolean,
+    modFavored: boolean
 
 };
 
@@ -72,7 +72,7 @@ export type PostComment = {
     post: Post,
     poster: User | string,
     willNotifyCommenter?: boolean,
-    subscribers?: string[],
+    subscribers: string[],
     content: string,
     route?: string,
     reports?: Report[],

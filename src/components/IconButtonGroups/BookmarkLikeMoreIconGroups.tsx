@@ -16,9 +16,10 @@ interface IBookmarkLikeMoreIconGroups {
   userBookmarkedItems?: string[];
   itemCreatorId: string;
   itemEndpoint: BackendRoutes;
-  handleDeleteItem: (item: string) => void;
-  deleteStatus: "pending" | "success" | "error" | "idle";
+
   sticky: boolean | undefined;
+  subscribers: string[];
+  menuLess?: boolean;
 }
 
 export default function BookmarkLikeMoreIconGroups({
@@ -31,33 +32,38 @@ export default function BookmarkLikeMoreIconGroups({
   userBookmarkedItems,
   itemCreatorId,
   itemEndpoint,
-  handleDeleteItem,
-  deleteStatus,
+
+  subscribers,
   sticky,
+  menuLess,
 }: IBookmarkLikeMoreIconGroups) {
   return (
     <View style={styles.mainWrapper}>
-      <LikeIconButton
-        itemLikes={itemLikes}
-        likedProperty={likedProperty}
-        itemId={itemId}
-        userId={userId}
-        queryName={queryName}
-      />
+      <View style={{ marginRight: menuLess ? -40 : 0 }}>
+        <LikeIconButton
+          itemLikes={itemLikes}
+          likedProperty={likedProperty}
+          itemId={itemId}
+          userId={userId}
+          queryName={queryName}
+        />
+      </View>
+
       <BookmarkIconButton
         itemId={itemId}
         bookmarkedProperty={bookmarkedProperty}
         userBookmarkedItems={userBookmarkedItems}
       />
-      <PostStoryActionMenu
-        itemId={itemId}
-        itemCreatorId={itemCreatorId}
-        itemEndpoint={itemEndpoint}
-        userId={userId}
-        handleDeleteItem={handleDeleteItem}
-        deleteStatus={deleteStatus}
-        sticky={sticky}
-      />
+      {!menuLess && (
+        <PostStoryActionMenu
+          itemId={itemId}
+          itemCreatorId={itemCreatorId}
+          itemEndpoint={itemEndpoint}
+          userId={userId}
+          subscribers={subscribers}
+          sticky={sticky}
+        />
+      )}
     </View>
   );
 }

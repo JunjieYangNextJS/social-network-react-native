@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useMutation,  useQueryClient } from '@tanstack/react-query';
 
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
+
 
 export default function usePatchStory(storyId: string) {
   const queryClient = useQueryClient();
@@ -24,18 +26,24 @@ export default function usePatchStory(storyId: string) {
 
 export function useUpdateOpenComments(storyId: string) {
     const queryClient = useQueryClient();
+    
     return useMutation({
-        mutationFn: () =>
-        axios
+        mutationFn: async () => {
+          const token = await getItemAsync('token');
+          return axios
           .patch(
             `${baseUrl}/stories/${storyId}/updateOpenComments`,
             {},
             {
-              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              }
          
             }
           )
-          .then((res) => res.data),
+          .then((res) => res.data)
+        }
+        
         //   ???????
         // onSuccess: () => {
         //     // window.location.reload(false); ??

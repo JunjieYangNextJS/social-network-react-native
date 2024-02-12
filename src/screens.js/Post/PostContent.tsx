@@ -103,6 +103,7 @@ export default function PostContent({
     modFavored,
     sticky,
     editedAt,
+    subscribers,
   } = post;
 
   const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
@@ -163,9 +164,8 @@ export default function PostContent({
           userBookmarkedItems={userBookmarkedPosts}
           itemCreatorId={poster._id}
           itemEndpoint="posts"
-          handleDeleteItem={handleDeletePost}
-          deleteStatus={deleteStatus}
           sticky={sticky}
+          subscribers={subscribers}
         />
       </View>
     </Card>

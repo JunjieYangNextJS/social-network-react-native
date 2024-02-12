@@ -38,6 +38,7 @@ interface IPostCard {
   userBookmarkedPosts?: string[];
   userId: string;
   photoNotPressable?: boolean;
+  subscribers: string[];
 }
 
 // function renderNode(
@@ -77,6 +78,7 @@ export default function PostCard({
   editedAt,
   userId,
   photoNotPressable,
+  subscribers,
 }: IPostCard) {
   const route = useRoute();
 
@@ -192,9 +194,9 @@ export default function PostCard({
             userBookmarkedItems={userBookmarkedPosts}
             itemCreatorId={poster._id}
             itemEndpoint="posts"
-            handleDeleteItem={handleDeletePost}
-            deleteStatus={deleteStatus}
             sticky={sticky}
+            subscribers={subscribers}
+            menuLess={true}
           />
         </View>
       </View>

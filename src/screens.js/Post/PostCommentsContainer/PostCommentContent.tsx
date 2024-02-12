@@ -45,7 +45,7 @@ export default function PostCommentContent({
     likes,
     postReplies,
     commenter,
-
+    subscribers,
     editedAt,
   } = postComment;
 
@@ -117,9 +117,8 @@ export default function PostCommentContent({
               userBookmarkedItems={userBookmarkedPostComments}
               itemCreatorId={commenter._id}
               itemEndpoint="postComments"
-              handleDeleteItem={handleDeletePostComment}
-              deleteStatus={deleteStatus}
               sticky={false}
+              subscribers={subscribers}
             />
           </View>
         </View>

@@ -59,7 +59,7 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
   }
 
   const renderPostItem = (itemData: any) => {
-    const { item } = itemData;
+    const item: Post = itemData.item;
 
     const postCardProps = {
       id: item._id,
@@ -70,14 +70,15 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
       likes: item.likes,
       poll: item.poll,
       poster: item.poster,
-      images: item.images,
+
       commentCount: item.commentCount,
       modFavored: item.modFavored,
       sticky: item.sticky,
       editedAt: item.editedAt,
       userId: user._id,
       userBookmarkedPosts: user.bookmarkedPosts,
-      photoNotPressable: true,
+      photoNotPressable: item.poster._id === otherUser._id,
+      subscribers: item.subscribers,
     };
 
     return <PostCard {...postCardProps} />;

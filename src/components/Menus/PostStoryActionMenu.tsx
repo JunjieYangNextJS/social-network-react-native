@@ -14,7 +14,11 @@ import findGenre from "../../utils/findGenre";
 import useDeletePost from "../../react-query-hooks/usePosts/useDeletePost";
 import { useAppTheme } from "../../theme";
 import { useDidUpdate } from "../../hooks/useDidUpdate";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -23,14 +27,11 @@ interface IPostStoryActionMenu {
   itemCreatorId: string;
   itemEndpoint: BackendRoutes;
   userId: string;
-  handleDeleteItem: (item: string) => void;
-  deleteStatus: "pending" | "success" | "error" | "idle";
+
   sticky: boolean | undefined;
   willNotify?: boolean;
   openComments?: boolean;
-  subscribers?: string[];
-  setReadOnly?: any;
-  navigateToOrigin?: any;
+  subscribers: string[];
 }
 
 const PostStoryActionMenu = ({
@@ -38,14 +39,11 @@ const PostStoryActionMenu = ({
   itemCreatorId,
   itemEndpoint,
   userId,
-  handleDeleteItem,
-  deleteStatus,
+
   sticky,
   willNotify,
   openComments,
   subscribers,
-  setReadOnly,
-  navigateToOrigin,
 }: IPostStoryActionMenu) => {
   const [visible, setVisible] = useState(false);
 
@@ -94,7 +92,7 @@ const PostStoryActionMenu = ({
   useEffect(() => {
     setIsNotifying(!!willNotify);
     setIsOpenComments(!!openComments);
-    setIsSubscribed(!!subscribers?.includes(userId));
+    setIsSubscribed(subscribers.includes(userId));
   }, [willNotify, openComments, subscribers, userId]);
 
   const { mutate: patchUserPostHide } = usePatchArrayMethod(
@@ -109,7 +107,7 @@ const PostStoryActionMenu = ({
     itemEndpoint,
     itemId
   );
-  const { mutate: patchOpenComments } = useUpdateOpenComments(itemId);
+  // const { mutate: patchOpenComments } = useUpdateOpenComments(itemId);
 
   const { mutate: deletePost, isSuccess: deleteIsSuccess } = useDeletePost();
 
@@ -151,7 +149,7 @@ const PostStoryActionMenu = ({
   const handlePatchSubscribers = () => {
     patchSubscribers({ isSubscribed });
     closeMenu();
-    setIsSubscribed(!isSubscribed);
+    setIsSubscribed((prev) => !prev);
   };
 
   // for creators
@@ -165,24 +163,25 @@ const PostStoryActionMenu = ({
     closeMenu();
   };
 
-  const handleEdit = () => {
-    setReadOnly(false);
+  // const handleEdit = () => {
+  //   setReadOnly(false);
 
-    closeMenu();
-  };
+  //   closeMenu();
+  // };
 
   const handleChangeWillNotify = () => {
     patchCreationWillNotify({ willNotify: !isNotifying });
-    setIsNotifying(!isNotifying);
-
     closeMenu();
+    setIsNotifying((prev) => !prev);
   };
-  const handlePatchOpenComments = () => {
-    patchOpenComments();
-    setIsOpenComments(!isOpenComments);
 
-    closeMenu();
-  };
+  // for stories only
+  // const handlePatchOpenComments = () => {
+  //   patchOpenComments();
+  //   setIsOpenComments((prev) => !prev);
+
+  //   closeMenu();
+  // };
 
   return (
     <View
@@ -229,6 +228,17 @@ const PostStoryActionMenu = ({
               </>
             ) : (
               <>
+                <Menu.Item
+                  leadingIcon={
+                    isNotifying ? "bell-off-outline" : "bell-outline"
+                  }
+                  onPress={() => handleChangeWillNotify()}
+                  title={
+                    isNotifying
+                      ? "Turn off notifications"
+                      : "Turn on notifications"
+                  }
+                />
                 <Menu.Item
                   leadingIcon="delete-outline"
                   onPress={() => handleDelete()}
