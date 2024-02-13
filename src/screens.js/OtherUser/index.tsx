@@ -45,6 +45,7 @@ export default function OtherUser({ route, navigation }: Props) {
 
     const MyHeader = () => {
       if (isError) {
+        console.log("error");
         return (
           <ImageBackground
             source={{
@@ -77,7 +78,7 @@ export default function OtherUser({ route, navigation }: Props) {
       return (
         <ImageBackground
           source={{
-            uri: profileImage || otherUser?.profileImage,
+            uri: otherUser?.profileImage,
           }}
           style={{ height: 160 }}
         >

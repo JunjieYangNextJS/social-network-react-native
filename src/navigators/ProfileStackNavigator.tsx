@@ -6,38 +6,56 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import OtherUser from "../screens.js/OtherUser";
 import Post from "../screens.js/Post";
+import { Icon, IconButton } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
 
-export default function ProfileStackNavigator() {
-  const FeedDrawer = () => {
-    return (
-      <Stack.Group>
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={() => ({ headerBackVisible: false })}
-        />
-        <Stack.Screen
-          name="P_Post"
-          component={Post}
-          options={{ headerTitle: "Post" }}
-        />
-      </Stack.Group>
-    );
-  };
-
+const DrawerNav = () => {
   return (
-    <Stack.Navigator screenOptions={{}}>
-      <Drawer.Navigator>
-        <Drawer.Screen name="Feed" component={FeedDrawer} />
-      </Drawer.Navigator>
+    <Drawer.Navigator
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: "rgb(39, 35, 41)",
+        },
+        // drawerIcon: ({ size, focused }) => {
+        //   return <Icon source="menu" size={size} />;
+        // },
+        headerTintColor: "#D8D8D8",
+        headerStyle: {
+          shadowColor: "transparent", // this covers iOS
+          elevation: 0, // this covers Android
+        },
+        drawerActiveTintColor: "#FFFFFF",
+      }}
+    >
+      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="ProfileB" component={Profile} />
 
       {/* <Stack.Screen
-        name="OtherUser"
-        component={OtherUser}
-        // options={() => ({ headerBackVisible: false })}
-      /> */}
+    name="OtherUser"
+    component={OtherUser}
+    // options={() => ({ headerBackVisible: false })}
+  /> */}
+    </Drawer.Navigator>
+  );
+};
+
+export default function ProfileStackNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="P_Drawer"
+        component={DrawerNav}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="P_Post"
+        component={Post}
+        options={{ headerTitle: "Post" }}
+      />
     </Stack.Navigator>
   );
 }

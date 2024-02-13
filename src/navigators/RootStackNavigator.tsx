@@ -11,6 +11,8 @@ export type RootStackParamList = {
   PostDraft: { postId: string };
   PostsSearch: any;
   Profile: any;
+  P_Drawer: any;
+  P_Home: any;
   P_Post: { postId: string };
   // Noti stack
   Notifications: any;
