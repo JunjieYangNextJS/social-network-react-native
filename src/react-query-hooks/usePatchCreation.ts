@@ -4,7 +4,7 @@ import baseUrl from '../utils/baseUrl';
 import { BackendRoutes } from '../../types';
 import { getItemAsync } from 'expo-secure-store';
 
-export default function usePatchCreation(route: BackendRoutes, parentId: string) {
+export default function usePatchCreation(route: BackendRoutes | string , parentId: string) {
     return useMutation({
         mutationFn: async (values: any) => {
           const token = await getItemAsync('token')

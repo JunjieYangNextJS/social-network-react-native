@@ -18,6 +18,7 @@ import useDeletePostComment from "../../../react-query-hooks/usePostComments/use
 
 import injectHTMLViewStyle from "../../../utils/injectHTMLViewStyles";
 import PressableAvatar from "../../../components/PressableAvatar";
+import CommentActionMenu from "../../../components/Menus/CommentActionMenu";
 
 interface IPostCommentContent {
   postComment: PostComment;
@@ -47,6 +48,7 @@ export default function PostCommentContent({
     commenter,
     subscribers,
     editedAt,
+    willNotifyCommenter,
   } = postComment;
 
   const { mutate: handleDeletePostComment, status: deleteStatus } =
@@ -119,6 +121,18 @@ export default function PostCommentContent({
               itemEndpoint="postComments"
               sticky={false}
               subscribers={subscribers}
+              actionMenu={
+                <CommentActionMenu
+                  itemId={id}
+                  itemCreatorId={commenter._id}
+                  itemEndpoint="postComments"
+                  userId={userId}
+                  subscribers={subscribers}
+                  sticky={false}
+                  parentId={post._id}
+                  willNotify={willNotifyCommenter}
+                />
+              }
             />
           </View>
         </View>

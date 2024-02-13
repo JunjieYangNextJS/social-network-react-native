@@ -21,6 +21,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PressableAvatar from "../../components/PressableAvatar";
+import PostStoryActionMenu from "../../components/Menus/PostStoryActionMenu";
 
 interface IPostCard {
   id: string;
@@ -124,7 +125,7 @@ export default function PostCard({
     });
   };
 
-  const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
+  // const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
 
   return (
     // <View style={styles.container}>
@@ -196,7 +197,16 @@ export default function PostCard({
             itemEndpoint="posts"
             sticky={sticky}
             subscribers={subscribers}
-            menuLess={true}
+            actionMenu={
+              <PostStoryActionMenu
+                itemId={id}
+                itemCreatorId={poster._id}
+                itemEndpoint="posts"
+                userId={userId}
+                subscribers={subscribers}
+                sticky={sticky}
+              />
+            }
           />
         </View>
       </View>

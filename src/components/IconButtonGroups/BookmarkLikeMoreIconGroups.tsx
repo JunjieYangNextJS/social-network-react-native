@@ -19,7 +19,7 @@ interface IBookmarkLikeMoreIconGroups {
 
   sticky: boolean | undefined;
   subscribers: string[];
-  menuLess?: boolean;
+  actionMenu?: any;
 }
 
 export default function BookmarkLikeMoreIconGroups({
@@ -35,11 +35,11 @@ export default function BookmarkLikeMoreIconGroups({
 
   subscribers,
   sticky,
-  menuLess,
+  actionMenu,
 }: IBookmarkLikeMoreIconGroups) {
   return (
     <View style={styles.mainWrapper}>
-      <View style={{ marginRight: menuLess ? -40 : 0 }}>
+      <View style={{ marginRight: !!actionMenu ? 0 : -40 }}>
         <LikeIconButton
           itemLikes={itemLikes}
           likedProperty={likedProperty}
@@ -54,16 +54,7 @@ export default function BookmarkLikeMoreIconGroups({
         bookmarkedProperty={bookmarkedProperty}
         userBookmarkedItems={userBookmarkedItems}
       />
-      {!menuLess && (
-        <PostStoryActionMenu
-          itemId={itemId}
-          itemCreatorId={itemCreatorId}
-          itemEndpoint={itemEndpoint}
-          userId={userId}
-          subscribers={subscribers}
-          sticky={sticky}
-        />
-      )}
+      {!!actionMenu && actionMenu}
     </View>
   );
 }

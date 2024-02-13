@@ -3,7 +3,7 @@ export type PostFilterAbout = "L" | "G" | "B" | "T" | "Q" | "I" | "A" | "2S" | "
 
 export type BackendRoutes = "posts" | "stories" | "secrets" 
 | "postComments" | "storyComments" | "secretComments"
-| "postReplies" | "storyReplies" | "secretReplies" | "users"
+| "postReplies" | "storyReplies" | "secretReplies" | "users" 
 
 export type Role = "user" | "admin" | "dev" | "bot"
 

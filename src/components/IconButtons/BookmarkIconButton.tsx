@@ -10,6 +10,8 @@ import { IconButton, Tooltip } from "react-native-paper";
 import { getItemAsync } from "expo-secure-store";
 import { useAppTheme } from "../../theme";
 import useToastStore from "../../store/useToastStore";
+import { useIsFocused } from "@react-navigation/native";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
 
 interface IBookmarkIconButton {
   userBookmarkedItems?: string[];
@@ -28,6 +30,7 @@ export default function BookmarkIconButton({
   const queryClient = useQueryClient();
   const theme = useAppTheme();
   const onOpenToast = useToastStore((state) => state.onOpenToast);
+  const isFocused = useIsFocused();
 
   const {
     mutate: patchItemBookmarks,
@@ -86,6 +89,7 @@ export default function BookmarkIconButton({
       setBookmarked(true);
       setClickable(true);
     } else {
+      setBookmarked(false);
       setClickable(true);
     }
   }, [userBookmarkedItems, status, itemId]);
@@ -103,6 +107,19 @@ export default function BookmarkIconButton({
       patchItemBookmarks({ method: "$addToSet", bookmarkedProperty, itemId });
     }
   };
+
+  useDidUpdate(() => {
+    if (isFocused) {
+      setClickable(false);
+      if (userBookmarkedItems?.includes(itemId)) {
+        setBookmarked(true);
+        setClickable(true);
+      } else {
+        setBookmarked(false);
+        setClickable(true);
+      }
+    }
+  }, [isFocused]);
 
   return (
     <Tooltip title="Bookmark">
