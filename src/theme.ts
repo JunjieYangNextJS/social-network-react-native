@@ -19,7 +19,8 @@ const theme = {
       trash: "#ba0000",
       bookmarked: "#DBD33E",
       card: "#222",
-      dimmed: "#b3b3b3"
+      dimmed: "#b3b3b3",
+      placeholder: "#7a7a7a"
     },
   };
   

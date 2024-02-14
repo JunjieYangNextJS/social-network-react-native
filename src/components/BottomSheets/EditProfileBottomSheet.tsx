@@ -83,41 +83,49 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
               errors,
               isSubmitting,
               submitCount,
+              dirty,
             }) => (
               <View>
                 <View style={styles.header}>
                   <Button onPress={() => dismiss("EditProfile")}>Cancel</Button>
                   <Text variant="titleMedium">Edit Profile</Text>
                   <Button
-                    disabled={true}
+                    disabled={!dirty}
                     onPress={(e: GestureResponderEvent) => handleSubmit()}
                   >
                     Save
                   </Button>
                 </View>
                 <View style={styles.body}>
-                  <TextInput
-                    value={values.profileName}
-                    onChangeText={handleChange("profileName")}
-                    style={styles.input}
-                    placeholderTextColor={"white"}
-                  />
-
-                  <TextInput
-                    placeholder="Austin, TX"
-                    style={styles.input}
-                    value={values.location}
-                    onChangeText={handleChange("location")}
-                    placeholderTextColor={colors.dimmed}
-                  />
-
-                  <TextInput
-                    placeholder="Your twitter"
-                    style={styles.input}
-                    value={values.twitter}
-                    onChangeText={handleChange("twitter")}
-                    placeholderTextColor={colors.dimmed}
-                  />
+                  <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Profile Name</Text>
+                    <TextInput
+                      value={values.profileName}
+                      onChangeText={handleChange("profileName")}
+                      style={styles.input}
+                      placeholderTextColor={"white"}
+                    />
+                  </View>
+                  <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Location</Text>
+                    <TextInput
+                      placeholder="Austin, TX"
+                      style={styles.input}
+                      value={values.location}
+                      onChangeText={handleChange("location")}
+                      placeholderTextColor={colors.placeholder}
+                    />
+                  </View>
+                  <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Twitter</Text>
+                    <TextInput
+                      placeholder="Your twitter"
+                      style={styles.input}
+                      value={values.twitter}
+                      onChangeText={handleChange("twitter")}
+                      placeholderTextColor={colors.placeholder}
+                    />
+                  </View>
                 </View>
               </View>
             )}
@@ -147,17 +155,35 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 
-  body: {},
+  body: {
+    marginTop: 10,
+  },
 
   input: {
     // marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     fontSize: 17,
     lineHeight: 20,
     paddingHorizontal: 13,
     paddingVertical: 10,
     backgroundColor: "#1C1C1E",
     color: "white",
+    flex: 1,
+  },
+
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    width: 105,
+  },
+
+  inputLabelWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    marginTop: 10,
   },
 });
 
