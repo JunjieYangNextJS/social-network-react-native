@@ -7,8 +7,14 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import OtherUser from "../screens.js/OtherUser";
 import Post from "../screens.js/Post";
 import { Icon, IconButton } from "react-native-paper";
+import FriendList from "../screens.js/Profile/FriendList";
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
+
+export type ProfileDrawerParamList = {
+  Profile: {};
+  FriendList: {};
+};
 
 const DrawerNav = () => {
   return (
@@ -29,7 +35,7 @@ const DrawerNav = () => {
       }}
     >
       <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="ProfileB" component={Profile} />
+      <Drawer.Screen name="FriendList" component={FriendList} />
 
       {/* <Stack.Screen
     name="OtherUser"

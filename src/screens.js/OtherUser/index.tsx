@@ -45,7 +45,6 @@ export default function OtherUser({ route, navigation }: Props) {
 
     const MyHeader = () => {
       if (isError) {
-        console.log("error");
         return (
           <ImageBackground
             source={{
