@@ -4,6 +4,8 @@ import {
   StyleSheet,
   GestureResponderEvent,
   TextInput,
+  useWindowDimensions,
+  Keyboard,
 } from "react-native";
 import { Text, Button, HelperText } from "react-native-paper";
 import {
@@ -15,6 +17,8 @@ import { useAppTheme } from "../../theme";
 import * as yup from "yup";
 import { Formik, FormikErrors, ErrorMessage } from "formik";
 import { User } from "../../../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import GenderBottomSheet from "./GenderBottomSheet";
 
 const validationSchema = yup.object({
   profileName: yup.string(),
@@ -32,25 +36,35 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
 
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
+  const { height } = useWindowDimensions();
+  const { top: statusBarHeight } = useSafeAreaInsets();
+
   // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const editProfileBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints = useMemo(() => [height - statusBarHeight], []);
 
   // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+  const handleEditProfileModalPress = useCallback(() => {
+    editProfileBottomSheetModalRef.current?.present();
+  }, []);
+
+  // child refs
+  const GenderBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleGenderModalPress = useCallback(() => {
+    Keyboard.dismiss();
+    GenderBottomSheetModalRef.current?.present();
   }, []);
 
   // renders
   return (
     <View>
-      <Button onPress={handlePresentModalPress}>Edit</Button>
+      <Button onPress={handleEditProfileModalPress}>Edit</Button>
       <BottomSheetModal
         name="EditProfile"
         keyboardBehavior="interactive"
-        ref={bottomSheetModalRef}
+        ref={editProfileBottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         handleIndicatorStyle={{ display: "none" }}
@@ -63,8 +77,8 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
             initialValues={{
               profileName,
               location,
-              //   gender: "",
-              //   sexuality: "",
+              gender: "",
+              sexuality: "",
               twitter,
               bio,
             }}
@@ -117,6 +131,18 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                     />
                   </View>
                   <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Gender</Text>
+                    <TextInput
+                      placeholder="Pick or specify your own"
+                      style={styles.input}
+                      value={values.gender}
+                      // onChangeText={handleChange("gender")}
+                      placeholderTextColor={colors.placeholder}
+                      onPressIn={handleGenderModalPress}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.inputLabelWrapper}>
                     <Text style={styles.label}>Twitter</Text>
                     <TextInput
                       placeholder="Your twitter"
@@ -127,6 +153,16 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                     />
                   </View>
                 </View>
+                <>
+                  <GenderBottomSheet
+                    enablePanDownToClose={true}
+                    gender={values.gender}
+                    // handleGenderModalPress={handleGenderModalPress}
+                    ref={GenderBottomSheetModalRef}
+                  >
+                    <></>
+                  </GenderBottomSheet>
+                </>
               </View>
             )}
           </Formik>

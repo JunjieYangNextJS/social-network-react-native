@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native";
+import {
+  GestureResponderEvent,
+  StyleSheet,
+  View,
+  SafeAreaView,
+} from "react-native";
 import {
   Button,
   HelperText,
@@ -16,7 +21,6 @@ import axios, { AxiosError } from "axios";
 import baseUrl from "../../utils/baseUrl";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   signUpValuesType,
   useSignUp,
