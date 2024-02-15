@@ -19,6 +19,10 @@ import { Formik, FormikErrors, ErrorMessage } from "formik";
 import { User } from "../../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GenderBottomSheet from "./GenderBottomSheet";
+import SexualityBottomSheet from "./SexualityBottomSheet";
+import BioBottomSheet from "./BioBottomSheet";
+import { usePatchUserWithoutPhoto } from "../../react-query-hooks/useUser/usePatchUser";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
 
 const validationSchema = yup.object({
   profileName: yup.string(),
@@ -34,10 +38,17 @@ const validationSchema = yup.object({
 const EditProfileBottomSheet = ({ user }: { user: User }) => {
   const { profileName, location, gender, sexuality, twitter, bio } = user;
 
+  console.log(sexuality);
+
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
   const { top: statusBarHeight } = useSafeAreaInsets();
+  const { mutate: patchUser, isSuccess } = usePatchUserWithoutPhoto();
+
+  useDidUpdate(() => {
+    dismiss("EditProfile");
+  }, [isSuccess]);
 
   // ref
   const editProfileBottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -55,6 +66,18 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
   const handleGenderModalPress = useCallback(() => {
     Keyboard.dismiss();
     GenderBottomSheetModalRef.current?.present();
+  }, []);
+
+  const SexualityBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleSexualityModalPress = useCallback(() => {
+    Keyboard.dismiss();
+    SexualityBottomSheetModalRef.current?.present();
+  }, []);
+
+  const BioBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleBioModalPress = useCallback(() => {
+    Keyboard.dismiss();
+    BioBottomSheetModalRef.current?.present();
   }, []);
 
   // renders
@@ -76,18 +99,19 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
           <Formik
             initialValues={{
               profileName,
-              location,
-              gender: "",
-              sexuality: "",
-              twitter,
-              bio,
+              location: location || "",
+              gender: gender || "",
+              sexuality: sexuality || "",
+              twitter: twitter || "",
+              bio: bio || "",
             }}
             onSubmit={(values) => {
-              console.log(values, "values");
+              // console.log(values, "values");
+              patchUser(values);
 
               //   SignUpUser(values);
             }}
-            // validationSchema={validationSchema}
+            validationSchema={validationSchema}
           >
             {({
               handleSubmit,
@@ -131,6 +155,16 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                     />
                   </View>
                   <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Twitter</Text>
+                    <TextInput
+                      placeholder="Your twitter"
+                      style={styles.input}
+                      value={values.twitter}
+                      onChangeText={handleChange("twitter")}
+                      placeholderTextColor={colors.placeholder}
+                    />
+                  </View>
+                  <View style={styles.inputLabelWrapper}>
                     <Text style={styles.label}>Gender</Text>
                     <TextInput
                       placeholder="Pick or specify your own"
@@ -143,13 +177,26 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                     />
                   </View>
                   <View style={styles.inputLabelWrapper}>
-                    <Text style={styles.label}>Twitter</Text>
+                    <Text style={styles.label}>Sexuality</Text>
                     <TextInput
-                      placeholder="Your twitter"
+                      placeholder="Pick or specify your own"
                       style={styles.input}
-                      value={values.twitter}
-                      onChangeText={handleChange("twitter")}
+                      value={values.sexuality}
                       placeholderTextColor={colors.placeholder}
+                      onPressIn={handleSexualityModalPress}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={styles.inputLabelWrapper}>
+                    <Text style={styles.label}>Bio</Text>
+                    <TextInput
+                      placeholder="I am a..."
+                      style={styles.input}
+                      value={values.bio}
+                      placeholderTextColor={colors.placeholder}
+                      onPressIn={handleBioModalPress}
+                      editable={false}
                     />
                   </View>
                 </View>
@@ -157,11 +204,30 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                   <GenderBottomSheet
                     enablePanDownToClose={true}
                     gender={values.gender}
+                    genderFromData={gender}
                     // handleGenderModalPress={handleGenderModalPress}
                     ref={GenderBottomSheetModalRef}
                   >
                     <></>
                   </GenderBottomSheet>
+                  <SexualityBottomSheet
+                    enablePanDownToClose={true}
+                    sexuality={values.sexuality}
+                    sexualityFromData={sexuality}
+                    // handleGenderModalPress={handleGenderModalPress}
+                    ref={SexualityBottomSheetModalRef}
+                  >
+                    <></>
+                  </SexualityBottomSheet>
+                  <BioBottomSheet
+                    enablePanDownToClose={true}
+                    bio={values.bio}
+                    bioFromData={bio}
+                    // handleGenderModalPress={handleGenderModalPress}
+                    ref={BioBottomSheetModalRef}
+                  >
+                    <></>
+                  </BioBottomSheet>
                 </>
               </View>
             )}

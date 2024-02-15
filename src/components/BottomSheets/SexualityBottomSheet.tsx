@@ -22,42 +22,44 @@ import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import ReusableChips from "../Chips/ReusableChips";
 
 // interface ChildComponentProps {
-//   gender?: string;
+//   sexuality?: string;
 //   onChangeText: (field: string) => (e: string | React.ChangeEvent<any>) => void;
 // }
 // interface ChildComponentRef {
-//   GenderBottomSheetModalRef:
+//   SexualityBottomSheetModalRef:
 //     | React.RefObject<BottomSheetModalMethods>
 //     | RefObject<ChildComponentRef>;
 // }
 
-interface IGenderBottomSheet extends BottomSheetModalProps {
-  gender: string;
-  genderFromData?: string;
+interface ISexualityBottomSheet extends BottomSheetModalProps {
+  sexuality: string;
+  sexualityFromData?: string;
 
-  //   handleGenderModalPress: () => void;
+  //   handleSexualityModalPress: () => void;
 }
 
-const genderChips = [
-  "Male",
-  "Female",
-  "MTF",
-  "FTM",
-  "Agender",
-  "Androgyne",
-  "Bigender",
-  "Intersex",
+const sexualityChips = [
+  "Gay",
+  "Lesbian",
+  "Bisexual",
+  "Bicurious",
+  "Pansexual",
+  "Asexual",
   "Queer",
   "Questioning",
-  "Two-Spirit",
+  "AndroSexual",
+  "Gynesexual",
+  "Demisexual",
+  "Polyamory",
+  "Kink",
   "Prefer not to answer",
 ];
 
-const GenderBottomSheet = React.forwardRef<
+const SexualityBottomSheet = React.forwardRef<
   BottomSheetModal,
-  IGenderBottomSheet
+  ISexualityBottomSheet
 >((props, ref) => {
-  const { gender, genderFromData } = props;
+  const { sexuality, sexualityFromData } = props;
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
@@ -70,20 +72,20 @@ const GenderBottomSheet = React.forwardRef<
   // callbacks
 
   const handleUndo = () => {
-    dismiss("EditGender");
-    setFieldValue("gender", genderFromData);
+    dismiss("EditSexuality");
+    setFieldValue("sexuality", sexualityFromData);
   };
 
   const handleSetChipValue = (chip: string) => {
-    setFieldValue("gender", chip);
+    setFieldValue("sexuality", chip);
   };
 
   // renders
   return (
     <View>
-      {/* <Button onPress={handleGenderModalPress}>Edit</Button> */}
+      {/* <Button onPress={handleSexualityModalPress}>Edit</Button> */}
       <BottomSheetModal
-        name="EditGender"
+        name="EditSexuality"
         keyboardBehavior="interactive"
         ref={ref}
         index={0}
@@ -97,25 +99,25 @@ const GenderBottomSheet = React.forwardRef<
           <View>
             <View style={styles.header}>
               <Button onPress={handleUndo}>Undo</Button>
-              <Text variant="titleMedium">Edit Gender</Text>
-              <Button onPress={() => dismiss("EditGender")}>Save</Button>
+              <Text variant="titleMedium">Edit Sexuality</Text>
+              <Button onPress={() => dismiss("EditSexuality")}>Save</Button>
             </View>
             <View style={styles.body}>
               <View style={styles.inputLabelWrapper}>
-                <Text style={styles.label}>Gender</Text>
+                <Text style={styles.label}>Sexuality</Text>
                 <TextInput
                   placeholder="Pick or specify your own"
                   style={styles.input}
-                  defaultValue={gender}
-                  onChangeText={handleChange("gender")}
+                  defaultValue={sexuality}
+                  onChangeText={handleChange("sexuality")}
                   placeholderTextColor={colors.placeholder}
                 />
               </View>
             </View>
             <View style={styles.chipsContainer}>
               <ReusableChips
-                chipsArray={genderChips}
-                value={gender}
+                chipsArray={sexualityChips}
+                value={sexuality}
                 onPress={handleSetChipValue}
               />
             </View>
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "600",
-    width: 70,
+    width: 80,
   },
 
   inputLabelWrapper: {
@@ -182,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GenderBottomSheet;
+export default SexualityBottomSheet;

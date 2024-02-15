@@ -28,41 +28,55 @@ import { getItemAsync } from 'expo-secure-store';
   export function usePatchUserWithoutPhoto() {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn:values =>
-        axios
-          .patch(`${baseUrl}/users/updateMeWithoutPhoto`, values, {
-            withCredentials: true,
-    
-          })
-          .then(res => res.data),
+      mutationFn: async (values: {
+        profileName: string;
+        location: string;
+        gender: string;
+        sexuality: string;
+        twitter: string;
+        bio: string;
+    }) => {
+        const token = await getItemAsync('token')
+        return axios
+        .patch(`${baseUrl}/users/updateMeWithoutPhoto`, values, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+  
+        })
+        .then(res => res.data)
+      }
+        ,
 
-      onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+      onSuccess: (_, variables) => {
+            // queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+            queryClient.setQueryData(['user'], (prev: User) => ({...prev, ...variables}));
+            
         }
     },
     );
   }
 
-  export function usePatchUserWithFormData() {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn:values =>
-        axios
-          .patch(`${baseUrl}/users/updateMe`, values, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              acl: 'public-read'
-            }
-          })
-          .then(res => res.data),
+  // export function usePatchUserWithFormData() {
+  //   const queryClient = useQueryClient();
+  //   return useMutation({
+  //     mutationFn:values =>
+  //       axios
+  //         .patch(`${baseUrl}/users/updateMe`, values, {
+  //           withCredentials: true,
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data',
+  //             acl: 'public-read'
+  //           }
+  //         })
+  //         .then(res => res.data),
 
-      onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['user'], exact: true});
-        }
-    },
-    );
-  }
+  //     onSuccess: () => {
+  //           queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+  //       }
+  //   },
+  //   );
+  // }
 
 
   export function usePatchArrayMethod(method: string, keepOg?: any) {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Button, Dialog, Portal, Text } from "react-native-paper";
 import { useQueryClient } from "@tanstack/react-query";
-import ReusableChips from "../ReusableChips";
+import ReusableChips from "../Chips/ReusableChips";
 import usePatchReports from "../../react-query-hooks/usePatchReports";
 import { BackendRoutes } from "../../../types";
 
