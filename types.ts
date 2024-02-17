@@ -127,6 +127,17 @@ export type Poll = {
     _id: string
 }
 
+export type Friend = {
+    _id: string,
+    gender?: string,
+    id: string,
+    photo: string,
+    username: string,
+    role: Role,
+    sexuality?: string,
+    profileName: string
+}
+
 export type User = {
     _id: string,
     id: string,
@@ -141,7 +152,7 @@ export type User = {
     
     createdAt: string,
     blockedUsers: string[],
-    friendList: OtherUser[],
+    friendList: Friend[],
     profileName: string,
     incomingFriendRequests: IncomingFriendRequest[],
     bookmarkedPosts: string[],

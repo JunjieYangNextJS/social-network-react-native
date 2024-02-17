@@ -107,7 +107,7 @@ export default function PostCard({
 
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts" | "P_Home" | "Notifications",
+    "Posts" | "Notifications",
     undefined
   >;
 

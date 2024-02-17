@@ -22,7 +22,7 @@ import OtherUserPosts from "./OtherUserPosts";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  "OtherUser" | "N_OtherUser"
+  "OtherUser" | "N_OtherUser" | "P_OtherUser"
 >;
 
 export default function OtherUser({ route, navigation }: Props) {

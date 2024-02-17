@@ -8,6 +8,7 @@ import OtherUser from "../screens.js/OtherUser";
 import Post from "../screens.js/Post";
 import { Icon, IconButton } from "react-native-paper";
 import FriendList from "../screens.js/Profile/FriendList";
+import PostComment from "../screens.js/PostComment";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -62,6 +63,14 @@ export default function ProfileStackNavigator() {
         component={Post}
         options={{ headerTitle: "Post" }}
       />
+      <Stack.Screen
+        name="P_OtherUser"
+        component={OtherUser}
+        // options={{ gestureEnabled: false }}
+        // options={() => ({ headerBackVisible: false })}
+      />
+
+      <Stack.Screen name="P_PostComment" component={PostComment} />
     </Stack.Navigator>
   );
 }
