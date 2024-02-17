@@ -9,6 +9,9 @@ import { BackendRoutes } from "../../../types";
 import { useUpdateOpenComments } from "../../react-query-hooks/useStories/usePatchStory";
 import { useClipboard } from "../../hooks/useClipboard";
 import useDialogStore from "../../store/useDialogStore";
+import ReportDialog from "../Dialogs/ReportDialog";
+import { useAppTheme } from "../../theme";
+import useDeletePostReply from "../../react-query-hooks/usePostReplies/useDeletePostReply";
 
 interface IReplyActionMenu {
   itemId: string;
@@ -44,27 +47,26 @@ const ReplyActionMenu = ({
   const closeMenu = () => setVisible(false);
 
   const [reportOpen, setReportOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const itemUrl = `https://www.priders.net/${itemEndpoint}/${itemId}`;
-
-  const { copiedText, copying, copy } = useClipboard();
+  const { colors } = useAppTheme();
 
   const { onOpenDialog } = useDialogStore((state) => state);
 
   const handleReport = () => {
-    setReportOpen(true);
     closeMenu();
+    setReportOpen(true);
+  };
+
+  const onCancelReport = () => {
+    setReportOpen(false);
   };
 
   const handleDelete = () => {
-    setDeleteOpen(true);
-
-    closeMenu();
-  };
-
-  const handleEdit = () => {
-    setReadOnly(false);
+    onOpenDialog(
+      "Delete this comment?",
+      "Note that this action is irreversible.",
+      () => handleDeleteItem(itemId)
+    );
 
     closeMenu();
   };
@@ -81,8 +83,28 @@ const ReplyActionMenu = ({
         onDismiss={closeMenu}
         anchor={<IconButton icon="dots-horizontal" onPress={openMenu} />}
       >
-        <Menu.Item onPress={() => handleDeleteItem(itemId)} title="Item 3" />
+        {itemCreatorId !== userId ? (
+          <Menu.Item
+            onPress={handleReport}
+            title="Report"
+            leadingIcon="flag-outline"
+          />
+        ) : (
+          <Menu.Item
+            leadingIcon="delete-outline"
+            onPress={() => handleDelete()}
+            title="Delete"
+            titleStyle={{ color: colors.trash }}
+          />
+        )}
       </Menu>
+      <ReportDialog
+        opened={reportOpen}
+        onOpen={handleReport}
+        onClose={onCancelReport}
+        itemId={itemId}
+        itemEndpoint={itemEndpoint}
+      />
     </View>
   );
 };

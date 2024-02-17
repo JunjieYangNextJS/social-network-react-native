@@ -26,19 +26,16 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FlashList } from "@shopify/flash-list";
 import * as SplashScreen from "expo-splash-screen";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
-import { useOtherUserPosts } from "../../react-query-hooks/useOtherUsers/useOtherUserPosts";
+import { useMyFollowingPeoplePosts } from "../../react-query-hooks/useUser/useMyFollowingPeoplePosts";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Posts">;
+//   type Props = NativeStackScreenProps<RootStackParamList, "Posts">;
 
-SplashScreen.preventAutoHideAsync();
-
-interface IOtherUserPosts {
-  otherUser: OtherUser;
+interface IMyFollowingPeoplePosts {
   user: User;
 }
 
-const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
-  const { data: posts, isSuccess } = useOtherUserPosts(otherUser.id);
+const MyFollowingPeoplePosts = ({ user }: IMyFollowingPeoplePosts) => {
+  const { data: posts, isSuccess } = useMyFollowingPeoplePosts();
   const { height } = useWindowDimensions();
 
   const shownPosts = useMemo(() => {
@@ -77,7 +74,6 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
       editedAt: item.editedAt,
       userId: user._id,
       userBookmarkedPosts: user.bookmarkedPosts,
-      photoNotPressable: item.poster._id === otherUser._id,
       subscribers: item.subscribers,
     };
 
@@ -106,7 +102,7 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
         data={shownPosts}
         keyExtractor={(item: Post) => item._id}
         renderItem={renderPostItem}
-        estimatedItemSize={posts.length}
+        estimatedItemSize={shownPosts.length}
       />
     </View>
   );
@@ -119,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OtherUserPosts;
+export default MyFollowingPeoplePosts;

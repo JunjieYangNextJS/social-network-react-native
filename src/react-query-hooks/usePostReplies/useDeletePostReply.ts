@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
 import * as SecureStore  from 'expo-secure-store';
+import { PostComment } from '../../../types';
 
 export default function useDeletePostReply(postId: string, postComment: string) {
   const queryClient = useQueryClient();
@@ -17,12 +18,17 @@ export default function useDeletePostReply(postId: string, postComment: string) 
       })
     },
       
-    onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: [['post', postId, 'comments'], ['user'], ['postComment', postComment]], exact: true})
+    onSuccess: (_,postReplyId) => {
+      queryClient.setQueryData(['postComment', postComment], (prev: PostComment) => {
+        return {
+          ...prev,
+          postReplies: prev.postReplies.filter((postReply) => postReply._id !== postReplyId)
+        }
+    })
     },
-    onError: () => {
-      console.log('nah')
-    }
+    // onError: () => {
+    //   console.log('nah')
+    // }
   }
     
   );

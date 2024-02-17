@@ -22,6 +22,7 @@ import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
 import PressableAvatar from "../../components/PressableAvatar";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PostPoll from "./PostPoll";
+import PostStoryActionMenu from "../../components/Menus/PostStoryActionMenu";
 
 interface IPostContent {
   post: Post;
@@ -166,6 +167,16 @@ export default function PostContent({
           itemEndpoint="posts"
           sticky={sticky}
           subscribers={subscribers}
+          actionMenu={
+            <PostStoryActionMenu
+              itemId={id}
+              itemCreatorId={poster._id}
+              itemEndpoint="posts"
+              userId={userId}
+              subscribers={subscribers}
+              sticky={sticky}
+            />
+          }
         />
       </View>
     </Card>

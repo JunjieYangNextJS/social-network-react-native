@@ -44,9 +44,6 @@ export default function MyIntroSection({ user }: IMyIntroSection) {
           ellipsizeMode="tail"
           style={{ marginTop: 5 }}
         >
-          {/* Our goal is to establish an amazing and safe community for our fellow
-        priders. We would love to hear your voices! If you have any questions,
-        feel free to chat me. I will get back to you as soon as I can. */}
           {bio}
         </Text>
       )}

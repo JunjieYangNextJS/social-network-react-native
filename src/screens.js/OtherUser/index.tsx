@@ -29,7 +29,8 @@ export default function OtherUser({ route, navigation }: Props) {
   const { data: user } = useUser();
   const { username: ouUsername, profileImage } = route.params;
 
-  const insets = useSafeAreaInsets();
+  const { top: statusBarHeight, bottom: bottomNavigatorHeight } =
+    useSafeAreaInsets();
   const theme = useAppTheme();
 
   const {
@@ -41,8 +42,6 @@ export default function OtherUser({ route, navigation }: Props) {
   } = useOtherUser(ouUsername);
 
   useLayoutEffect(() => {
-    const statusBarHeight = insets.top;
-
     const MyHeader = () => {
       if (isError) {
         return (
@@ -152,6 +151,7 @@ export default function OtherUser({ route, navigation }: Props) {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <OtherUserIntroSection otherUser={otherUser} user={user} />
           <OtherUserPosts otherUser={otherUser} user={user} />
+          <View style={{ height: bottomNavigatorHeight + 20 }}></View>
         </ScrollView>
       </View>
     </SafeAreaView>

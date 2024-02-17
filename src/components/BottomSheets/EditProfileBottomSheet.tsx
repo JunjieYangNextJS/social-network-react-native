@@ -38,8 +38,6 @@ const validationSchema = yup.object({
 const EditProfileBottomSheet = ({ user }: { user: User }) => {
   const { profileName, location, gender, sexuality, twitter, bio } = user;
 
-  console.log(sexuality);
-
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();

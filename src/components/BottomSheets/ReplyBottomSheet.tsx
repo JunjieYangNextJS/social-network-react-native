@@ -43,7 +43,7 @@ const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
           textInputRef.current.focus();
           setFooterVisible(true);
         }
-      }, 500); // Delay for visual smoothness
+      }, 600); // Delay for visual smoothness
     }
   }, [willReply]);
 
@@ -105,7 +105,7 @@ const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
           ref={textInputRef}
           // onBlur={}
         />
-        {footerVisible && (
+        {footerVisible ? (
           <View style={styles.footer}>
             <View style={styles.ReplyToContainer}>
               {replyTo && <Text style={{ color: "white" }}>Replying to </Text>}
@@ -118,6 +118,12 @@ const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
               />
             </View>
 
+            <Button onPress={handleSubmit} disabled={!text || isPending}>
+              Reply
+            </Button>
+          </View>
+        ) : (
+          <View style={styles.footerWithoutReplyTo}>
             <Button onPress={handleSubmit} disabled={!text || isPending}>
               Reply
             </Button>
@@ -155,6 +161,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  footerWithoutReplyTo: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
 

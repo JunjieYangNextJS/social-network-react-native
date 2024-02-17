@@ -107,7 +107,7 @@ export default function PostCard({
 
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts" | "Profile" | "Notifications",
+    "Posts" | "P_Home" | "Notifications",
     undefined
   >;
 
@@ -197,16 +197,6 @@ export default function PostCard({
             itemEndpoint="posts"
             sticky={sticky}
             subscribers={subscribers}
-            actionMenu={
-              <PostStoryActionMenu
-                itemId={id}
-                itemCreatorId={poster._id}
-                itemEndpoint="posts"
-                userId={userId}
-                subscribers={subscribers}
-                sticky={sticky}
-              />
-            }
           />
         </View>
       </View>

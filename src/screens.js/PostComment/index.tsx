@@ -19,7 +19,7 @@ import { RootStackParamList } from "../../navigators/RootStackNavigator";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  "PostComment" | "N_PostComment"
+  "PostComment" | "N_PostComment" | "P_PostComment"
 >;
 
 export default function PostComment({ route, navigation }: Props) {
@@ -42,10 +42,7 @@ export default function PostComment({ route, navigation }: Props) {
         headerRight: () => (
           <Button
             onPress={() => {
-              if (data)
-                navigation.navigate("N_Post", {
-                  postId: data.post._id,
-                });
+              if (data) navigateToPost();
             }}
           >
             View
@@ -60,22 +57,34 @@ export default function PostComment({ route, navigation }: Props) {
   }
 
   const stackName = route.name;
-  let userScreenRoute: "OtherUser" | "N_OtherUser";
+  let userScreenRoute: any;
+  let postScreenRoute: "Post" | "N_Post" | "P_Post";
 
   switch (stackName) {
     case "PostComment":
       userScreenRoute = "OtherUser";
+      postScreenRoute = "Post";
 
       break;
     case "N_PostComment":
       userScreenRoute = "N_OtherUser";
-
+      postScreenRoute = "N_Post";
+      break;
+    case "P_PostComment":
+      userScreenRoute = "P_OtherUser";
+      postScreenRoute = "P_Post";
       break;
 
     default:
       null;
       break;
   }
+
+  const navigateToPost = () => {
+    navigation.navigate(postScreenRoute, {
+      postId: data.post._id,
+    });
+  };
 
   const navigateToUserPage = (
     username: string,

@@ -14,7 +14,7 @@ interface IPostCommentContainer {
   userBookmarkedPostComments?: string[];
   userId: string;
   navigateToUserPage: (username: string, profileImage?: string) => void;
-  postCommentScreenRoute: "PostComment" | "N_PostComment";
+  postCommentScreenRoute: "PostComment" | "N_PostComment" | "P_PostComment";
 }
 
 export default function PostCommentContainer({
@@ -35,7 +35,7 @@ export default function PostCommentContainer({
   // const stackName = route.name;
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Post" | "N_Post",
+    "Post" | "N_Post" | "P_Post",
     undefined
   >;
 

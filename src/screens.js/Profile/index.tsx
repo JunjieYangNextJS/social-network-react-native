@@ -22,18 +22,18 @@ import { useAppTheme } from "../../theme";
 import { ProfileDrawerParamList } from "../../navigators/ProfileStackNavigator";
 import MyIntroSection from "./MyIntroSection";
 import EditProfileBottomSheet from "../../components/BottomSheets/EditProfileBottomSheet";
+import MyFollowingPeoplePosts from "./MyFollowingPeoplePosts";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "Profile">;
 
 export default function Profile({ route, navigation }: Props) {
   const { data: user, isError } = useUser();
 
-  const insets = useSafeAreaInsets();
+  const { top: statusBarHeight, bottom: bottomNavigatorHeight } =
+    useSafeAreaInsets();
   const theme = useAppTheme();
 
   useLayoutEffect(() => {
-    const statusBarHeight = insets.top;
-
     const MyHeader = () => {
       if (isError) {
         return (
@@ -135,20 +135,11 @@ export default function Profile({ route, navigation }: Props) {
             </Text>
           </View>
           <EditProfileBottomSheet user={user} />
-
-          {/* <OUProfileMenu
-            me={user}
-            username={username}
-            id={id}
-            bio="Our goal is to establish an amazing and safe community for our fellow
-            priders. We would love to hear your voices! If you have any questions,
-            feel free to chat me. I will get back to you as soon as I can."
-            friendList={friendList}
-          /> */}
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <MyIntroSection user={user} />
-          {/* <ProfilePosts profile={profile} user={user} /> */}
+          <MyFollowingPeoplePosts user={user} />
+          <View style={{ height: bottomNavigatorHeight + 20 }}></View>
         </ScrollView>
       </View>
     </SafeAreaView>
