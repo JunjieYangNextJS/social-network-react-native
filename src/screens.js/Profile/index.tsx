@@ -120,7 +120,11 @@ export default function Profile({ route, navigation }: Props) {
         <View style={styles.nameMenuWrapper}>
           <View>
             <Text
-              style={{ fontSize: 20, marginBottom: 2, color: "white" }}
+              style={{
+                fontSize: 20,
+                marginBottom: 2,
+                color: "white",
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
@@ -134,6 +138,7 @@ export default function Profile({ route, navigation }: Props) {
               @{username}
             </Text>
           </View>
+
           <EditProfileBottomSheet user={user} />
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

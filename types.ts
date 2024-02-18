@@ -15,6 +15,18 @@ export type SelectArray = { value: string; label: string }[];
 
 export type SortByValue = "-lastCommentedAt"
 
+export type DisplayedFollowing = {
+    _id: string;
+    photo: string;
+    username: string;
+    profileName: string;
+    bio: string;
+    gender: string;
+    sexuality: string;
+    role: Role;
+    
+}
+
 export type Post = {
     _id: string,
     about: About,

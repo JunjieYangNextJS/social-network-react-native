@@ -29,14 +29,19 @@ export default function UserInfoContainer({
       <Pressable onPress={navigateToUserPage}>
         <View style={styles.descriptionContainer}>
           <Text
-            style={{ fontSize: 20, marginBottom: 2, color: "white" }}
+            style={{
+              fontSize: 20,
+              marginBottom: 2,
+              color: "white",
+              maxWidth: 150,
+            }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {profileName}
           </Text>
           <Text
-            style={{ color: colors.dimmed }}
+            style={{ color: colors.dimmed, maxWidth: 150 }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >

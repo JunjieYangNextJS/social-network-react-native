@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import baseUrl from '../../utils/baseUrl';
 import { getItemAsync } from 'expo-secure-store';
-import { OtherUser } from '../../../types';
+import { DisplayedFollowing, OtherUser } from '../../../types';
 
 export default function useOtherUser(username: string) {
   return useQuery({
@@ -99,9 +99,9 @@ export function useGetFollowing(username: string) {
     queryFn: () =>
     axios
       .get(`${baseUrl}/users/getOtherUserFollowing/${username}`)
-      .then(res => res.data.data),
-   enabled: !!username 
-  }
+      .then(res => res.data.data as DisplayedFollowing[] ),
+   enabled: !!username
+  },
     
     
   );

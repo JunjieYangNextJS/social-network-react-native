@@ -18,8 +18,6 @@ import * as yup from "yup";
 import { useFormikContext } from "formik";
 import { User } from "../../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import ReusableChips from "../Chips/ReusableChips";
 
 // interface ChildComponentProps {
 //   bio?: string;

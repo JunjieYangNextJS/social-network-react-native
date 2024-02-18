@@ -157,6 +157,7 @@ export function useUnfollowOtherUser(
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
+      
       const token = await getItemAsync("token");
       return axios
       .patch(

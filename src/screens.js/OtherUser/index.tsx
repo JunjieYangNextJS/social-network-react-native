@@ -123,14 +123,19 @@ export default function OtherUser({ route, navigation }: Props) {
         <View style={styles.nameMenuWrapper}>
           <View>
             <Text
-              style={{ fontSize: 20, marginBottom: 2, color: "white" }}
+              style={{
+                fontSize: 20,
+                marginBottom: 2,
+                color: "white",
+                maxWidth: 180,
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               {profileName}
             </Text>
             <Text
-              style={{ color: theme.colors.dimmed }}
+              style={{ color: theme.colors.dimmed, maxWidth: 180 }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
