@@ -7,6 +7,8 @@ export type BackendRoutes = "posts" | "stories" | "secrets"
 
 export type Role = "user" | "admin" | "dev" | "bot"
 
+export type WhoCanMessageMe = 'anyone' | 'friendsOnly' | 'none'
+
 export type ExposedTo = 'public' | 'friendsOnly' | 'friendsAndFollowersOnly' | 'private'
 
 export type SelectArray = { value: string; label: string }[];
@@ -135,14 +137,20 @@ export type Friend = {
     username: string,
     role: Role,
     sexuality?: string,
-    profileName: string
+    profileName: string,
+    friendList: string[] 
+    whoCanMessageMe: WhoCanMessageMe,
+    allowFriending: boolean,
+    allowFollowing: boolean,
+    followers: string[]
+    incomingFriendRequests: IncomingFriendRequest[]
 }
 
 export type User = {
     _id: string,
     id: string,
     photo: string,
-    role: 'user' | 'admin' | 'dev' | 'bot',
+    role: Role,
     createdBy?: 'signup' | 'google',
     active: boolean,
     username: string,
@@ -181,7 +189,7 @@ export type User = {
     allowFollowing: boolean,
     allowFriending: boolean,
 
-    whoCanMessageMe: 'anyone' | 'friendsOnly' | 'none',
+    whoCanMessageMe: WhoCanMessageMe ,
     myVotes: string[],
     imagesUploadedInHalfDay?: number,
     reports: Report[],
@@ -233,7 +241,7 @@ export type OtherUser = {
     role: Role,
     photo: string,
     profileImage: string,
-    whoCanMessageMe: string,
+    whoCanMessageMe: WhoCanMessageMe,
     followers: string[],
     following: string[],
     allowFollowing: boolean,

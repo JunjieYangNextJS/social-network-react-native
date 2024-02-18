@@ -148,7 +148,12 @@ import { getItemAsync } from 'expo-secure-store';
       ,
       
         onSuccess: data => {
-          queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+          // queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+          queryClient.setQueryData(['user'], (prev: User) => {
+            return {
+              ...prev,
+              friendList: prev.friendList.filter((friend) => friend._id !== otherUserId)
+            }})
   
           queryClient.invalidateQueries({queryKey: ['user', otherUserUsername], exact: true});
         }

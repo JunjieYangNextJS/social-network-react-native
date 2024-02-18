@@ -33,80 +33,80 @@ export default function Profile({ route, navigation }: Props) {
     useSafeAreaInsets();
   const theme = useAppTheme();
 
-  useLayoutEffect(() => {
-    const MyHeader = () => {
-      if (isError) {
-        return (
-          <ImageBackground
-            source={{
-              uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
-            }}
-            style={{ height: 160 }}
-          >
-            <View
-              style={{
-                marginTop: statusBarHeight,
-              }}
-            >
-              <DrawerToggleButton tintColor="#fff" />
-            </View>
-            <Avatar.Image
-              size={100}
-              source={() => (
-                <Image
-                  source={{
-                    uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
-                  }}
-                  style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
-                />
-              )}
-              style={styles.avatar}
-            />
-          </ImageBackground>
-        );
-      }
+  // useLayoutEffect(() => {
+  //   const MyHeader = () => {
+  //     if (isError) {
+  //       return (
+  //         <ImageBackground
+  //           source={{
+  //             uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
+  //           }}
+  //           style={{ height: 160 }}
+  //         >
+  //           <View
+  //             style={{
+  //               marginTop: statusBarHeight,
+  //             }}
+  //           >
+  //             <DrawerToggleButton tintColor="#fff" />
+  //           </View>
+  //           <Avatar.Image
+  //             size={100}
+  //             source={() => (
+  //               <Image
+  //                 source={{
+  //                   uri: "https://s3.us-west-1.amazonaws.com/priders.net-images-bucket/bfc086cd-a2c4-41af-90b5-ec4b548af0c8.jpeg",
+  //                 }}
+  //                 style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+  //               />
+  //             )}
+  //             style={styles.avatar}
+  //           />
+  //         </ImageBackground>
+  //       );
+  //     }
 
-      return (
-        <ImageBackground
-          source={{
-            uri: user?.profileImage,
-          }}
-          style={{ height: 160 }}
-        >
-          <View
-            style={{
-              // probably some styling needed
-              marginTop: statusBarHeight,
-              // borderWidth: 1,
-              // padding: 5,
-              // borderRadius: 100,
-              // width: 50,
-              // height: 50,
-            }}
-          >
-            <DrawerToggleButton tintColor="#fff" />
-          </View>
+  //     return (
+  //       <ImageBackground
+  //         source={{
+  //           uri: user?.profileImage,
+  //         }}
+  //         style={{ height: 160 }}
+  //       >
+  //         <View
+  //           style={{
+  //             // probably some styling needed
+  //             marginTop: statusBarHeight,
+  //             // borderWidth: 1,
+  //             // padding: 5,
+  //             // borderRadius: 100,
+  //             // width: 50,
+  //             // height: 50,
+  //           }}
+  //         >
+  //           <DrawerToggleButton tintColor="#fff" />
+  //         </View>
 
-          <Avatar.Image
-            size={100}
-            source={() => (
-              <Image
-                source={{
-                  uri: user?.photo,
-                }}
-                style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
-              />
-            )}
-            style={styles.avatar}
-          />
-        </ImageBackground>
-      );
-    };
+  //         <Avatar.Image
+  //           size={100}
+  //           source={() => (
+  //             <Image
+  //               source={{
+  //                 uri: user?.photo,
+  //               }}
+  //               style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+  //             />
+  //           )}
+  //           style={styles.avatar}
+  //         />
+  //       </ImageBackground>
+  //     );
+  //   };
 
-    navigation.setOptions({
-      header: MyHeader,
-    });
-  }, [navigation, user, isError]);
+  //   navigation.setOptions({
+  //     header: MyHeader,
+  //   });
+  // }, [navigation, user, isError]);
 
   if (!user) {
     return <ActivityIndicator />;

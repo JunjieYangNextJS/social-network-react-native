@@ -7,6 +7,7 @@ import { useAppTheme } from "../../theme";
 import FollowButton from "../../components/Buttons/FollowButton";
 import ChatButton from "../../components/Buttons/ChatButton";
 import AddFriendButton from "../../components/Buttons/AddFriendButton";
+import FollowingAddChatButtonsGroup from "../../components/ButtonsGroup/FollowingAddChatButtonsGroup";
 
 interface IOtherUserIntroSection {
   otherUser: OtherUser;
@@ -88,28 +89,11 @@ export default function OtherUserIntroSection({
           <Text style={styles.text}>Followers</Text>
         </View>
       </View>
-      <View style={styles.buttonWrapper}>
-        <View style={styles.button}>
-          {allowFollowing && (
-            <FollowButton
-              myId={user._id}
-              otherUserId={id}
-              otherUserFollowers={followers}
-              otherUserUsername={username}
-            />
-          )}
-        </View>
-        <View style={styles.button}>
-          {(whoCanMessageMe === "anyone" ||
-            (whoCanMessageMe === "friendsOnly" &&
-              friendList.includes(user._id))) && <ChatButton />}
-        </View>
-        <View>
-          {allowFriending && (
-            <AddFriendButton user={user} otherUser={otherUser} />
-          )}
-        </View>
-      </View>
+      <FollowingAddChatButtonsGroup
+        wrapperStyle={styles.buttonWrapper}
+        user={user}
+        otherUser={otherUser}
+      />
     </View>
   );
 }

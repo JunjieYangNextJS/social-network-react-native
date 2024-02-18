@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "react-native-paper";
 import { usePatchOtherUserFriendRequest } from "../../react-query-hooks/useOtherUsers/usePatchOtherUser";
 // import AddFriendDialog from "../Dialogs/UserRelated/AddFriendDialog";
-import { OtherUser, User } from "../../../types";
+import { Friend, OtherUser, User } from "../../../types";
 import AddFriendDialog from "../Dialogs/AddFriendDialog";
 
 interface IAddFriendButton {
   user: User;
-  otherUser: OtherUser;
+  otherUser: OtherUser | Friend;
 }
 
 export default function AddFriendButton({ user, otherUser }: IAddFriendButton) {

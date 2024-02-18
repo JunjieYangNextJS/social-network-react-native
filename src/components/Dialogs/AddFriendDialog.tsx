@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
 
-import { OtherUser, User } from "../../../types";
+import { Friend, OtherUser, User } from "../../../types";
 import { usePatchOtherUserFriendRequest } from "../../react-query-hooks/useOtherUsers/usePatchOtherUser";
 
 interface IAddFriendDialog {
@@ -11,7 +11,7 @@ interface IAddFriendDialog {
   onOpen: () => void;
   onClose: () => void;
   user: User;
-  otherUser: OtherUser;
+  otherUser: OtherUser | Friend;
 }
 
 export default function AddFriendDialog({
