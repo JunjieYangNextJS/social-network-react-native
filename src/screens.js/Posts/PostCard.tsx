@@ -99,7 +99,9 @@ export default function PostCard({
       case "MyPosts":
         postRoute = "P_Post";
         break;
-
+      case "P_OtherUser":
+        postRoute = "P_Post";
+        break;
       default:
         postRoute = "Post";
         null;

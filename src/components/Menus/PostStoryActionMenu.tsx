@@ -65,7 +65,7 @@ const PostStoryActionMenu = ({
   const { onOpenDialog } = useDialogStore((state) => state);
   const route = useRoute();
 
-  let originRoute: "Posts" | "Notifications" | "Profile";
+  let originRoute: "Posts" | "Notifications";
 
   switch (route.name) {
     case "Post":
@@ -73,9 +73,6 @@ const PostStoryActionMenu = ({
       break;
     case "N_Post":
       originRoute = "Notifications";
-      break;
-    case "P_Post":
-      originRoute = "Profile";
       break;
 
     default:
@@ -85,7 +82,7 @@ const PostStoryActionMenu = ({
   }
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts" | "Notifications" | "Profile",
+    "Posts" | "Notifications",
     undefined
   >;
 

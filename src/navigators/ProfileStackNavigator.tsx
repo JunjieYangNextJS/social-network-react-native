@@ -25,6 +25,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MyPosts from "./../screens.js/Profile/MyPosts/index";
 import MyPostComments from "../screens.js/Profile/MyPostComments.tsx";
 import MyPostReplies from "../screens.js/Profile/MyPostReplies";
+import useDialogStore from "../store/useDialogStore";
+// import onLogout from "../react-query-hooks/useAuth/handleLogout";
+import { useQueryClient } from "@tanstack/react-query";
+import useToastStore from "../store/useToastStore";
+import useUserTokenStore from "../store/useUserTokenStore";
+import { deleteItemAsync, getItemAsync } from "expo-secure-store";
+import axios from "axios";
+import baseUrl from "../utils/baseUrl";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -38,6 +46,28 @@ export type ProfileDrawerParamList = {
 
 const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
   const { photo, profileName, username, followers, following } = props.user;
+  const { onOpenDialog } = useDialogStore();
+  const queryClient = useQueryClient();
+  const { onOpenToast } = useToastStore();
+  const { setLogout } = useUserTokenStore();
+
+  const onLogout = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/users/logout`);
+      if (res.data.status === "success") {
+        queryClient.removeQueries({ queryKey: ["user", { exact: true }] });
+        await deleteItemAsync("token");
+        setLogout();
+        onOpenToast("success", "Logout was successful");
+      }
+    } catch (err) {
+      onOpenToast("error", "Logout failed");
+    }
+  };
+
+  const handleLogout = () => {
+    onOpenDialog("Log Out", "Are you sure you want to log out?", onLogout);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -65,7 +95,7 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
       </DrawerContentScrollView>
       <DrawerItem
         label="Logout"
-        onPress={() => {}}
+        onPress={handleLogout}
         icon={({ size, color }) => (
           <View style={{ marginRight: -24 }}>
             <Icon source="logout" size={size} color={color} />

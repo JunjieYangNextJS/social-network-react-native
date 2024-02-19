@@ -50,6 +50,35 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
     return filtered;
   }, [posts, user]);
 
+  const renderPostItem = useCallback(
+    (itemData: any) => {
+      const item: Post = itemData.item;
+
+      const postCardProps = {
+        id: item._id,
+        title: item.title,
+        content: item.content,
+        createdAt: item.createdAt,
+        lastCommentedAt: item.lastCommentedAt,
+        likes: item.likes,
+        poll: item.poll,
+        poster: item.poster,
+
+        commentCount: item.commentCount,
+        modFavored: item.modFavored,
+        sticky: item.sticky,
+        editedAt: item.editedAt,
+        userId: user._id,
+        userBookmarkedPosts: user.bookmarkedPosts,
+        photoNotPressable: item.poster._id === otherUser._id,
+        subscribers: item.subscribers,
+      };
+
+      return <PostCard {...postCardProps} />;
+    },
+    [shownPosts]
+  );
+
   if (!posts || !shownPosts) {
     return <ActivityIndicator />;
   }
@@ -57,32 +86,6 @@ const OtherUserPosts = ({ otherUser, user }: IOtherUserPosts) => {
   if (posts.length < 1) {
     return null;
   }
-
-  const renderPostItem = (itemData: any) => {
-    const item: Post = itemData.item;
-
-    const postCardProps = {
-      id: item._id,
-      title: item.title,
-      content: item.content,
-      createdAt: item.createdAt,
-      lastCommentedAt: item.lastCommentedAt,
-      likes: item.likes,
-      poll: item.poll,
-      poster: item.poster,
-
-      commentCount: item.commentCount,
-      modFavored: item.modFavored,
-      sticky: item.sticky,
-      editedAt: item.editedAt,
-      userId: user._id,
-      userBookmarkedPosts: user.bookmarkedPosts,
-      photoNotPressable: item.poster._id === otherUser._id,
-      subscribers: item.subscribers,
-    };
-
-    return <PostCard {...postCardProps} />;
-  };
 
   // console.log(shownPosts, "shown");
 
