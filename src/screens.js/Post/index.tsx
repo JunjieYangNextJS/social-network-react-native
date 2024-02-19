@@ -52,8 +52,8 @@ export default function Post({ navigation, route }: Props) {
     return <ActivityIndicator />;
   }
 
-  let userScreenRoute: "OtherUser" | "N_OtherUser";
-  let postCommentScreenRoute: "PostComment" | "N_PostComment";
+  let userScreenRoute: "OtherUser" | "N_OtherUser" | "P_OtherUser";
+  let postCommentScreenRoute: "PostComment" | "N_PostComment" | "P_PostComment";
 
   switch (route.name) {
     case "Post":
@@ -64,8 +64,13 @@ export default function Post({ navigation, route }: Props) {
       userScreenRoute = "N_OtherUser";
       postCommentScreenRoute = "N_PostComment";
       break;
+    case "P_Post":
+      userScreenRoute = "P_OtherUser";
+      postCommentScreenRoute = "P_PostComment";
+      break;
 
     default:
+      userScreenRoute = "OtherUser";
       postCommentScreenRoute = "PostComment";
       null;
       break;

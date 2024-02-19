@@ -25,7 +25,7 @@ interface IPostCommentContent {
   userBookmarkedPostComments?: string[];
   userId: string;
   withoutIconsGroup?: boolean;
-  navigateToPostComment: (willReply: boolean) => void;
+  navigateToPostComment: (willReply?: boolean) => void;
   navigateToUserPage: () => void;
 }
 
@@ -51,11 +51,12 @@ export default function PostCommentContent({
     willNotifyCommenter,
   } = postComment;
 
-  const { mutate: handleDeletePostComment, status: deleteStatus } =
-    useDeletePostComment(post._id);
+  const navWithoutIconsGroup = () => {
+    if (withoutIconsGroup) navigateToPostComment();
+  };
 
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={navWithoutIconsGroup}>
       <View style={styles.wrapper}>
         <Card.Title
           title={commenter.profileName}

@@ -1,17 +1,43 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
+import { Post, PostComment } from '../../../types';
 
 export function useGetMyPosts() {
     return useQuery({
         queryKey: ['myPosts'],
-        queryFn: () =>
-        axios
+        queryFn: async () => {
+          const token = await getItemAsync('token')
+          return axios
           .get(`${baseUrl}/users/getMyPosts`, {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
  
           })
-          .then(res => res.data.data.data)
+          .then(res => res.data.data.data as Post[])
+        }
+        
+    }
+         
+    );
+  }
+export function useGetMyPostComments() {
+    return useQuery({
+        queryKey: ['myPostComments'],
+        queryFn: async () => {
+          const token = await getItemAsync('token')
+          return axios
+          .get(`${baseUrl}/users/getMyPostComments`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+ 
+          })
+          .then(res => res.data.data as PostComment[])
+        }
+        
     }
          
     );
@@ -56,3 +82,4 @@ export function useGetMyPosts() {
           .then(res => res.data.data.data)
     })
   }
+

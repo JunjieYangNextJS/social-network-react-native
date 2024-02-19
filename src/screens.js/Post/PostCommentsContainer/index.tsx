@@ -16,7 +16,7 @@ interface IPostComments {
   userId: string;
   userBookmarkedPostComments?: string[];
   navigateToUserPage: (username: string, profileImage?: string) => void;
-  postCommentScreenRoute: "PostComment" | "N_PostComment";
+  postCommentScreenRoute: "PostComment" | "N_PostComment" | "P_PostComment";
 }
 
 export default function PostCommentsContainer({

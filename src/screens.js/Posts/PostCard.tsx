@@ -37,7 +37,7 @@ interface IPostCard {
   sticky?: boolean;
   editedAt?: string;
   userBookmarkedPosts?: string[];
-  userId: string;
+  userId?: string;
   photoNotPressable?: boolean;
   subscribers: string[];
 }
@@ -96,6 +96,9 @@ export default function PostCard({
       case "Profile":
         postRoute = "P_Post";
         break;
+      case "MyPosts":
+        postRoute = "P_Post";
+        break;
 
       default:
         postRoute = "Post";
@@ -139,7 +142,12 @@ export default function PostCard({
     // </View>
 
     <Card style={styles.card} onPress={() => navigateToPost()}>
-      <View style={styles.wrapper}>
+      <View
+        style={[
+          styles.wrapper,
+          userId ? { marginBottom: 0 } : { marginBottom: 17 },
+        ]}
+      >
         <Card.Title
           title={title}
           titleNumberOfLines={5}
@@ -171,35 +179,41 @@ export default function PostCard({
           </View>
         </Card.Content>
       </View>
-      <View style={styles.footer}>
-        <View style={[styles.footerLeft, commentCount < 1 && { opacity: 0 }]}>
-          <View style={styles.commentsCountIconGroup}>
-            <Icon source="chat-processing-outline" size={14} color="#c4c4c2" />
-            <Text style={{ fontSize: 12, color: "#c4c4c2" }}>
-              {commentCount}
+      {userId && (
+        <View style={styles.footer}>
+          <View style={[styles.footerLeft, commentCount < 1 && { opacity: 0 }]}>
+            <View style={styles.commentsCountIconGroup}>
+              <Icon
+                source="chat-processing-outline"
+                size={14}
+                color="#c4c4c2"
+              />
+              <Text style={{ fontSize: 12, color: "#c4c4c2" }}>
+                {commentCount}
+              </Text>
+            </View>
+            <Text style={styles.footerLeftText}>
+              {"Someone commented " + calcTimeAgo(lastCommentedAt)}
             </Text>
           </View>
-          <Text style={styles.footerLeftText}>
-            {"Someone commented " + calcTimeAgo(lastCommentedAt)}
-          </Text>
-        </View>
 
-        <View style={styles.actionsGroup}>
-          <BookmarkLikeMoreIconGroups
-            userId={userId}
-            itemId={id}
-            queryName={["posts"]}
-            itemLikes={likes}
-            likedProperty="likedPosts"
-            bookmarkedProperty="bookmarkedPosts"
-            userBookmarkedItems={userBookmarkedPosts}
-            itemCreatorId={poster._id}
-            itemEndpoint="posts"
-            sticky={sticky}
-            subscribers={subscribers}
-          />
+          <View style={styles.actionsGroup}>
+            <BookmarkLikeMoreIconGroups
+              userId={userId}
+              itemId={id}
+              queryName={["posts"]}
+              itemLikes={likes}
+              likedProperty="likedPosts"
+              bookmarkedProperty="bookmarkedPosts"
+              userBookmarkedItems={userBookmarkedPosts}
+              itemCreatorId={poster._id}
+              itemEndpoint="posts"
+              sticky={sticky}
+              subscribers={subscribers}
+            />
+          </View>
         </View>
-      </View>
+      )}
     </Card>
   );
 }

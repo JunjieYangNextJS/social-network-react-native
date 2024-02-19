@@ -22,12 +22,16 @@ import { User } from "../../types";
 import { StyleSheet, View } from "react-native";
 import { Image, ImageBackground } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MyPosts from "./../screens.js/Profile/MyPosts/index";
+import MyPostComments from "../screens.js/Profile/MyPostComments.tsx";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
 export type ProfileDrawerParamList = {
   Profile: {};
   FriendList: {};
+  MyPosts: {};
+  MyPostComments: { postCommentId: string; postTitle?: string };
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
@@ -135,6 +139,19 @@ const DrawerNav = () => {
         }}
       />
       <Drawer.Screen name="FriendList" component={FriendList} />
+      <Drawer.Screen
+        name="MyPosts"
+        component={MyPosts}
+        options={{ headerTitle: "My Posts", drawerLabel: "My Posts" }}
+      />
+      <Drawer.Screen
+        name="MyPostComments"
+        component={MyPostComments}
+        options={{
+          headerTitle: "My Post Comments",
+          drawerLabel: "My Post Comments",
+        }}
+      />
 
       {/* <Stack.Screen
     name="OtherUser"
