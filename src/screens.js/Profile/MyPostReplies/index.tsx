@@ -20,46 +20,40 @@ import * as SplashScreen from "expo-splash-screen";
 import { RootStackParamList } from "../../../navigators/RootStackNavigator";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useGetMyPostComments,
+  useGetMyPostReplies,
   useGetMyPosts,
 } from "../../../react-query-hooks/useUser/useGetMyCreations";
-import { Post, PostComment } from "../../../../types";
+import { Post, PostComment, PostReply } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
-import PostCommentContent from "../../Post/PostCommentsContainer/PostCommentContent";
+import PostReplyContainer from "../../PostComment/PostReplyContainer";
 
-type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPostComments">;
+type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPostReplies">;
 
-const MyPostComments = ({}: Props) => {
-  const {
-    data: postComments,
-    isSuccess,
-    refetch: refetchPosts,
-  } = useGetMyPostComments();
+const MyPostReplies = ({}: Props) => {
+  const { data: postReplies } = useGetMyPostReplies();
   const parentNavigation = useNavigation().getParent();
 
-  if (!postComments) {
+  if (!postReplies) {
     return <ActivityIndicator />;
   }
 
   const renderPostItem = (itemData: any) => {
-    const item: PostComment = itemData.item;
+    const item: PostReply = itemData.item;
 
     const navigateToPostComment = () => {
       parentNavigation?.navigate("P_PostComment", {
-        postCommentId: item._id,
+        postCommentId: item.postComment,
         postTitle: item.post.title,
       });
     };
 
     return (
       <View style={{ marginTop: 7 }}>
-        <PostCommentContent
-          postComment={item}
-          userBookmarkedPostComments={[""]}
-          userId=""
-          withoutIconsGroup={true}
-          navigateToPostComment={navigateToPostComment}
+        <PostReplyContainer
+          postReply={item}
+          userUsername="Me"
           navigateToUserPage={() => {}}
+          navigateToPostComment={navigateToPostComment}
         />
       </View>
     );
@@ -68,11 +62,11 @@ const MyPostComments = ({}: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlashList
-        data={postComments}
-        keyExtractor={(item: PostComment) => item._id}
+        data={postReplies}
+        keyExtractor={(item: PostReply) => item._id}
         renderItem={renderPostItem}
         // contentContainerStyle={{ paddingTop: 10 }}
-        estimatedItemSize={postComments.length}
+        estimatedItemSize={postReplies.length}
       />
     </SafeAreaView>
   );
@@ -85,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPostComments;
+export default MyPostReplies;

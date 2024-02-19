@@ -27,12 +27,13 @@ import { RootStackParamList } from "../../navigators/RootStackNavigator";
 
 interface IPostReplyContent {
   postReply: PostReply;
-  userId: string;
+  userId?: string;
   userUsername: string;
   navigateToUserPage: (
     username: string,
     profileImage: string | undefined
   ) => void;
+  navigateToPostComment?: () => void;
 }
 
 export default function PostReplyContainer({
@@ -40,6 +41,7 @@ export default function PostReplyContainer({
   userId,
   userUsername,
   navigateToUserPage,
+  navigateToPostComment,
 }: IPostReplyContent) {
   const {
     _id: id,
@@ -66,70 +68,115 @@ export default function PostReplyContainer({
   };
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.wrapper}>
-        <Card.Title
-          title={replier.profileName}
-          titleNumberOfLines={5}
-          titleStyle={styles.profileName}
-          subtitle={calcTimeAgo(createdAt) + (!!editedAt ? "  (edited)" : "")}
-          subtitleStyle={styles.timeAgo}
-          left={(props) => (
-            <PressableAvatar
-              photo={replier.photo}
-              size={42}
-              navigateToUserPage={() =>
-                navigateToUserPage(replier.username, replier.profileImage)
+    <>
+      {userId ? (
+        <Card style={styles.card}>
+          <View style={styles.wrapper}>
+            <Card.Title
+              title={replier.profileName}
+              titleNumberOfLines={5}
+              titleStyle={styles.profileName}
+              subtitle={
+                calcTimeAgo(createdAt) + (!!editedAt ? "  (edited)" : "")
               }
+              subtitleStyle={styles.timeAgo}
+              left={(props) => (
+                <PressableAvatar
+                  photo={replier.photo}
+                  size={42}
+                  navigateToUserPage={() =>
+                    navigateToUserPage(replier.username, replier.profileImage)
+                  }
+                />
+              )}
             />
-          )}
-        />
-        <Card.Content>
-          <View style={styles.content}>
-            <HTMLView
-              value={content}
-              nodeComponentProps={{ selectable: true }}
-              stylesheet={HTMLViewStyles}
-              onLinkPress={(url) => {
-                openURL(url)
-                  .then((result) => {
-                    console.log("Link opened successfully:", result);
-                  })
-                  .catch((error) => {
-                    console.error("Error opening link:", error);
-                  });
-              }}
-            />
+            <Card.Content>
+              <View style={styles.content}>
+                <HTMLView
+                  value={content}
+                  nodeComponentProps={{ selectable: true }}
+                  stylesheet={HTMLViewStyles}
+                  onLinkPress={(url) => {
+                    openURL(url)
+                      .then((result) => {
+                        console.log("Link opened successfully:", result);
+                      })
+                      .catch((error) => {
+                        console.error("Error opening link:", error);
+                      });
+                  }}
+                />
+              </View>
+            </Card.Content>
           </View>
-        </Card.Content>
-      </View>
 
-      <View style={styles.footer}>
-        <View style={styles.footerLeft}>
-          <IconButton
-            icon="message-reply-text-outline"
-            size={16}
-            // color="#c4c4c2"
-            // state update for bottomsheet to
-            onPress={handleReplyToUsername}
-          />
-        </View>
+          <View style={styles.footer}>
+            <View style={styles.footerLeft}>
+              <IconButton
+                icon="message-reply-text-outline"
+                size={16}
+                // color="#c4c4c2"
+                // state update for bottomsheet to
+                onPress={handleReplyToUsername}
+              />
+            </View>
 
-        <View style={styles.actionsGroup}>
-          <LikeMoreIconGroupsForReply
-            userId={userId}
-            itemId={id}
-            itemLikes={likes}
-            queryName={["postComment", postComment]}
-            likedProperty="likedPostReplies"
-            itemCreatorId={replier._id}
-            itemEndpoint="postReplies"
-            handleDeleteItem={handleDeleteItem}
-            deleteStatus={status}
-          />
-        </View>
-      </View>
-    </Card>
+            <View style={styles.actionsGroup}>
+              <LikeMoreIconGroupsForReply
+                userId={userId}
+                itemId={id}
+                itemLikes={likes}
+                queryName={["postComment", postComment]}
+                likedProperty="likedPostReplies"
+                itemCreatorId={replier._id}
+                itemEndpoint="postReplies"
+                handleDeleteItem={handleDeleteItem}
+                deleteStatus={status}
+              />
+            </View>
+          </View>
+        </Card>
+      ) : (
+        <Card style={styles.card} onPress={navigateToPostComment}>
+          <View style={styles.wrapper}>
+            <Card.Title
+              title={replier.profileName}
+              titleNumberOfLines={5}
+              titleStyle={styles.profileName}
+              subtitle={
+                calcTimeAgo(createdAt) + (!!editedAt ? "  (edited)" : "")
+              }
+              subtitleStyle={styles.timeAgo}
+              left={(props) => (
+                <PressableAvatar
+                  photo={replier.photo}
+                  size={42}
+                  navigateToUserPage={() => {}}
+                />
+              )}
+            />
+            <Card.Content>
+              <View style={styles.content}>
+                <HTMLView
+                  value={content}
+                  nodeComponentProps={{ selectable: true }}
+                  stylesheet={HTMLViewStyles}
+                  onLinkPress={(url) => {
+                    openURL(url)
+                      .then((result) => {
+                        console.log("Link opened successfully:", result);
+                      })
+                      .catch((error) => {
+                        console.error("Error opening link:", error);
+                      });
+                  }}
+                />
+              </View>
+            </Card.Content>
+          </View>
+        </Card>
+      )}
+    </>
   );
 }
 

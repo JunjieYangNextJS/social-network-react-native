@@ -24,6 +24,7 @@ import { Image, ImageBackground } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MyPosts from "./../screens.js/Profile/MyPosts/index";
 import MyPostComments from "../screens.js/Profile/MyPostComments.tsx";
+import MyPostReplies from "../screens.js/Profile/MyPostReplies";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -32,6 +33,7 @@ export type ProfileDrawerParamList = {
   FriendList: {};
   MyPosts: {};
   MyPostComments: { postCommentId: string; postTitle?: string };
+  MyPostReplies: { postCommentId: string; postTitle?: string };
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
@@ -150,6 +152,14 @@ const DrawerNav = () => {
         options={{
           headerTitle: "My Post Comments",
           drawerLabel: "My Post Comments",
+        }}
+      />
+      <Drawer.Screen
+        name="MyPostReplies"
+        component={MyPostReplies}
+        options={{
+          headerTitle: "My Post Replies",
+          drawerLabel: "My Post Replies",
         }}
       />
 

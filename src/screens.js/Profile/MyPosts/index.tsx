@@ -61,11 +61,11 @@ const MyPosts = ({}: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
+      <FlashList
         data={shownPosts}
         keyExtractor={(item: Post) => item._id}
         renderItem={renderPostItem}
-        // estimatedItemSize={shownPosts.length}
+        estimatedItemSize={shownPosts.length}
       />
     </SafeAreaView>
   );
