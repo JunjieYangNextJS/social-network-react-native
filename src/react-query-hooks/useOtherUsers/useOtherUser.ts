@@ -78,14 +78,14 @@ export function useGetLikeMindedPeople(userId: string) {
   );
 }
 
-export function useGetFollowers(username: string) {
+export function useGetFollowers(username: string, type: "Following" | "Followers") {
   return useQuery({
     queryKey: [username, 'followers'],
     queryFn:() =>
     axios
       .get(`${baseUrl}/users/getOtherUserFollowers/${username}`)
       .then(res => res.data.data),
-       enabled: !!username 
+       enabled: (!!username) && (type === "Followers")
   }
     
     
@@ -93,14 +93,14 @@ export function useGetFollowers(username: string) {
   );
 }
 
-export function useGetFollowing(username: string) {
+export function useGetFollowing(username: string, type: "Following" | "Followers") {
   return useQuery({
     queryKey: [username, 'following'],
     queryFn: () =>
     axios
       .get(`${baseUrl}/users/getOtherUserFollowing/${username}`)
       .then(res => res.data.data as DisplayedFollowing[] ),
-   enabled: !!username
+   enabled: (!!username) && (type === "Following")
   },
     
     

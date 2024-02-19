@@ -84,7 +84,8 @@ export function useFollowOtherUser(
   otherUserId: string,
   otherUserUsername: string,
   otherUserFollowers: string[],
-  myId: string
+  myId: string,
+  myUsername: string
 ) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -137,8 +138,11 @@ export function useFollowOtherUser(
       },
     onSettled: data => {
         // queryClient.invalidateQueries(["user", otherUserUsername]);
-        if(otherUserUsername && data)
-        queryClient.setQueryData(['user', otherUserUsername], data);
+        if(otherUserUsername && data) {
+          queryClient.setQueryData(['user', otherUserUsername], data);
+        }
+        
+      queryClient.invalidateQueries({queryKey: [myUsername, 'following']})
       }
   }
     
@@ -152,7 +156,8 @@ export function useUnfollowOtherUser(
   otherUserId: string,
   otherUserUsername: string,
   otherUserFollowers: string[],
-  myId: string
+  myId: string,
+  myUsername: string
 ) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -205,8 +210,11 @@ export function useUnfollowOtherUser(
           },
     onSettled: data => {
             // queryClient.invalidateQueries(["user", otherUserUsername]);
-            if(otherUserFollowers && data)
-            queryClient.setQueryData(['user', otherUserUsername], data);
+            if(otherUserFollowers && data) {
+              queryClient.setQueryData(['user', otherUserUsername], data);
+            }
+            
+            queryClient.invalidateQueries({queryKey: [myUsername, 'following']})
           }
   }
     

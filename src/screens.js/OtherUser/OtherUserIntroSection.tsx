@@ -1,13 +1,14 @@
-import { StyleSheet, View } from "react-native";
-import React, { useMemo } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OtherUser, User } from "../../../types";
 import { Icon, Text } from "react-native-paper";
 import { calcMonthAndYear } from "../../utils/calcTimeAgo";
 import { useAppTheme } from "../../theme";
-import FollowButton from "../../components/Buttons/FollowButton";
-import ChatButton from "../../components/Buttons/ChatButton";
-import AddFriendButton from "../../components/Buttons/AddFriendButton";
+
 import FollowingAddChatButtonsGroup from "../../components/ButtonsGroup/FollowingAddChatButtonsGroup";
+import FollowingBottomSheet from "../../components/BottomSheets/FollowingBottomSheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
 
 interface IOtherUserIntroSection {
   otherUser: OtherUser;
@@ -39,6 +40,17 @@ export default function OtherUserIntroSection({
     allowFriending,
     whoCanMessageMe,
   } = otherUser;
+
+  // refs
+  const OtherUserFollowingBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleFollowingModalPress = useCallback(() => {
+    OtherUserFollowingBottomSheetModalRef.current?.present();
+  }, []);
+
+  const OtherUserFollowersBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleFollowersModalPress = useCallback(() => {
+    OtherUserFollowersBottomSheetModalRef.current?.present();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -80,20 +92,45 @@ export default function OtherUserIntroSection({
         {sexuality && <Text style={styles.text}>Sexuality: {sexuality}</Text>}
       </View>
       <View style={styles.textWrapper}>
-        <View style={styles.textWrapper}>
-          <Text style={styles.number}>{following.length}</Text>
-          <Text style={[styles.text, { marginRight: 18 }]}>Following</Text>
-        </View>
-        <View style={styles.textWrapper}>
-          <Text style={styles.number}>{followers.length}</Text>
-          <Text style={styles.text}>Followers</Text>
-        </View>
+        <Pressable onPress={handleFollowingModalPress}>
+          <View style={styles.textWrapper}>
+            <Text style={styles.number}>{following.length}</Text>
+            <Text style={[styles.text, { marginRight: 18 }]}>Following</Text>
+          </View>
+        </Pressable>
+
+        <Pressable onPress={handleFollowersModalPress}>
+          <View style={styles.textWrapper}>
+            <Text style={styles.number}>{followers.length}</Text>
+            <Text style={styles.text}>Followers</Text>
+          </View>
+        </Pressable>
       </View>
       <FollowingAddChatButtonsGroup
         wrapperStyle={styles.buttonWrapper}
         user={user}
         otherUser={otherUser}
       />
+      <FollowingBottomSheet
+        enablePanDownToClose={true}
+        username={username}
+        title="Their Following"
+        type="Following"
+        // handleGenderModalPress={handleGenderModalPress}
+        ref={OtherUserFollowingBottomSheetModalRef}
+      >
+        <></>
+      </FollowingBottomSheet>
+      <FollowingBottomSheet
+        enablePanDownToClose={true}
+        username={username}
+        title="Their Followers"
+        type="Followers"
+        // handleGenderModalPress={handleGenderModalPress}
+        ref={OtherUserFollowersBottomSheetModalRef}
+      >
+        <></>
+      </FollowingBottomSheet>
     </View>
   );
 }

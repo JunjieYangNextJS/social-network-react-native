@@ -4,9 +4,7 @@ import { User } from "../../../types";
 import { Icon, Text } from "react-native-paper";
 import { calcMonthAndYear } from "../../utils/calcTimeAgo";
 import { useAppTheme } from "../../theme";
-import FollowButton from "../../components/Buttons/FollowButton";
-import ChatButton from "../../components/Buttons/ChatButton";
-import AddFriendButton from "../../components/Buttons/AddFriendButton";
+
 import FollowingBottomSheet from "../../components/BottomSheets/FollowingBottomSheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
@@ -37,9 +35,15 @@ export default function MyIntroSection({ user }: IMyIntroSection) {
     whoCanMessageMe,
   } = user;
 
+  // refs
   const FollowingBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const handleFollowingModalPress = useCallback(() => {
     FollowingBottomSheetModalRef.current?.present();
+  }, []);
+
+  const FollowersBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleFollowersModalPress = useCallback(() => {
+    FollowersBottomSheetModalRef.current?.present();
   }, []);
 
   return (
@@ -85,46 +89,35 @@ export default function MyIntroSection({ user }: IMyIntroSection) {
             <Text style={[styles.text, { marginRight: 18 }]}>Following</Text>
           </View>
         </Pressable>
-
-        <View style={styles.textWrapper}>
-          <Text style={styles.number}>{followers.length}</Text>
-          <Text style={styles.text}>Followers</Text>
-        </View>
+        <Pressable onPress={handleFollowersModalPress}>
+          <View style={styles.textWrapper}>
+            <Text style={styles.number}>{followers.length}</Text>
+            <Text style={styles.text}>Followers</Text>
+          </View>
+        </Pressable>
       </View>
       <FollowingBottomSheet
         enablePanDownToClose={true}
-        following={following}
         username={username}
         title="Your Followings"
         userRoute="P_OtherUser"
-        myId={user._id}
+        type="Following"
         // handleGenderModalPress={handleGenderModalPress}
         ref={FollowingBottomSheetModalRef}
       >
         <></>
       </FollowingBottomSheet>
-      {/* <View style={styles.buttonWrapper}>
-        <View style={styles.button}>
-          {allowFollowing && (
-            <FollowButton
-              myId={user._id}
-              userId={id}
-              userFollowers={followers}
-              userUsername={username}
-            />
-          )}
-        </View>
-        <View style={styles.button}>
-          {(whoCanMessageMe === "anyone" ||
-            (whoCanMessageMe === "friendsOnly" &&
-              friendList.includes(user._id))) && <ChatButton />}
-        </View>
-        <View>
-          {allowFriending && (
-            <AddFriendButton user={user} user={user} />
-          )}
-        </View>
-      </View> */}
+      <FollowingBottomSheet
+        enablePanDownToClose={true}
+        username={username}
+        title="Their Followers"
+        userRoute="P_OtherUser"
+        type="Followers"
+        // handleGenderModalPress={handleGenderModalPress}
+        ref={FollowersBottomSheetModalRef}
+      >
+        <></>
+      </FollowingBottomSheet>
     </View>
   );
 }

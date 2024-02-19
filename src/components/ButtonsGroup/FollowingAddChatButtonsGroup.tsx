@@ -33,6 +33,7 @@ export default function FollowingAddChatButtonsGroup({
         {allowFollowing && (
           <FollowButton
             myId={user._id}
+            myUsername={user.username}
             otherUserId={otherUser._id}
             otherUserFollowers={followers}
             otherUserUsername={username}

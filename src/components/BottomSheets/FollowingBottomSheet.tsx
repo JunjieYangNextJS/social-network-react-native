@@ -23,9 +23,12 @@ import { useAppTheme } from "../../theme";
 
 import { DisplayedFollowing, User } from "../../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGetFollowing } from "../../react-query-hooks/useOtherUsers/useOtherUser";
+import {
+  useGetFollowers,
+  useGetFollowing,
+} from "../../react-query-hooks/useOtherUsers/useOtherUser";
 import UserInfoContainer from "../UserInfoContainer";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import FollowButton from "../Buttons/FollowButton";
 
 // interface ChildComponentProps {
@@ -39,11 +42,10 @@ import FollowButton from "../Buttons/FollowButton";
 // }
 
 interface IFollowingBottomSheet extends BottomSheetModalProps {
-  following: string[];
   username: string;
   title: string;
-  userRoute: "P_OtherUser";
-  myId: string;
+  userRoute?: "P_OtherUser";
+  type: "Following" | "Followers";
 
   //   handleBioModalPress: () => void;
 }
@@ -55,6 +57,7 @@ const FollowingBottomSheet = React.forwardRef<
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
+  const route = useRoute();
   const { top: statusBarHeight } = useSafeAreaInsets();
   const parentNavigation = useNavigation().getParent();
 
@@ -62,15 +65,23 @@ const FollowingBottomSheet = React.forwardRef<
   const snapPoints = useMemo(() => [height - statusBarHeight], []);
 
   // data
-  const { data } = useGetFollowing(props.username);
+  const { data: followingData } = useGetFollowing(props.username, props.type);
+  const { data: followersData } = useGetFollowers(props.username, props.type);
+
+  const data = useMemo(() => {
+    let data;
+    if (props.type === "Followers") data = followersData;
+    if (props.type === "Following") data = followingData;
+    return data;
+  }, [followingData, followersData, props.type]);
 
   const renderItem = ({ item }: { item: DisplayedFollowing }) => {
     const { photo, username, profileName, _id, bio } = item;
 
     const navigateToUserPage = () => {
       // onSetPreviousScreen("Notifications");
-      dismiss(props.username + "Following");
-      parentNavigation?.navigate(props.userRoute, {
+      dismiss(props.username + props.type);
+      parentNavigation?.navigate(props.userRoute || route.name, {
         username,
         profileImage: undefined,
       });
@@ -112,7 +123,7 @@ const FollowingBottomSheet = React.forwardRef<
     <View>
       {/* <Button onPress={handleBioModalPress}>Edit</Button> */}
       <BottomSheetModal
-        name={props.username + "Following"}
+        name={props.username + props.type}
         keyboardBehavior="interactive"
         index={0}
         ref={ref}

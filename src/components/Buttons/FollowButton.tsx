@@ -13,6 +13,7 @@ interface IFollowButton {
   otherUserId: string;
   otherUserUsername: string;
   otherUserFollowers: string[];
+  myUsername: string;
 }
 
 export default function FollowButton({
@@ -20,6 +21,7 @@ export default function FollowButton({
   otherUserId,
   otherUserUsername,
   otherUserFollowers,
+  myUsername,
 }: IFollowButton) {
   const {
     mutate: followOtherUser,
@@ -29,7 +31,8 @@ export default function FollowButton({
     otherUserId,
     otherUserUsername,
     otherUserFollowers,
-    myId
+    myId,
+    myUsername
   );
   const {
     mutate: unfollowOtherUser,
@@ -39,7 +42,8 @@ export default function FollowButton({
     otherUserId,
     otherUserUsername,
     otherUserFollowers,
-    myId
+    myId,
+    myUsername
   );
 
   const { colors } = useAppTheme();
