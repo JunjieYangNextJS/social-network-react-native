@@ -70,9 +70,9 @@ export default function Post({ navigation, route }: Props) {
       break;
 
     default:
-      userScreenRoute = "OtherUser";
-      postCommentScreenRoute = "PostComment";
-      null;
+      userScreenRoute = "P_OtherUser";
+      postCommentScreenRoute = "P_PostComment";
+
       break;
   }
 
@@ -92,6 +92,7 @@ export default function Post({ navigation, route }: Props) {
         <PostContent
           post={post}
           userId={user._id}
+          userHiddenPosts={user.hiddenPosts}
           userBookmarkedPosts={user.bookmarkedPosts}
           myVotes={user.myVotes}
           navigation={navigation}

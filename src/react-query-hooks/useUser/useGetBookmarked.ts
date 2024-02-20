@@ -1,21 +1,49 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
+import { Post, PostComment } from '../../../types';
 
 export function useGetBookmarkedPosts() {
     return useQuery({
         queryKey: ['bookmarkedPosts'],
-        queryFn: () =>
-        axios
+        queryFn: async () => {
+          const token = await getItemAsync('token');
+          return axios
           .get(`${baseUrl}/users/getBookmarkedPosts`, {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
  
           })
-          .then(res => res.data.data.data)
+          .then(res => res.data.data.data as Post[])
+        }
+        
     }
          
     );
   }
+
+export function useGetBookmarkedPostComments() {
+    return useQuery({
+        queryKey: ['bookmarkedPostComments'],
+        queryFn: async () => {
+          const token = await getItemAsync('token');
+          return axios
+          .get(`${baseUrl}/users/getBookmarkedPostComments`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+ 
+          })
+          .then(res => res.data.data as PostComment[])
+        }
+        
+    }
+         
+    );
+  }
+
   export function useGetBookmarkedStories() {
     return useQuery({
         queryKey: ['bookmarkedStories'],

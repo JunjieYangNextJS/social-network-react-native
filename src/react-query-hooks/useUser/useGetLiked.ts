@@ -1,17 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
 
 export function useGetLikedPosts() {
     return useQuery({
         queryKey: ['likedPosts'],
-        queryFn: () =>
-        axios
+        queryFn: async () => {
+          const token = await getItemAsync('token');
+          return axios
           .get(`${baseUrl}/users/getLikedPosts`, {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
  
           })
           .then(res => res.data.data.data)
+        }
+        
     }
          
     );

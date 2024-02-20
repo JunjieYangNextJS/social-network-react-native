@@ -1,22 +1,30 @@
 import {
+  View,
+  Text,
+  FlatList,
   SafeAreaView,
   StyleSheet,
   StatusBar,
+  Image,
   ActivityIndicator,
 } from "react-native";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import PostCard from "../../Posts/PostCard";
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { FlashList } from "@shopify/flash-list";
-import { useGetMyPosts } from "../../../react-query-hooks/useUser/useGetMyCreations";
+
 import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
+import { useGetLikedPosts } from "../../../react-query-hooks/useUser/useGetLiked";
 
-type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPosts">;
+type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyLikedPosts">;
 
-const MyPosts = ({}: Props) => {
-  const { data: shownPosts } = useGetMyPosts();
+const MyLikedPosts = ({}: Props) => {
+  const { data: shownPosts } = useGetLikedPosts();
 
   const renderPostItem = useCallback(
     (itemData: any) => {
@@ -67,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPosts;
+export default MyLikedPosts;

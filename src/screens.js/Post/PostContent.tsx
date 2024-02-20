@@ -28,6 +28,7 @@ interface IPostContent {
   post: Post;
   userBookmarkedPosts: string[];
   userId: string;
+  userHiddenPosts: string[];
   myVotes: string[];
   navigation: NativeStackNavigationProp<
     RootStackParamList,
@@ -86,6 +87,7 @@ export default function PostContent({
   post,
   userBookmarkedPosts,
   userId,
+  userHiddenPosts,
   myVotes,
   navigation,
   navigateToUserPage,
@@ -175,6 +177,7 @@ export default function PostContent({
               userId={userId}
               subscribers={subscribers}
               sticky={sticky}
+              userHiddenPosts={userHiddenPosts}
             />
           }
         />

@@ -33,6 +33,10 @@ import useUserTokenStore from "../store/useUserTokenStore";
 import { deleteItemAsync, getItemAsync } from "expo-secure-store";
 import axios from "axios";
 import baseUrl from "../utils/baseUrl";
+import MyLikedPosts from "../screens.js/Profile/MyLikedPosts";
+import MyBookmarkedPosts from "../screens.js/Profile/MyBookmarkedPosts";
+import MyBookmarkedPostComments from "../screens.js/Profile/MyBookmarkedPostComments";
+import HiddenPosts from "../screens.js/Profile/HiddenPosts";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -42,6 +46,10 @@ export type ProfileDrawerParamList = {
   MyPosts: {};
   MyPostComments: { postCommentId: string; postTitle?: string };
   MyPostReplies: { postCommentId: string; postTitle?: string };
+  MyLikedPosts: {};
+  MyBookmarkedPosts: {};
+  MyBookmarkedPostComments: {};
+  HiddenPosts: {};
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
@@ -180,16 +188,48 @@ const DrawerNav = () => {
         name="MyPostComments"
         component={MyPostComments}
         options={{
-          headerTitle: "My Post Comments",
-          drawerLabel: "My Post Comments",
+          headerTitle: "My Comments",
+          drawerLabel: "My Comments",
         }}
       />
       <Drawer.Screen
         name="MyPostReplies"
         component={MyPostReplies}
         options={{
-          headerTitle: "My Post Replies",
-          drawerLabel: "My Post Replies",
+          headerTitle: "My Replies",
+          drawerLabel: "My Replies",
+        }}
+      />
+      <Drawer.Screen
+        name="MyLikedPosts"
+        component={MyLikedPosts}
+        options={{
+          headerTitle: "Liked Posts",
+          drawerLabel: "Liked Posts",
+        }}
+      />
+      <Drawer.Screen
+        name="MyBookmarkedPosts"
+        component={MyBookmarkedPosts}
+        options={{
+          headerTitle: "Bookmarked Posts",
+          drawerLabel: "Bookmarked Posts",
+        }}
+      />
+      <Drawer.Screen
+        name="MyBookmarkedPostComments"
+        component={MyBookmarkedPostComments}
+        options={{
+          headerTitle: "Bookmarked Comments",
+          drawerLabel: "Bookmarked Comments",
+        }}
+      />
+      <Drawer.Screen
+        name="HiddenPosts"
+        component={HiddenPosts}
+        options={{
+          headerTitle: "Hidden Posts",
+          drawerLabel: "Hidden Posts",
         }}
       />
 

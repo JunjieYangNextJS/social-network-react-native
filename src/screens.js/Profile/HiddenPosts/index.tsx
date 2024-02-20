@@ -1,22 +1,32 @@
 import {
+  View,
+  Text,
+  FlatList,
   SafeAreaView,
   StyleSheet,
   StatusBar,
+  Image,
   ActivityIndicator,
 } from "react-native";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import PostCard from "../../Posts/PostCard";
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { FlashList } from "@shopify/flash-list";
-import { useGetMyPosts } from "../../../react-query-hooks/useUser/useGetMyCreations";
+import * as SplashScreen from "expo-splash-screen";
+import { RootStackParamList } from "../../../navigators/RootStackNavigator";
+import { useQueryClient } from "@tanstack/react-query";
 import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
+import { useGetHiddenPosts } from "../../../react-query-hooks/useUser/useGetHidden";
 
-type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPosts">;
+type Props = NativeStackScreenProps<ProfileDrawerParamList, "HiddenPosts">;
 
-const MyPosts = ({}: Props) => {
-  const { data: shownPosts } = useGetMyPosts();
+const HiddenPosts = ({}: Props) => {
+  const { data: shownPosts } = useGetHiddenPosts();
 
   const renderPostItem = useCallback(
     (itemData: any) => {
@@ -67,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPosts;
+export default HiddenPosts;

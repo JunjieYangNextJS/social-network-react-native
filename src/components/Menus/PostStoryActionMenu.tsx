@@ -21,13 +21,14 @@ import {
 } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IPostStoryActionMenu {
   itemId: string;
   itemCreatorId: string;
   itemEndpoint: BackendRoutes;
   userId: string;
-
+  userHiddenPosts: string[];
   sticky: boolean | undefined;
   willNotify?: boolean;
   openComments?: boolean;
@@ -39,7 +40,7 @@ const PostStoryActionMenu = ({
   itemCreatorId,
   itemEndpoint,
   userId,
-
+  userHiddenPosts,
   sticky,
   willNotify,
   openComments,
@@ -54,18 +55,20 @@ const PostStoryActionMenu = ({
   const [reportOpen, setReportOpen] = useState(false);
 
   const [isNotifying, setIsNotifying] = useState(true);
-  const [isOpenComments, setIsOpenComments] = useState(true);
+  // const [isOpenComments, setIsOpenComments] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const itemUrl = `https://www.priders.net/${itemEndpoint}/${itemId}`;
 
   const { copiedText, copying, copy } = useClipboard();
   const { colors } = useAppTheme();
+  const queryClient = useQueryClient();
 
   const { onOpenDialog } = useDialogStore((state) => state);
   const route = useRoute();
 
-  let originRoute: "Posts" | "Notifications";
+  let originRoute: "Posts" | "Notifications" | "P_Drawer";
 
   switch (route.name) {
     case "Post":
@@ -76,26 +79,33 @@ const PostStoryActionMenu = ({
       break;
 
     default:
-      originRoute = "Posts";
+      originRoute = "P_Drawer";
       null;
       break;
   }
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts" | "Notifications",
+    "Posts" | "Notifications" | "P_Drawer",
     undefined
   >;
 
   useEffect(() => {
     setIsNotifying(!!willNotify);
-    setIsOpenComments(!!openComments);
+    // setIsOpenComments(!!openComments);
     setIsSubscribed(subscribers.includes(userId));
+    setIsHidden(userHiddenPosts.includes(itemId));
   }, [willNotify, openComments, subscribers, userId]);
 
-  const { mutate: patchUserPostHide } = usePatchArrayMethod(
-    itemEndpoint === "stories" ? "addHiddenStory" : "addHiddenPost",
-    false
-  );
+  const { mutate: patchUserPostHide, isSuccess: hideSuccess } =
+    usePatchArrayMethod(
+      itemEndpoint === "stories" ? "addHiddenStory" : "addHiddenPost",
+      false
+    );
+  const { mutate: patchUserPostUnhide, isSuccess: unhideSuccess } =
+    usePatchArrayMethod(
+      itemEndpoint === "stories" ? "removeHiddenStory" : "removeHiddenPost",
+      false
+    );
   const { mutate: patchCreationWillNotify } = usePatchCreation(
     itemEndpoint,
     itemId
@@ -112,6 +122,12 @@ const PostStoryActionMenu = ({
     navigation.replace(originRoute);
   }, [deleteIsSuccess]);
 
+  useDidUpdate(() => {
+    if (hideSuccess || unhideSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["hiddenPosts"] });
+    }
+  }, [hideSuccess, unhideSuccess]);
+
   const handleClipboard = (text: string) => {
     copy(text);
     setTimeout(() => {
@@ -124,7 +140,22 @@ const PostStoryActionMenu = ({
     onOpenDialog(
       "Hide this post?",
       "You can always unhide it in your homepage.",
-      () => patchUserPostHide(itemId)
+      () => {
+        patchUserPostHide(itemId);
+        setIsHidden(true);
+      }
+    );
+
+    closeMenu();
+  };
+  const handleUnhide = () => {
+    onOpenDialog(
+      "Unhide this post?",
+      "This post will become visible in your future browsing",
+      () => {
+        patchUserPostUnhide(itemId);
+        setIsHidden(false);
+      }
     );
 
     closeMenu();
@@ -207,11 +238,20 @@ const PostStoryActionMenu = ({
 
             {itemCreatorId !== userId ? (
               <>
-                <Menu.Item
-                  onPress={() => handleHide()}
-                  title="Hide"
-                  leadingIcon="eye-off"
-                />
+                {isHidden ? (
+                  <Menu.Item
+                    onPress={() => handleUnhide()}
+                    title="Unhide"
+                    leadingIcon="eye-off"
+                  />
+                ) : (
+                  <Menu.Item
+                    onPress={() => handleHide()}
+                    title="Hide"
+                    leadingIcon="eye-off"
+                  />
+                )}
+
                 <Menu.Item
                   onPress={onReport}
                   title="Report"

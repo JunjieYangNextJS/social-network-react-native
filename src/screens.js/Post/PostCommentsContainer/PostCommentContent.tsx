@@ -25,7 +25,7 @@ interface IPostCommentContent {
   userBookmarkedPostComments?: string[];
   userId: string;
   withoutIconsGroup?: boolean;
-  navigateToPostComment: (willReply?: boolean) => void;
+  navigateToPostComment: (willReply: boolean) => void;
   navigateToUserPage: () => void;
 }
 
@@ -52,7 +52,7 @@ export default function PostCommentContent({
   } = postComment;
 
   const navWithoutIconsGroup = () => {
-    if (withoutIconsGroup) navigateToPostComment();
+    if (withoutIconsGroup) navigateToPostComment(false);
   };
 
   return (

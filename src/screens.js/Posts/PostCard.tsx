@@ -21,7 +21,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PressableAvatar from "../../components/PressableAvatar";
-import PostStoryActionMenu from "../../components/Menus/PostStoryActionMenu";
 
 interface IPostCard {
   id: string;
@@ -87,6 +86,8 @@ export default function PostCard({
     let postRoute: "Post" | "N_Post" | "P_Post";
 
     switch (route.name) {
+      case "Posts":
+        postRoute = "Post";
       case "OtherUser":
         postRoute = "Post";
         break;
@@ -103,8 +104,8 @@ export default function PostCard({
         postRoute = "P_Post";
         break;
       default:
-        postRoute = "Post";
-        null;
+        postRoute = "P_Post";
+
         break;
     }
     return postRoute;

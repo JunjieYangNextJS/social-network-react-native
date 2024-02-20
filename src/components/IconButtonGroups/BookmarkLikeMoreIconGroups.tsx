@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { IconButton, Tooltip } from "react-native-paper";
+
 import LikeIconButton from "../IconButtons/LikeIconButton";
 import BookmarkIconButton from "../IconButtons/BookmarkIconButton";
-import PostStoryActionMenu from "../Menus/PostStoryActionMenu";
+
 import { BackendRoutes } from "../../../types";
 
 interface IBookmarkLikeMoreIconGroups {

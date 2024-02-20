@@ -12,7 +12,7 @@ export type RootStackParamList = {
   PostsSearch: any;
   // Profile: any;
   P_Drawer: any;
-  P_Home: any;
+
   P_Post: { postId: string };
   P_PostComment: { postCommentId: string; postTitle?: string };
   P_OtherUser: { username: string; profileImage?: string };
