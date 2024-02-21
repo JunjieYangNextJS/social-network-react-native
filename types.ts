@@ -163,7 +163,7 @@ export type User = {
     id: string,
     photo: string,
     role: Role,
-    createdBy?: 'signup' | 'google',
+    createdBy?: 'signup' | 'google' | 'guest',
     active: boolean,
     username: string,
     email: string,
@@ -268,4 +268,12 @@ export type OtherUser = {
     gender: string,
     location: string,
     sexuality: string,
+}
+
+export type BlockedUser = {
+    _id: string,
+    photo: string,
+    role: string,
+    username: string,
+    profileName: string
 }

@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import useDialogStore from "../../store/useDialogStore";
 import { useRemoveFriend } from "../../react-query-hooks/useUser/usePatchUser";

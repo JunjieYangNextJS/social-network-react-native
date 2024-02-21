@@ -37,6 +37,7 @@ import MyLikedPosts from "../screens.js/Profile/MyLikedPosts";
 import MyBookmarkedPosts from "../screens.js/Profile/MyBookmarkedPosts";
 import MyBookmarkedPostComments from "../screens.js/Profile/MyBookmarkedPostComments";
 import HiddenPosts from "../screens.js/Profile/HiddenPosts";
+import BlockedUsers from "../screens.js/Profile/BlockedUsers";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -48,8 +49,9 @@ export type ProfileDrawerParamList = {
   MyPostReplies: { postCommentId: string; postTitle?: string };
   MyLikedPosts: {};
   MyBookmarkedPosts: {};
-  MyBookmarkedPostComments: {};
+  MyBookmarkedPostComments: { postCommentId: string; postTitle?: string };
   HiddenPosts: {};
+  BlockedUsers: {};
 };
 
 const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
@@ -230,6 +232,14 @@ const DrawerNav = () => {
         options={{
           headerTitle: "Hidden Posts",
           drawerLabel: "Hidden Posts",
+        }}
+      />
+      <Drawer.Screen
+        name="BlockedUsers"
+        component={BlockedUsers}
+        options={{
+          headerTitle: "Blocked Users",
+          drawerLabel: "Blocked Users",
         }}
       />
 

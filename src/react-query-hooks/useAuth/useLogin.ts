@@ -3,9 +3,6 @@ import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
 import * as SecureStore from 'expo-secure-store';
 
-
-
-
 export function useLogin({handleNavigation}: {handleNavigation?: () => void}) {
     const queryClient = useQueryClient();
     return useMutation({
@@ -23,6 +20,24 @@ export function useLogin({handleNavigation}: {handleNavigation?: () => void}) {
         }
       
 });
-  }
+  };
 
+export function useGuestLogin({handleNavigation}: {handleNavigation?: () => void}) {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: () =>
+        axios
+          .post(`${baseUrl}/users/guestLogin`, {})
+          .then((res) => (res.data) ),
+  
+      
+        onSuccess: async data => {
+          queryClient.setQueryData(['user'], data.data.user);
+          await SecureStore.setItemAsync('token', data.token)
+          if (handleNavigation) handleNavigation()
+        
+        }
+      
+});
+  }
 

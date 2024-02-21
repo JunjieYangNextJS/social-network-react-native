@@ -9,7 +9,10 @@ import {
 } from "react-native-paper";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useLogin } from "../../react-query-hooks/useAuth/useLogin";
+import {
+  useGuestLogin,
+  useLogin,
+} from "../../react-query-hooks/useAuth/useLogin";
 import * as SecureStore from "expo-secure-store";
 import { useTheme } from "react-native-paper";
 import * as Linking from "expo-linking";
@@ -42,6 +45,7 @@ export default function Login({ navigation }: Props) {
 
   const [hidePassword, setHidePassword] = useState(true);
   const { mutate: loginUser, status, data } = useLogin({ handleNavigation });
+  const { mutate: loginGuest } = useGuestLogin({ handleNavigation });
 
   //   useEffect(() => {
   //     async function getValueFor(key: string) {
@@ -96,7 +100,7 @@ export default function Login({ navigation }: Props) {
             <Button onPress={() => navigation.navigate("SignUp")}>
               Sign up?
             </Button>
-            <Button>Continue as guest</Button>
+            <Button onPress={() => loginGuest()}>Continue as guest</Button>
             <Button onPress={(e: GestureResponderEvent) => handleSubmit()}>
               Submit
             </Button>

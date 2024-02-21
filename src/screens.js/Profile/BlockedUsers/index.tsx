@@ -10,7 +10,7 @@ import React, { useCallback, useState } from "react";
 import useUser from "../../../react-query-hooks/useUser/useUser";
 import { ActivityIndicator, Button, Text } from "react-native-paper";
 import { FlashList } from "@shopify/flash-list";
-import { Friend } from "../../../../types";
+import { BlockedUser, Friend } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
@@ -18,42 +18,29 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import UserInfoContainer from "../../../components/UserInfoContainer";
-import RemoveFriendButton from "../../../components/Buttons/RemoveFriendButton";
 
-type Props = NativeStackScreenProps<ProfileDrawerParamList, "FriendList">;
+import useGetBlockedUsers from "../../../react-query-hooks/useUser/useGetBlocked";
+import UnblockUserButton from "../../../components/Buttons/UnblockUserButton";
 
-export default function FriendList({ navigation, route }: Props) {
+type Props = NativeStackScreenProps<ProfileDrawerParamList, "BlockedUsers">;
+
+export default function BlockedUsers({ navigation, route }: Props) {
   const { data: user } = useUser();
+  const { data: blockedUsers } = useGetBlockedUsers();
   const { top, bottom } = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const parentNavigation = useNavigation().getParent();
 
-  if (!user) {
-    return <ActivityIndicator />;
-  }
-
-  const { friendList } = user;
-
-  if (friendList.length < 1) {
-    return <Text style={styles.noFriends}>You haven't added any friend.</Text>;
-  }
-
   const renderItem = useCallback(
     (itemData: any) => {
-      const { username, profileName, _id, sexuality, gender, photo } =
-        itemData.item as Friend;
+      const { username, profileName, _id, photo } =
+        itemData.item as BlockedUser;
 
       const navigateToUserPage = () => {
-        // onSetPreviousScreen("Notifications");
-
         parentNavigation?.navigate("P_OtherUser", {
           username,
           profileImage: undefined,
         });
-        // navigation.navigate("OtherUser", {
-        //   username: sender.username,
-        //   photo: user.photo,
-        // });
       };
 
       return (
@@ -65,7 +52,7 @@ export default function FriendList({ navigation, route }: Props) {
             photo={photo}
           />
           <View>
-            <RemoveFriendButton username={username} _id={_id} />
+            <UnblockUserButton username={username} _id={_id} />
           </View>
         </View>
       );
@@ -73,15 +60,25 @@ export default function FriendList({ navigation, route }: Props) {
     [user]
   );
 
+  if (!user || !blockedUsers) {
+    return <ActivityIndicator />;
+  }
+
+  //   const { blockedUsers } = user;
+
+  if (blockedUsers.length < 1) {
+    return <Text style={styles.noFriends}>You haven't blocked any user.</Text>;
+  }
+
   return (
     <SafeAreaView
       style={[{ minHeight: height - top - bottom }, styles.container]}
     >
       <FlashList
-        data={friendList}
-        keyExtractor={(item: Friend) => item._id}
+        data={blockedUsers}
+        keyExtractor={(item: BlockedUser) => item._id}
         renderItem={renderItem}
-        estimatedItemSize={friendList.length}
+        estimatedItemSize={blockedUsers.length}
       />
     </SafeAreaView>
   );
