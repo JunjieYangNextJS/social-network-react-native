@@ -39,6 +39,8 @@ import MyBookmarkedPostComments from "../screens.js/Profile/MyBookmarkedPostComm
 import HiddenPosts from "../screens.js/Profile/HiddenPosts";
 import BlockedUsers from "../screens.js/Profile/BlockedUsers";
 import Privacy from "../screens.js/Profile/Privacy";
+import { useNavigation } from "@react-navigation/native";
+import Settings from "../screens.js/Profile/Settings";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -62,6 +64,7 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
   const queryClient = useQueryClient();
   const { onOpenToast } = useToastStore();
   const { setLogout } = useUserTokenStore();
+  const parentNavigation = useNavigation().getParent();
 
   const onLogout = async () => {
     try {
@@ -81,16 +84,30 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
     onOpenDialog("Log Out", "Are you sure you want to log out?", onLogout);
   };
 
+  const navigateToSettings = () => {
+    parentNavigation?.navigate("Settings");
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={{ marginLeft: 15, marginBottom: 20, marginTop: 10 }}>
-          <UserInfoContainer
-            photo={photo}
-            profileName={profileName}
-            username={username}
-            navigateToUserPage={() => {}}
-          />
+          <View style={styles.userInfoContainerWrapper}>
+            <UserInfoContainer
+              photo={photo}
+              profileName={profileName}
+              username={username}
+              navigateToUserPage={() => {}}
+            />
+            <IconButton
+              icon="cog-outline"
+              size={20}
+              style={{ marginRight: 10 }}
+              iconColor={"#b3b3b3"}
+              onPress={navigateToSettings}
+            />
+          </View>
+
           <View style={styles.textWrapper}>
             <View style={styles.textWrapper}>
               <Text style={styles.number}>{following.length}</Text>
@@ -286,6 +303,7 @@ export default function ProfileStackNavigator() {
       />
 
       <Stack.Screen name="P_PostComment" component={PostComment} />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   );
 }
@@ -311,5 +329,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginTop: 110,
     marginLeft: 10,
+  },
+
+  userInfoContainerWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

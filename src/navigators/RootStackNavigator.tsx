@@ -11,6 +11,7 @@ export type RootStackParamList = {
   PostDraft: { postId: string };
   PostsSearch: any;
   // Profile: any;
+  Settings: any;
   P_Drawer: any;
 
   P_Post: { postId: string };
