@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import baseUrl from '../../utils/baseUrl';
-import { Notification, User } from '../../../types';
+import { ExposedTo, Notification, User, WhoCanMessageMe } from '../../../types';
 import { getItemAsync } from 'expo-secure-store';
 
 
@@ -35,6 +35,36 @@ import { getItemAsync } from 'expo-secure-store';
         sexuality: string;
         twitter: string;
         bio: string;
+    }) => {
+        const token = await getItemAsync('token')
+        return axios
+        .patch(`${baseUrl}/users/updateMeWithoutPhoto`, values, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+  
+        })
+        .then(res => res.data)
+      }
+        ,
+
+      onSuccess: (_, variables) => {
+            // queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+            queryClient.setQueryData(['user'], (prev: User) => ({...prev, ...variables}));
+            
+        }
+    },
+    );
+  };
+
+  export function usePatchUserPrivacy() {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async (values: {
+       whoCanMessageMe?: WhoCanMessageMe;
+       postsExposedTo?: ExposedTo;
+       allowFollowing?: boolean;
+       allowFriending?: boolean;
     }) => {
         const token = await getItemAsync('token')
         return axios

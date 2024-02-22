@@ -74,7 +74,7 @@ export default function IOS_UI({
           inputRef.current.focus(); // Focus the input when screen comes into focus
         }
       }, 600);
-    }, [])
+    }, [inputRef.current])
   );
 
   return (

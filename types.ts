@@ -195,7 +195,7 @@ export type User = {
     sexuality?: string,
     followers: string[],
     following: string[],
-    postsExposedTo?: ExposedTo,
+    postsExposedTo: ExposedTo,
     storiesExposedTo? : ExposedTo,
     secretsExposedTo? : ExposedTo,
     allowFollowing: boolean,
