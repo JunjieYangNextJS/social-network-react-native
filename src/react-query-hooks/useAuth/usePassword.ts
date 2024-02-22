@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync, setItemAsync } from 'expo-secure-store';
+import { User } from '../../../types';
 
 export function useForgotPassword() {
     return useMutation({
@@ -28,13 +30,26 @@ export function useForgotPassword() {
   
   
   export function useChangePassword() {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: values =>
-        axios
+        mutationFn: async (values: {password: string; passwordConfirm: string; passwordCurrent: string}) => {
+          const token = await getItemAsync("token");
+          return axios
           .patch(`${baseUrl}/users/updateMyPassword`, values, {
-            withCredentials: true
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
-          .then(res => res.data.data.user)
+          .then(res => res.data);
+          
+        },
+        onSuccess: async data => {
+          queryClient.setQueryData(['user'], data.data.user);
+          await setItemAsync('token', data.token)
+          
+        
+        }
+        
         //   .catch(err => {
         //     showError(
         //       err.response.data.error.message ||

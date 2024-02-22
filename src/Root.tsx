@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/native";
 // import PostsAuthStackNavigator from "./navigators/PostsAuthStackNavigator";
 import useUserTokenStore from "./store/useUserTokenStore";
-import { getItemAsync } from "expo-secure-store";
+import { getItemAsync, deleteItemAsync } from "expo-secure-store";
 import BottomTabNavigator from "./navigators/BottomTabNavigator";
 import AuthStackNavigator from "./navigators/AuthStackNavigator";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -26,10 +26,14 @@ function Navigation({
     reactNavigationDark: NavigationDarkTheme,
   });
 
+  // deleteItemAsync("token");
+
   const authenticated = useUserTokenStore((state) => state.authenticated);
 
   return (
     <NavigationContainer onReady={onLayoutRootView} theme={DarkTheme}>
+      {/* {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />} */}
+
       {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );

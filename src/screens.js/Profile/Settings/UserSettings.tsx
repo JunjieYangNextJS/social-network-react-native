@@ -20,6 +20,7 @@ import { User } from "../../../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useDidUpdate } from "../../../hooks/useDidUpdate";
+import PasswordBottomSheet from "./PasswordBottomSheet";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -67,112 +68,105 @@ const UserSettings = ({ user }: { user: User }) => {
     DateOfBirthBottomSheetModalRef.current?.present();
   }, []);
 
-  const SexualityBottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const handleSexualityModalPress = useCallback(() => {
+  const PasswordBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handlePasswordModalPress = useCallback(() => {
     Keyboard.dismiss();
-    SexualityBottomSheetModalRef.current?.present();
-  }, []);
-
-  const BioBottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const handleBioModalPress = useCallback(() => {
-    Keyboard.dismiss();
-    BioBottomSheetModalRef.current?.present();
+    PasswordBottomSheetModalRef.current?.present();
   }, []);
 
   // renders
   return (
-    <View>
-      <View style={styles.contentContainer}>
-        <Formik
-          initialValues={{
-            username,
-            email,
-            birthYear: birthYear?.toString() || "",
-            birthMonth: birthMonth?.toString() || "",
-            birthDay: birthDay?.toString() || "",
-            passwordCurrent: "",
-            password: "",
-            passwordConfirm: "",
-          }}
-          onSubmit={(values) => {
-            console.log(values, "values");
-            //   patchUser(values);
+    <View style={styles.container}>
+      <Formik
+        initialValues={{
+          username,
+          email,
+          birthYear: birthYear?.toString() || "",
+          birthMonth: birthMonth?.toString() || "",
+          birthDay: birthDay?.toString() || "",
+          passwordCurrent: "",
+          password: "",
+          passwordConfirm: "",
+        }}
+        onSubmit={(values) => {
+          console.log(values, "values");
+          //   patchUser(values);
 
-            //   SignUpUser(values);
-          }}
-          validationSchema={validationSchema}
-        >
-          {({
-            handleSubmit,
-            values,
-            handleBlur,
-            handleChange,
-            errors,
-            isSubmitting,
-            submitCount,
-            dirty,
-          }) => (
-            <View>
-              {/* <Button
+          //   SignUpUser(values);
+        }}
+        validationSchema={validationSchema}
+      >
+        {({
+          handleSubmit,
+          values,
+          handleBlur,
+          handleChange,
+          errors,
+          isSubmitting,
+          submitCount,
+          dirty,
+        }) => (
+          <View>
+            {/* <Button
                     disabled={!dirty}
                     onPress={(e: GestureResponderEvent) => handleSubmit()}
                   >
                     Save
                   </Button> */}
 
-              <View style={styles.body}>
-                <View style={styles.inputLabelWrapper}>
-                  <Text style={styles.label}>Username</Text>
-                  <TextInput
-                    value={values.username}
-                    onChangeText={handleChange("username")}
-                    style={styles.input}
-                    placeholderTextColor={"white"}
-                  />
-                </View>
-                <View style={styles.inputLabelWrapper}>
-                  <Text style={styles.label}>Email</Text>
-                  <TextInput
-                    placeholder="Your email"
-                    style={styles.input}
-                    value={values.email}
-                    onChangeText={handleChange("email")}
-                    placeholderTextColor={colors.placeholder}
-                  />
-                </View>
-
-                <View style={styles.inputLabelWrapper}>
-                  <Text style={styles.label}>Date of Birth</Text>
-                  <TextInput
-                    placeholder="07/08/1997"
-                    style={styles.input}
-                    value={
-                      values.birthMonth +
-                      "/" +
-                      values.birthDay +
-                      "/" +
-                      values.birthYear
-                    }
-                    // onChangeText={handleChange("dateOfBirth")}
-                    placeholderTextColor={colors.placeholder}
-                    onPressIn={handleDateOfBirthModalPress}
-                    editable={false}
-                  />
-                </View>
-                <View style={styles.inputLabelWrapper}>
-                  <Text style={styles.label}>Password</Text>
-                  <TextInput
-                    placeholder="********"
-                    style={styles.input}
-                    value={""}
-                    placeholderTextColor={colors.placeholder}
-                    onPressIn={handleSexualityModalPress}
-                    editable={false}
-                  />
-                </View>
+            <View style={styles.body}>
+              <View style={styles.inputLabelWrapper}>
+                <Text style={styles.label}>Username</Text>
+                <TextInput
+                  value={values.username}
+                  onChangeText={handleChange("username")}
+                  style={styles.input}
+                  placeholderTextColor={"white"}
+                />
               </View>
-              <>
-                {/* <DateOfBirthBottomSheet
+              <View style={styles.inputLabelWrapper}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                  placeholder="Your email"
+                  style={styles.input}
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  placeholderTextColor={colors.placeholder}
+                />
+              </View>
+
+              <View style={styles.inputLabelWrapper}>
+                <Text style={styles.label}>Date of Birth</Text>
+                <TextInput
+                  placeholder="07/08/1997"
+                  style={styles.input}
+                  value={
+                    values.birthMonth +
+                    "/ " +
+                    values.birthDay +
+                    "/ " +
+                    values.birthYear
+                  }
+                  // onChangeText={handleChange("dateOfBirth")}
+                  placeholderTextColor={colors.placeholder}
+                  onPressIn={handleDateOfBirthModalPress}
+                  editable={false}
+                />
+              </View>
+              <View style={styles.inputLabelWrapper}>
+                <Text style={styles.label}>Password</Text>
+                <TextInput
+                  placeholder="********"
+                  style={styles.input}
+                  value={""}
+                  placeholderTextColor={colors.placeholder}
+                  onPressIn={handlePasswordModalPress}
+                  editable={false}
+                />
+              </View>
+            </View>
+            <>
+              {/* <DateOfBirthBottomSheet
                   enablePanDownToClose={true}
                   dateOfBirth={values.dateOfBirth}
                   dateOfBirthFromData={dateOfBirth}
@@ -180,21 +174,21 @@ const UserSettings = ({ user }: { user: User }) => {
                   ref={DateOfBirthBottomSheetModalRef}
                 >
                   <></>
-                </DateOfBirthBottomSheet>
-                <SexualityBottomSheet
-                  enablePanDownToClose={true}
-                  sexuality={values.sexuality}
-                  sexualityFromData={sexuality}
-                  // handleDateOfBirthModalPress={handleDateOfBirthModalPress}
-                  ref={SexualityBottomSheetModalRef}
-                >
-                  <></>
-                </SexualityBottomSheet> */}
-              </>
-            </View>
-          )}
-        </Formik>
-      </View>
+                </DateOfBirthBottomSheet> */}
+              <PasswordBottomSheet
+                enablePanDownToClose={true}
+                password={values.password}
+                passwordCurrent={values.passwordCurrent}
+                passwordConfirm={values.passwordConfirm}
+                // handleDateOfBirthModalPress={handleDateOfBirthModalPress}
+                ref={PasswordBottomSheetModalRef}
+              >
+                <></>
+              </PasswordBottomSheet>
+            </>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
@@ -203,23 +197,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 24,
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 10,
-    // alignItems: "center",
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    // justifyContent: "center",
   },
 
   body: {
     marginTop: 10,
+    paddingHorizontal: 10,
   },
 
   input: {
@@ -229,7 +212,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     paddingHorizontal: 13,
     paddingVertical: 10,
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#141414",
     color: "white",
     flex: 1,
   },
