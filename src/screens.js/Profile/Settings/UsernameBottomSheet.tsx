@@ -1,5 +1,11 @@
 import React, { useMemo, useRef } from "react";
-import { View, StyleSheet, TextInput, useWindowDimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  Keyboard,
+} from "react-native";
 import { Text, Button, HelperText } from "react-native-paper";
 import {
   BottomSheetModalProps,
@@ -44,6 +50,7 @@ const UsernameBottomSheet = React.forwardRef<
   const handleUndo = () => {
     setFieldValue("passwordCurrent", "");
     setFieldValue("username", usernameCurrent);
+    Keyboard.dismiss();
     dismiss("EditUsername");
   };
 
@@ -55,6 +62,7 @@ const UsernameBottomSheet = React.forwardRef<
     if (!isSuccess) return;
 
     setFieldValue("passwordCurrent", "");
+    Keyboard.dismiss();
     dismiss("EditUsername");
   }, [isSuccess]);
 

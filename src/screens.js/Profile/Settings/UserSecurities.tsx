@@ -27,6 +27,7 @@ import EmailBottomSheet from "./EmailBottomSheet";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { useChangeBirthday } from "../../../react-query-hooks/useAuth/useChangeBirthday";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -66,10 +67,12 @@ const UserSecurities = ({ user }: { user: User }) => {
 
   //   date
   const [inputDate, setInputDate] = useState({
-    year: birthYear,
-    month: birthMonth,
-    day: birthDay,
+    birthYear,
+    birthMonth,
+    birthDay,
   });
+
+  const { mutate: changeBirthDay, isPending } = useChangeBirthday();
 
   const setDate = (event: DateTimePickerEvent, date: Date | undefined) => {
     const {
@@ -77,22 +80,39 @@ const UserSecurities = ({ user }: { user: User }) => {
       nativeEvent: { timestamp },
     } = event;
 
-    setInputDate({
-      year: date?.getFullYear(),
-      month: date?.getMonth() ? date?.getMonth() + 1 : date?.getMonth(),
-      day: date?.getDate(),
-    });
+    if (type === "set") {
+      setInputDate({
+        birthYear: date?.getFullYear(),
+        birthMonth:
+          typeof date?.getMonth() === "number"
+            ? date?.getMonth() + 1
+            : date?.getMonth(),
+        birthDay: date?.getDate(),
+      });
+    }
+  };
+
+  const birthdayHasNotChanged =
+    inputDate.birthDay === birthDay &&
+    inputDate.birthMonth === birthMonth &&
+    inputDate.birthYear === birthYear;
+
+  const cannotSaveBirthdayNow =
+    !inputDate.birthYear ||
+    !inputDate.birthMonth ||
+    !inputDate.birthDay ||
+    birthdayHasNotChanged ||
+    isPending;
+
+  const handleSaveBirthday = () => {
+    if (cannotSaveBirthdayNow) return;
+    changeBirthDay(inputDate);
   };
 
   // variables
   const snapPoints = useMemo(() => [height - statusBarHeight], []);
 
   // child refs
-  const DateOfBirthBottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const handleDateOfBirthModalPress = useCallback(() => {
-    Keyboard.dismiss();
-    DateOfBirthBottomSheetModalRef.current?.present();
-  }, []);
 
   const PasswordBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const handlePasswordModalPress = useCallback(() => {
@@ -124,12 +144,7 @@ const UserSecurities = ({ user }: { user: User }) => {
           password: "",
           passwordConfirm: "",
         }}
-        onSubmit={(values) => {
-          console.log(values, "values");
-          //   patchUser(values);
-
-          //   SignUpUser(values);
-        }}
+        onSubmit={(values) => {}}
         validationSchema={validationSchema}
       >
         {({
@@ -174,17 +189,19 @@ const UserSecurities = ({ user }: { user: User }) => {
               </View>
 
               <View style={styles.inputLabelWrapper}>
-                <Text style={styles.label}>Date of Birth</Text>
-                {/* <TextInput
-                  placeholder={birthMonth + "/ " + birthDay + "/ " + birthYear}
+                <Text style={styles.label}>Password</Text>
+                <TextInput
+                  placeholder="********"
                   style={styles.input}
-                  // value=
-                  // onChangeText={handleChange("dateOfBirth")}
-                  placeholderTextColor={"white"}
-                  // onPressIn={handleDateOfBirthModalPress}
-                  // editable={false}
-                /> */}
-                <View>
+                  value={""}
+                  placeholderTextColor={colors.placeholder}
+                  onPressIn={handlePasswordModalPress}
+                  editable={false}
+                />
+              </View>
+              <View style={styles.inputLabelWrapper}>
+                <Text style={styles.label}>Date of Birth</Text>
+                <View style={styles.datePicker}>
                   <DateTimePicker
                     mode="date"
                     value={
@@ -199,30 +216,17 @@ const UserSecurities = ({ user }: { user: User }) => {
                     maximumDate={new Date()}
                     themeVariant="dark"
                   />
+                  <Button
+                    onPress={handleSaveBirthday}
+                    disabled={cannotSaveBirthdayNow}
+                  >
+                    Save
+                  </Button>
                 </View>
               </View>
-              <View style={styles.inputLabelWrapper}>
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                  placeholder="********"
-                  style={styles.input}
-                  value={""}
-                  placeholderTextColor={colors.placeholder}
-                  onPressIn={handlePasswordModalPress}
-                  editable={false}
-                />
-              </View>
             </View>
+
             <>
-              {/* <DateOfBirthBottomSheet
-                  enablePanDownToClose={true}
-                  dateOfBirth={values.dateOfBirth}
-                  dateOfBirthFromData={dateOfBirth}
-                  // handleDateOfBirthModalPress={handleDateOfBirthModalPress}
-                  ref={DateOfBirthBottomSheetModalRef}
-                >
-                  <></>
-                </DateOfBirthBottomSheet> */}
               <PasswordBottomSheet
                 enablePanDownToClose={true}
                 password={values.password}
@@ -267,7 +271,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    marginTop: 10,
+    marginTop: 15,
     paddingHorizontal: 10,
   },
 
@@ -296,6 +300,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 12,
     marginTop: 10,
+  },
+
+  datePicker: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

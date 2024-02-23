@@ -1,5 +1,11 @@
 import React, { useMemo, useRef } from "react";
-import { View, StyleSheet, TextInput, useWindowDimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  Keyboard,
+} from "react-native";
 import { Text, Button, HelperText } from "react-native-paper";
 import {
   BottomSheetModalProps,
@@ -45,6 +51,7 @@ const PasswordBottomSheet = React.forwardRef<
     setFieldValue("password", "");
     setFieldValue("passwordConfirm", "");
     setFieldValue("passwordCurrent", "");
+    Keyboard.dismiss();
     dismiss("EditPassword");
   };
 
@@ -54,10 +61,7 @@ const PasswordBottomSheet = React.forwardRef<
 
   useDidUpdate(() => {
     if (!isSuccess) return;
-    setFieldValue("password", "");
-    setFieldValue("passwordConfirm", "");
-    setFieldValue("passwordCurrent", "");
-    dismiss("EditPassword");
+    handleUndo();
   }, [isSuccess]);
 
   // renders
