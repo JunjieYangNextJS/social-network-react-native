@@ -1,14 +1,25 @@
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import baseUrl from '../../utils/baseUrl';
+import { getItemAsync } from 'expo-secure-store';
 
-export function useChangeEmailOrUsername(type: "username" | "password") {
+interface IValues {
+  passwordCurrent: string;
+  emailCurrent?: string;
+  email?: string;
+  username?: string;
+}
+
+export function useChangeEmailOrUsername(type: "username" | "email") {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: values =>
-        axios
+        mutationFn: async (values: IValues) => {
+          const token = await getItemAsync("token");
+          return  axios
           .patch(`${baseUrl}/users/updateEmailOrUsername`, values, {
-            withCredentials: true
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
           .catch(err => {
             // if (err.response.status === 401) {
@@ -22,7 +33,9 @@ export function useChangeEmailOrUsername(type: "username" | "password") {
             // }
             return Promise.reject(err)
           })
-          .then(res => res.data.data),
+          .then(res => res.data.data)
+        }
+       ,
   
       
         onSuccess: data => {

@@ -2,10 +2,10 @@ import { View, Text, StatusBar, SafeAreaView } from "react-native";
 import React from "react";
 import useUser from "../../../react-query-hooks/useUser/useUser";
 import { ActivityIndicator } from "react-native-paper";
-import GuestSettings from "./GuestSettings";
-import UserSettings from "./UserSettings";
+import GuestSecurities from "./GuestSecurities";
+import UserSecurities from "./UserSecurities";
 
-export default function Settings() {
+export default function Securities() {
   const { data: user } = useUser();
 
   if (!user) return <ActivityIndicator />;
@@ -13,9 +13,9 @@ export default function Settings() {
   return (
     <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight || 0 }}>
       {user.createdBy === "guest" ? (
-        <GuestSettings />
+        <GuestSecurities />
       ) : (
-        <UserSettings user={user} />
+        <UserSecurities user={user} />
       )}
     </SafeAreaView>
   );

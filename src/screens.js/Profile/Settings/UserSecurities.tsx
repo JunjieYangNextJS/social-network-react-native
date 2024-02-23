@@ -21,6 +21,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useDidUpdate } from "../../../hooks/useDidUpdate";
 import PasswordBottomSheet from "./PasswordBottomSheet";
+import { useChangeEmailOrUsername } from "../../../react-query-hooks/useAuth/useChangeEmailOrUsername";
+import UsernameBottomSheet from "./UsernameBottomSheet";
+import EmailBottomSheet from "./EmailBottomSheet";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -50,13 +53,18 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
-const UserSettings = ({ user }: { user: User }) => {
+const UserSecurities = ({ user }: { user: User }) => {
   const { username, email, birthDay, birthMonth, birthYear } = user;
 
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
   const { top: statusBarHeight } = useSafeAreaInsets();
+
+  //   mutate
+
+  //   ref
+  const ref_input2 = useRef<any>();
 
   // variables
   const snapPoints = useMemo(() => [height - statusBarHeight], []);
@@ -74,6 +82,18 @@ const UserSettings = ({ user }: { user: User }) => {
     PasswordBottomSheetModalRef.current?.present();
   }, []);
 
+  const UsernameBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleUsernameModalPress = useCallback(() => {
+    Keyboard.dismiss();
+    UsernameBottomSheetModalRef.current?.present();
+  }, []);
+
+  const EmailBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handleEmailModalPress = useCallback(() => {
+    Keyboard.dismiss();
+    EmailBottomSheetModalRef.current?.present();
+  }, []);
+
   // renders
   return (
     <View style={styles.container}>
@@ -81,9 +101,7 @@ const UserSettings = ({ user }: { user: User }) => {
         initialValues={{
           username,
           email,
-          birthYear: birthYear?.toString() || "",
-          birthMonth: birthMonth?.toString() || "",
-          birthDay: birthDay?.toString() || "",
+
           passwordCurrent: "",
           password: "",
           passwordConfirm: "",
@@ -119,9 +137,10 @@ const UserSettings = ({ user }: { user: User }) => {
                 <Text style={styles.label}>Username</Text>
                 <TextInput
                   value={values.username}
-                  onChangeText={handleChange("username")}
                   style={styles.input}
                   placeholderTextColor={"white"}
+                  onPressIn={handleUsernameModalPress}
+                  editable={false}
                 />
               </View>
               <View style={styles.inputLabelWrapper}>
@@ -130,27 +149,22 @@ const UserSettings = ({ user }: { user: User }) => {
                   placeholder="Your email"
                   style={styles.input}
                   value={values.email}
-                  onChangeText={handleChange("email")}
+                  onPressIn={handleEmailModalPress}
                   placeholderTextColor={colors.placeholder}
+                  editable={false}
                 />
               </View>
 
               <View style={styles.inputLabelWrapper}>
                 <Text style={styles.label}>Date of Birth</Text>
                 <TextInput
-                  placeholder="07/08/1997"
+                  placeholder={birthMonth + "/ " + birthDay + "/ " + birthYear}
                   style={styles.input}
-                  value={
-                    values.birthMonth +
-                    "/ " +
-                    values.birthDay +
-                    "/ " +
-                    values.birthYear
-                  }
+                  // value=
                   // onChangeText={handleChange("dateOfBirth")}
-                  placeholderTextColor={colors.placeholder}
-                  onPressIn={handleDateOfBirthModalPress}
-                  editable={false}
+                  placeholderTextColor={"white"}
+                  // onPressIn={handleDateOfBirthModalPress}
+                  // editable={false}
                 />
               </View>
               <View style={styles.inputLabelWrapper}>
@@ -185,6 +199,24 @@ const UserSettings = ({ user }: { user: User }) => {
               >
                 <></>
               </PasswordBottomSheet>
+              <UsernameBottomSheet
+                enablePanDownToClose={true}
+                username={values.username}
+                passwordCurrent={values.passwordCurrent}
+                ref={UsernameBottomSheetModalRef}
+                usernameCurrent={user.username}
+              >
+                <></>
+              </UsernameBottomSheet>
+              <EmailBottomSheet
+                enablePanDownToClose={true}
+                email={values.email}
+                emailCurrent={user.email}
+                passwordCurrent={values.passwordCurrent}
+                ref={EmailBottomSheetModalRef}
+              >
+                <></>
+              </EmailBottomSheet>
             </>
           </View>
         )}
@@ -233,4 +265,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserSettings;
+export default UserSecurities;

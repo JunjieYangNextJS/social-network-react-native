@@ -26,14 +26,10 @@ function Navigation({
     reactNavigationDark: NavigationDarkTheme,
   });
 
-  // deleteItemAsync("token");
-
   const authenticated = useUserTokenStore((state) => state.authenticated);
 
   return (
     <NavigationContainer onReady={onLayoutRootView} theme={DarkTheme}>
-      {/* {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />} */}
-
       {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );

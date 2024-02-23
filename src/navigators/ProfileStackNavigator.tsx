@@ -40,7 +40,8 @@ import HiddenPosts from "../screens.js/Profile/HiddenPosts";
 import BlockedUsers from "../screens.js/Profile/BlockedUsers";
 import Privacy from "../screens.js/Profile/Privacy";
 import { useNavigation } from "@react-navigation/native";
-import Settings from "../screens.js/Profile/Settings";
+
+import Securities from "../screens.js/Profile/Settings";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -84,8 +85,8 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
     onOpenDialog("Log Out", "Are you sure you want to log out?", onLogout);
   };
 
-  const navigateToSettings = () => {
-    parentNavigation?.navigate("Settings");
+  const navigateToSecurity = () => {
+    parentNavigation?.navigate("Security");
   };
 
   return (
@@ -104,7 +105,7 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
               size={20}
               style={{ marginRight: 10 }}
               iconColor={"#b3b3b3"}
-              onPress={navigateToSettings}
+              onPress={navigateToSecurity}
             />
           </View>
 
@@ -303,7 +304,7 @@ export default function ProfileStackNavigator() {
       />
 
       <Stack.Screen name="P_PostComment" component={PostComment} />
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Security" component={Securities} />
     </Stack.Navigator>
   );
 }

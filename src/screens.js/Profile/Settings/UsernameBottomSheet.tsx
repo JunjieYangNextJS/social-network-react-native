@@ -11,30 +11,30 @@ import { useAppTheme } from "../../../theme";
 import { useFormikContext } from "formik";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useChangePassword } from "../../../react-query-hooks/useAuth/usePassword";
-import { useDidUpdate } from "../../../hooks/useDidUpdate";
 
-interface IPasswordBottomSheet extends BottomSheetModalProps {
-  password: string;
+import { useDidUpdate } from "../../../hooks/useDidUpdate";
+import { useChangeEmailOrUsername } from "../../../react-query-hooks/useAuth/useChangeEmailOrUsername";
+
+interface IUsernameBottomSheet extends BottomSheetModalProps {
+  username: string;
   passwordCurrent: string;
-  passwordConfirm: string;
+  usernameCurrent: string;
 }
 
-const PasswordBottomSheet = React.forwardRef<
+const UsernameBottomSheet = React.forwardRef<
   BottomSheetModal,
-  IPasswordBottomSheet
+  IUsernameBottomSheet
 >((props, ref) => {
-  const { password, passwordCurrent, passwordConfirm } = props;
+  const { username, passwordCurrent, usernameCurrent } = props;
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
   const { top: statusBarHeight } = useSafeAreaInsets();
   const { setFieldValue, handleChange } = useFormikContext();
-  const { mutate, isPending, isSuccess } = useChangePassword();
+  const { mutate, isPending, isSuccess } = useChangeEmailOrUsername("username");
 
   //   refs
   const ref_input2 = useRef<any>();
-  const ref_input3 = useRef<any>();
 
   // variables
   const snapPoints = useMemo(() => [height - statusBarHeight], []);
@@ -42,30 +42,28 @@ const PasswordBottomSheet = React.forwardRef<
   // callbacks
 
   const handleUndo = () => {
-    setFieldValue("password", "");
-    setFieldValue("passwordConfirm", "");
     setFieldValue("passwordCurrent", "");
-    dismiss("EditPassword");
+    setFieldValue("username", usernameCurrent);
+    dismiss("EditUsername");
   };
 
   const handleSave = () => {
-    mutate({ password, passwordConfirm, passwordCurrent });
+    mutate({ username, passwordCurrent });
   };
 
   useDidUpdate(() => {
     if (!isSuccess) return;
-    setFieldValue("password", "");
-    setFieldValue("passwordConfirm", "");
+
     setFieldValue("passwordCurrent", "");
-    dismiss("EditPassword");
+    dismiss("EditUsername");
   }, [isSuccess]);
 
   // renders
   return (
     <View>
-      {/* <Button onPress={handlePasswordModalPress}>Edit</Button> */}
+      {/* <Button onPress={handleUsernameModalPress}>Edit</Button> */}
       <BottomSheetModal
-        name="EditPassword"
+        name="EditUsername"
         keyboardBehavior="interactive"
         ref={ref}
         index={0}
@@ -81,11 +79,11 @@ const PasswordBottomSheet = React.forwardRef<
               <Button onPress={handleUndo} disabled={isPending}>
                 Undo
               </Button>
-              <Text variant="titleMedium">Edit Password</Text>
+              <Text variant="titleMedium">Edit Username</Text>
               <Button
                 onPress={handleSave}
                 disabled={
-                  isPending || !password || !passwordConfirm || !passwordCurrent
+                  isPending || !passwordCurrent || usernameCurrent === username
                 }
               >
                 Save
@@ -106,24 +104,13 @@ const PasswordBottomSheet = React.forwardRef<
                 />
               </View>
               <View style={styles.inputLabelWrapper}>
-                <Text style={styles.label}>New Password</Text>
+                <Text style={styles.label}>New Username</Text>
                 <TextInput
                   style={styles.input}
-                  defaultValue={password}
-                  onChangeText={handleChange("password")}
+                  defaultValue={username}
+                  onChangeText={handleChange("username")}
                   placeholderTextColor={colors.placeholder}
-                  onSubmitEditing={() => ref_input3.current.focus()}
                   ref={ref_input2}
-                />
-              </View>
-              <View style={styles.inputLabelWrapper}>
-                <Text style={styles.label}>Confirm Password</Text>
-                <TextInput
-                  style={styles.input}
-                  defaultValue={passwordConfirm}
-                  onChangeText={handleChange("passwordConfirm")}
-                  placeholderTextColor={colors.placeholder}
-                  ref={ref_input3}
                 />
               </View>
             </View>
@@ -180,4 +167,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PasswordBottomSheet;
+export default UsernameBottomSheet;
