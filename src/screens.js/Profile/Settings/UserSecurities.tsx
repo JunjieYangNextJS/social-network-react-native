@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -24,6 +24,9 @@ import PasswordBottomSheet from "./PasswordBottomSheet";
 import { useChangeEmailOrUsername } from "../../../react-query-hooks/useAuth/useChangeEmailOrUsername";
 import UsernameBottomSheet from "./UsernameBottomSheet";
 import EmailBottomSheet from "./EmailBottomSheet";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -61,10 +64,25 @@ const UserSecurities = ({ user }: { user: User }) => {
   const { height } = useWindowDimensions();
   const { top: statusBarHeight } = useSafeAreaInsets();
 
-  //   mutate
+  //   date
+  const [inputDate, setInputDate] = useState({
+    year: birthYear,
+    month: birthMonth,
+    day: birthDay,
+  });
 
-  //   ref
-  const ref_input2 = useRef<any>();
+  const setDate = (event: DateTimePickerEvent, date: Date | undefined) => {
+    const {
+      type,
+      nativeEvent: { timestamp },
+    } = event;
+
+    setInputDate({
+      year: date?.getFullYear(),
+      month: date?.getMonth() ? date?.getMonth() + 1 : date?.getMonth(),
+      day: date?.getDate(),
+    });
+  };
 
   // variables
   const snapPoints = useMemo(() => [height - statusBarHeight], []);
@@ -157,7 +175,7 @@ const UserSecurities = ({ user }: { user: User }) => {
 
               <View style={styles.inputLabelWrapper}>
                 <Text style={styles.label}>Date of Birth</Text>
-                <TextInput
+                {/* <TextInput
                   placeholder={birthMonth + "/ " + birthDay + "/ " + birthYear}
                   style={styles.input}
                   // value=
@@ -165,7 +183,23 @@ const UserSecurities = ({ user }: { user: User }) => {
                   placeholderTextColor={"white"}
                   // onPressIn={handleDateOfBirthModalPress}
                   // editable={false}
-                />
+                /> */}
+                <View>
+                  <DateTimePicker
+                    mode="date"
+                    value={
+                      birthYear && birthMonth && birthDay
+                        ? new Date(birthYear, birthMonth - 1, birthDay)
+                        : new Date()
+                    }
+                    onChange={(
+                      event: DateTimePickerEvent,
+                      date: Date | undefined
+                    ) => setDate(event, date)}
+                    maximumDate={new Date()}
+                    themeVariant="dark"
+                  />
+                </View>
               </View>
               <View style={styles.inputLabelWrapper}>
                 <Text style={styles.label}>Password</Text>
@@ -258,7 +292,7 @@ const styles = StyleSheet.create({
   inputLabelWrapper: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 12,
     marginTop: 10,
