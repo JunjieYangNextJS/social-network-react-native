@@ -13,7 +13,7 @@ export default function Securities() {
   return (
     <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight || 0 }}>
       {user.createdBy === "guest" ? (
-        <GuestSecurities />
+        <GuestSecurities user={user} />
       ) : (
         <UserSecurities user={user} />
       )}

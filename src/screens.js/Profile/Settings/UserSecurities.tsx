@@ -109,9 +109,6 @@ const UserSecurities = ({ user }: { user: User }) => {
     changeBirthDay(inputDate);
   };
 
-  // variables
-  const snapPoints = useMemo(() => [height - statusBarHeight], []);
-
   // child refs
 
   const PasswordBottomSheetModalRef = useRef<BottomSheetModal>(null);
