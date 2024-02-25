@@ -127,7 +127,36 @@ export type IncomingFriendRequest = {
     message?: string
 };
 
-export type ChatRoom = {}
+export type ChatRoom = {
+    _id: string,
+    totalMessages: number,
+    lastModified: string,
+    lastMessage: string,
+    users: {
+        totalUnread: string,
+        left: boolean,
+        pinned: boolean,
+        muted: boolean,
+        _id: string,
+        user: {
+            _id: string,
+            photo: string,
+            whoCanMessageMe: string,
+            username: string,
+            profileName: string,
+            id: string
+        },
+    }[]
+}
+
+export type ChatMessage = {
+    _id: string,
+    chatRoom: string,
+    content: string,
+    createdAt: string,
+    id: string,
+    sender: string
+}
 
 export type Report = {
     reporterId: string,

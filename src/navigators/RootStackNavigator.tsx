@@ -25,6 +25,7 @@ export type RootStackParamList = {
   N_PostComment: { postCommentId: string; postTitle?: string };
 
   Chat: any;
+  ChatRoom: { chatRoomId: string; username: string };
   OtherUser: { username: string; profileImage?: string };
 
   ProfileStackNavigator: any;

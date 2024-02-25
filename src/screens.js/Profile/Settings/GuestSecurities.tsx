@@ -121,7 +121,6 @@ const GuestSecurities = ({ user }: { user: User }) => {
         initialValues={{
           username: "",
           email: "",
-
           password: "",
           passwordConfirm: "",
         }}

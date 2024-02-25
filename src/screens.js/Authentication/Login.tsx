@@ -69,7 +69,7 @@ export default function Login({ navigation }: Props) {
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={(values) => {
-          console.log(values, "values");
+          // console.log(values, "values");
           loginUser(values);
         }}
         validationSchema={validationSchema}
