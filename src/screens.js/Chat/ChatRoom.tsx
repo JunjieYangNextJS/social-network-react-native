@@ -15,7 +15,10 @@ import { ChatMessage } from "../../../types";
 import useUser from "../../react-query-hooks/useUser/useUser";
 import calcTimeAgo from "../../utils/calcTimeAgo";
 
-type Props = NativeStackScreenProps<RootStackParamList, "ChatRoom">;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  "ChatRoom" | "P_ChatRoom"
+>;
 
 export default function ChatRoom({ navigation, route }: Props) {
   const { chatRoomId, username } = route.params;

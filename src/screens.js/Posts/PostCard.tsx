@@ -82,50 +82,60 @@ export default function PostCard({
 }: IPostCard) {
   const route = useRoute();
 
-  const postRoute = useMemo(() => {
+  console.log(route.name);
+
+  const targetRoutes = useMemo(() => {
     let postRoute: "Post" | "N_Post" | "P_Post";
+    let otherUserRoute: "OtherUser" | "P_OtherUser" | "N_OtherUser";
 
     switch (route.name) {
       case "Posts":
         postRoute = "Post";
+        otherUserRoute = "OtherUser";
       case "OtherUser":
         postRoute = "Post";
+        otherUserRoute = "OtherUser";
         break;
       case "N_OtherUser":
         postRoute = "N_Post";
+        otherUserRoute = "N_OtherUser";
         break;
       case "Profile":
         postRoute = "P_Post";
+        otherUserRoute = "P_OtherUser";
         break;
       case "MyPosts":
         postRoute = "P_Post";
+        otherUserRoute = "P_OtherUser";
         break;
       case "P_OtherUser":
         postRoute = "P_Post";
+        otherUserRoute = "P_OtherUser";
         break;
       default:
         postRoute = "P_Post";
+        otherUserRoute = "P_OtherUser";
 
         break;
     }
-    return postRoute;
+    return { postRoute, otherUserRoute };
   }, [route]);
 
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "Posts" | "Notifications",
+    "Posts" | "Notifications" | "P_Drawer",
     undefined
   >;
 
   const navigateToPost = () => {
-    navigation.navigate(postRoute, {
+    navigation.navigate(targetRoutes.postRoute, {
       postId: id,
     });
   };
 
   const navigateToUserPage = () => {
     if (photoNotPressable) return;
-    navigation.navigate("OtherUser", {
+    navigation.navigate(targetRoutes.otherUserRoute, {
       username: poster.username,
       profileImage: poster.profileImage,
     });

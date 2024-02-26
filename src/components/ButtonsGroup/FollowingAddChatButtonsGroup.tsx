@@ -25,6 +25,7 @@ export default function FollowingAddChatButtonsGroup({
     allowFollowing,
     followers,
     username,
+    _id,
   } = otherUser;
 
   return (
@@ -43,7 +44,16 @@ export default function FollowingAddChatButtonsGroup({
       <View style={styles.button}>
         {(whoCanMessageMe === "anyone" ||
           (whoCanMessageMe === "friendsOnly" &&
-            friendList.includes(user._id))) && <ChatButton />}
+            friendList.includes(user._id))) && (
+          <ChatButton
+            myId={user._id}
+            myChatRooms={user.chatRooms}
+            OUFriendList={friendList}
+            OUId={_id}
+            OUUsername={username}
+            OUWhoCanMessageMe={whoCanMessageMe}
+          />
+        )}
       </View>
       {!noFriendButton && (
         <View>

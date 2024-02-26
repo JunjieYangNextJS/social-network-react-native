@@ -42,6 +42,7 @@ import Privacy from "../screens.js/Profile/Privacy";
 import { useNavigation } from "@react-navigation/native";
 
 import Securities from "../screens.js/Profile/Settings";
+import ChatRoom from "../screens.js/Chat/ChatRoom";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -302,6 +303,7 @@ export default function ProfileStackNavigator() {
         // options={{ gestureEnabled: false }}
         // options={() => ({ headerBackVisible: false })}
       />
+      <Stack.Screen name="P_ChatRoom" component={ChatRoom} />
 
       <Stack.Screen name="P_PostComment" component={PostComment} />
       <Stack.Screen name="Security" component={Securities} />

@@ -17,6 +17,7 @@ export type RootStackParamList = {
   P_Post: { postId: string };
   P_PostComment: { postCommentId: string; postTitle?: string };
   P_OtherUser: { username: string; profileImage?: string };
+  P_ChatRoom: { chatRoomId: string; username: string };
 
   // Noti stack
   Notifications: any;
