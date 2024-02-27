@@ -33,7 +33,8 @@ export default function PostCommentsContainer({
 
     return axios
       .get(
-        `${baseUrl}/postComments?id[ne]=${pinned}&post=${postId}&sort=${sortByValue}`,
+        `${baseUrl}/postComments?post=${postId}&sort=${sortByValue}`,
+        // `${baseUrl}/postComments?id[ne]=${pinned}&post=${postId}&sort=${sortByValue}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

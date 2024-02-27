@@ -14,6 +14,7 @@ import PostsSearch from "../screens.js/PostsSearch";
 import PostHeaderRight from "../screens.js/Posts/PostHeaderRight";
 import DraftsOpenButton from "../components/Buttons/DraftsOpenButton";
 import PostDraft from "../screens.js/PostDraft";
+import ChatRoom from "../screens.js/ChatRoom";
 
 export default function PostsStackNavigator() {
   return (
@@ -69,6 +70,11 @@ export default function PostsStackNavigator() {
           component={OtherUser}
           // options={{ gestureEnabled: false }}
           // options={() => ({ headerBackVisible: false })}
+        />
+        <Stack.Screen
+          name="C_ChatRoom"
+          component={ChatRoom}
+          options={{ headerTitle: " " }}
         />
       </Stack.Group>
     </Stack.Navigator>

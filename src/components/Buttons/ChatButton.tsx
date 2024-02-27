@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { Button } from "react-native-paper";
 import useCreateChatRoom from "../../react-query-hooks/useChat/useCreateChatRoom";
 import { ChatRoom, OtherUser, WhoCanMessageMe } from "../../../types";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDidUpdate } from "../../hooks/useDidUpdate";
@@ -26,27 +26,51 @@ export default function ChatButton({
   OUUsername,
 }: IChatButton) {
   const { mutate, isSuccess, isPending } = useCreateChatRoom();
+  const route = useRoute();
 
   const navigation = useNavigation() as NativeStackNavigationProp<
     RootStackParamList,
-    "P_OtherUser",
+    "P_OtherUser" | "OtherUser" | "N_OtherUser",
     undefined
   >;
 
   const handleStartChat = useCallback(() => {
+    let chatRoomRoute: "P_ChatRoom" | "C_ChatRoom" | "N_ChatRoom";
+
+    switch (route.name) {
+      case "P_OtherUser":
+        chatRoomRoute = "P_ChatRoom";
+
+        break;
+      case "OtherUser":
+        chatRoomRoute = "C_ChatRoom";
+
+        break;
+      case "N_OtherUser":
+        chatRoomRoute = "N_ChatRoom";
+
+        break;
+
+      default:
+        chatRoomRoute = "P_ChatRoom";
+
+        break;
+    }
+
     const selectedChatRoom = myChatRooms.find((chatRoom) =>
       chatRoom.users.some((user) => user.user._id === OUId)
     );
 
     if (selectedChatRoom) {
-      navigation.navigate("P_ChatRoom", {
+      navigation.navigate(chatRoomRoute, {
         chatRoomId: selectedChatRoom._id,
         username: OUUsername,
+        otherUserId: OUId,
       });
     } else {
       mutate({ otherUserId: OUId, userId: myId });
     }
-  }, [myChatRooms, OUId, OUUsername, navigation]);
+  }, [myChatRooms, OUId, OUUsername, navigation, route.name]);
 
   useDidUpdate(() => {
     if (isSuccess) handleStartChat();
@@ -54,9 +78,14 @@ export default function ChatButton({
 
   return (
     <View>
-      <Button onPress={handleStartChat} disabled={isPending}>
-        Chat
-      </Button>
+      {OUWhoCanMessageMe === "none" ||
+      (OUWhoCanMessageMe === "friendsOnly" && !OUFriendList.includes(myId)) ? (
+        <></>
+      ) : (
+        <Button onPress={handleStartChat} disabled={isPending}>
+          Chat
+        </Button>
+      )}
     </View>
   );
 }

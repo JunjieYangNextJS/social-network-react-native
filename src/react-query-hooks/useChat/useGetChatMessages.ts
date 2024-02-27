@@ -16,10 +16,10 @@ export default function useGetChatMessages (chatRoomId: string, limit: number = 
               },
         
           }).then(res => res.data.data.data as ChatMessage[])
-    }
-        
-          
+    }       
     ,
-        enabled: !!chatRoomId       
+        enabled: !!chatRoomId,
+        // refetchInterval: 1000
+             
     })
 }

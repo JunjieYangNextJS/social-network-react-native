@@ -7,6 +7,7 @@ import { Stack } from "./RootStackNavigator";
 import OtherUser from "../screens.js/OtherUser";
 import Post from "../screens.js/Post";
 import PostComment from "../screens.js/PostComment";
+import ChatRoom from "../screens.js/ChatRoom";
 
 export default function NotificationsStackNavigator() {
   return (
@@ -28,6 +29,11 @@ export default function NotificationsStackNavigator() {
         options={{ headerTitle: "Post" }}
       />
       <Stack.Screen name="N_PostComment" component={PostComment} />
+      <Stack.Screen
+        name="N_ChatRoom"
+        component={ChatRoom}
+        options={{ headerTitle: " " }}
+      />
       {/* <Stack.Screen
         name="OtherUser"
         component={OtherUser}

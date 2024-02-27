@@ -42,7 +42,7 @@ import Privacy from "../screens.js/Profile/Privacy";
 import { useNavigation } from "@react-navigation/native";
 
 import Securities from "../screens.js/Profile/Settings";
-import ChatRoom from "../screens.js/Chat/ChatRoom";
+import ChatRoom from "../screens.js/ChatRoom";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 

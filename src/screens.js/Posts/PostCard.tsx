@@ -82,8 +82,6 @@ export default function PostCard({
 }: IPostCard) {
   const route = useRoute();
 
-  console.log(route.name);
-
   const targetRoutes = useMemo(() => {
     let postRoute: "Post" | "N_Post" | "P_Post";
     let otherUserRoute: "OtherUser" | "P_OtherUser" | "N_OtherUser";

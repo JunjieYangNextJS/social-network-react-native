@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { Stack } from "./RootStackNavigator";
 import Chat from "../screens.js/Chat";
-import ChatRoom from "../screens.js/Chat/ChatRoom";
+import ChatRoom from "../screens.js/ChatRoom";
 
 export default function ChatStackNavigator() {
   return (

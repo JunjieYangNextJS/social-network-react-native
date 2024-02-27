@@ -6,25 +6,39 @@ import {
   StatusBar,
   FlatList,
 } from "react-native";
-import React, { useCallback, useLayoutEffect } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import useGetChatMessages from "../../react-query-hooks/useChat/useGetChatMessages";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Button } from "react-native-paper";
 import { ChatMessage } from "../../../types";
 import useUser from "../../react-query-hooks/useUser/useUser";
 import calcTimeAgo from "../../utils/calcTimeAgo";
+import MessageBubble from "./MessageBubble";
+import MessageBottomSheetModal from "./MessageBottomSheetModal";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  "ChatRoom" | "P_ChatRoom"
+  "ChatRoom" | "P_ChatRoom" | "N_ChatRoom" | "C_ChatRoom"
 >;
 
 export default function ChatRoom({ navigation, route }: Props) {
-  const { chatRoomId, username } = route.params;
+  const { chatRoomId, username, otherUserId } = route.params;
 
   const { data: messages } = useGetChatMessages(chatRoomId);
   const { data: user } = useUser();
+
+  // scroll to last message ref
+
+  const messagesEndRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      messagesEndRef?.current?.scrollToEnd({
+        animated: true,
+      });
+    }, 300);
+  }, [messages]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -46,7 +60,7 @@ export default function ChatRoom({ navigation, route }: Props) {
             { justifyContent: sender === user?.id ? "flex-end" : "flex-start" },
           ]}
         >
-          <Text
+          {/* <Text
             style={{
               fontSize: 20,
               marginBottom: 2,
@@ -57,7 +71,8 @@ export default function ChatRoom({ navigation, route }: Props) {
             ellipsizeMode="tail"
           >
             {content}
-          </Text>
+          </Text> */}
+          <MessageBubble text={content} isOutgoing={sender !== user?.id} />
         </View>
       );
     },
@@ -68,13 +83,20 @@ export default function ChatRoom({ navigation, route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={{ marginTop: 20, flex: 1, zIndex: 0 }}>
         <FlatList
           data={messages}
           keyExtractor={(item: ChatMessage) => item._id}
           renderItem={renderItem}
+          ref={messagesEndRef}
         />
       </View>
+
+      <MessageBottomSheetModal
+        userId={user.id}
+        otherUserId={otherUserId}
+        chatRoomId={chatRoomId}
+      />
     </SafeAreaView>
   );
 }
@@ -83,6 +105,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    flexDirection: "column",
   },
 
   itemContainer: {

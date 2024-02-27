@@ -56,6 +56,7 @@ export default function Chat({ navigation, route }: Props) {
         navigation.navigate("ChatRoom", {
           chatRoomId: _id,
           username: otherUser.user.username,
+          otherUserId: otherUser.user._id,
         });
       };
 
