@@ -33,7 +33,6 @@ const validationSchema = yup.object({
   title: yup.string().max(50).required("Title is required"),
   content: yup.string(),
 });
-const FormData = global.FormData;
 
 type Props = NativeStackScreenProps<RootStackParamList, "PostCreate">;
 

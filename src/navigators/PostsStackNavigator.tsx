@@ -15,6 +15,7 @@ import PostHeaderRight from "../screens.js/Posts/PostHeaderRight";
 import DraftsOpenButton from "../components/Buttons/DraftsOpenButton";
 import PostDraft from "../screens.js/PostDraft";
 import ChatRoom from "../screens.js/ChatRoom";
+import PostHeaderLeft from "../screens.js/Posts/PostHeaderLeft";
 
 export default function PostsStackNavigator() {
   return (
@@ -34,6 +35,7 @@ export default function PostsStackNavigator() {
           }) => ({
             headerBackVisible: false,
             headerRight: () => <PostHeaderRight navigation={navigation} />,
+            headerLeft: () => <PostHeaderLeft />,
           })}
         />
         <Stack.Screen

@@ -67,6 +67,13 @@ export default function InputAccessoryIconsBar({
     }
   };
 
+  const onPressAboutMenuItemAction = (value: string) => {
+    setFieldValue("about", value);
+  };
+  const onPressExposedToMenuItemAction = (value: string) => {
+    setFieldValue("exposedTo", value);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconsContainer}>
@@ -82,7 +89,7 @@ export default function InputAccessoryIconsBar({
           iconSize={22}
           style={styles.icon}
           selectValue={about}
-          type={"about"}
+          onPressMenuItemAction={onPressAboutMenuItemAction}
         />
         <SelectMenu
           data={exposedToArray}
@@ -90,7 +97,7 @@ export default function InputAccessoryIconsBar({
           iconSize={22}
           style={styles.icon}
           selectValue={exposedTo}
-          type={"exposedTo"}
+          onPressMenuItemAction={onPressExposedToMenuItemAction}
         />
 
         <IconButton

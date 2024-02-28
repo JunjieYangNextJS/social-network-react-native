@@ -12,7 +12,8 @@ interface ISelectMenu {
   icon: string;
   iconSize: number;
   style: Record<string, string | number>;
-  type: "exposedTo" | "about";
+
+  onPressMenuItemAction: (value: string) => void;
 }
 
 const SelectMenu = ({
@@ -22,7 +23,8 @@ const SelectMenu = ({
   icon,
   iconSize,
   style,
-  type,
+
+  onPressMenuItemAction,
 }: ISelectMenu) => {
   const [visible, setVisible] = useState(false);
 
@@ -30,10 +32,10 @@ const SelectMenu = ({
 
   const closeMenu = () => setVisible(false);
 
-  const { setFieldValue } = useFormikContext();
+  // const { setFieldValue } = useFormikContext();
 
   const handlePressItem = (value: string) => {
-    setFieldValue(type, value);
+    onPressMenuItemAction(value);
     closeMenu();
   };
 
