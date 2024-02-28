@@ -6,7 +6,13 @@ import {
   StatusBar,
   FlatList,
 } from "react-native";
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import useGetChatMessages from "../../react-query-hooks/useChat/useGetChatMessages";
@@ -16,6 +22,8 @@ import useUser from "../../react-query-hooks/useUser/useUser";
 import calcTimeAgo from "../../utils/calcTimeAgo";
 import MessageBubble from "./MessageBubble";
 import MessageBottomSheetModal from "./MessageBottomSheetModal";
+import { FlashList, MasonryFlashListRef } from "@shopify/flash-list";
+import { useDidUpdate } from "../../hooks/useDidUpdate";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -27,24 +35,47 @@ export default function ChatRoom({ navigation, route }: Props) {
 
   const { data: messages } = useGetChatMessages(chatRoomId);
   const { data: user } = useUser();
+  const [visible, setVisible] = useState(false);
 
   // scroll to last message ref
 
-  const messagesEndRef = useRef<FlatList>(null);
+  const messagesEndRef = useRef<any>(null); // Optional for more direct access
+  useLayoutEffect(() => {
+    const timeout = setTimeout(() => {
+      messagesEndRef?.current?.scrollToEnd({
+        animated: false,
+      });
+    }, 500);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      messagesEndRef?.current?.scrollToEnd({
-        animated: true,
-      });
-    }, 300);
-  }, [messages]);
+    const timeout = setTimeout(() => {
+      setVisible(true);
+    }, 600);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: username,
     });
   }, [route.params]);
+
+  useDidUpdate(() => {
+    const timeout = setTimeout(() => {
+      messagesEndRef?.current?.scrollToEnd({
+        animated: true,
+      });
+    }, 100);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [messages]);
 
   const renderItem = useCallback(
     (itemData: any) => {
@@ -58,6 +89,7 @@ export default function ChatRoom({ navigation, route }: Props) {
           style={[
             styles.itemContainer,
             { justifyContent: sender === user?.id ? "flex-end" : "flex-start" },
+            { opacity: visible ? 1 : 0 },
           ]}
         >
           {/* <Text
@@ -76,10 +108,12 @@ export default function ChatRoom({ navigation, route }: Props) {
         </View>
       );
     },
-    [messages, user?._id]
+    [messages, user?._id, visible]
   );
 
   if (!messages || !user) return <ActivityIndicator />;
+
+  const ITEM_HEIGHT = 100;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,6 +123,13 @@ export default function ChatRoom({ navigation, route }: Props) {
           keyExtractor={(item: ChatMessage) => item._id}
           renderItem={renderItem}
           ref={messagesEndRef}
+          getItemLayout={(data, index) => {
+            return {
+              length: ITEM_HEIGHT,
+              offset: ITEM_HEIGHT * index,
+              index,
+            };
+          }}
         />
       </View>
 
