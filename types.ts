@@ -1,5 +1,5 @@
-export type About = "L" | "I" | "G" | "A" | "B" | "2S" | "T" | "Others" | "Q" | "General";
-export type PostFilterAbout = "L" | "G" | "B" | "T" | "Q" | "I" | "A" | "2S" | "+More" | "general"
+export type About = "L" | "I" | "G" | "A" | "B" | "2S" | "T" | "+More" | "Q" | "General";
+export type PostFilterAbout = "L" | "G" | "B" | "T" | "Q" | "I" | "A" | "2S" | "+More" | "General"
 
 export type BackendRoutes = "posts" | "stories" | "secrets" 
 | "postComments" | "storyComments" | "secretComments"
@@ -13,7 +13,7 @@ export type ExposedTo = 'public' | 'friendsOnly' | 'friendsAndFollowersOnly' | '
 
 export type SelectArray = { value: string; label: string }[];
 
-export type SortByValue = "-lastCommentedAt"
+export type SortByValue = "-lastCommentedAt" | "-likesCount" | "-commentCount"
 
 export type DisplayedFollowing = {
     _id: string;

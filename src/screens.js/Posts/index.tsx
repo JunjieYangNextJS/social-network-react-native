@@ -20,30 +20,21 @@ import { FlashList } from "@shopify/flash-list";
 import * as SplashScreen from "expo-splash-screen";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { useQueryClient } from "@tanstack/react-query";
+import usePostsFilterStore from "../../store/usePostsFilterStore";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Posts">;
 
 SplashScreen.preventAutoHideAsync();
 
 const Posts = ({}: Props) => {
-  const [sortByValue, setSortByValue] =
-    useState<SortByValue>("-lastCommentedAt");
-  const [about, setAbout] = useState<PostFilterAbout>("general");
+  const { about, sort } = usePostsFilterStore();
 
   const {
     data: posts,
-    isSuccess,
-    refetch: refetchPosts,
-  } = usePosts(about, sortByValue);
-  const { data: user, refetch: refetchUsers } = useUser();
-  const queryClient = useQueryClient();
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (!posts || !user) return;
-  //     queryClient.invalidateQueries({ queryKey: [["posts"], ["user"]] });
-  //   }, [posts, user])
-  // );
+    refetch: refetchPosts,
+  } = usePosts(about, sort);
+  const { data: user, refetch: refetchUsers } = useUser();
 
   const shownPosts = useMemo(() => {
     if (!user || !posts) return;

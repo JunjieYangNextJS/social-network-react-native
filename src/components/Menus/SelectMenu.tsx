@@ -13,7 +13,7 @@ interface ISelectMenu {
   iconSize: number;
   style: Record<string, string | number>;
 
-  onPressMenuItemAction: (value: string) => void;
+  onPressMenuItemAction: (value: any) => void;
 }
 
 const SelectMenu = ({

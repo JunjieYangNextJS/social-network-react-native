@@ -1,18 +1,19 @@
 import { create } from "zustand";
+import { About, SortByValue } from "../../types";
+
 
 interface PostsFilterStore {
-   postsFilterIsOpen: boolean;
-   onOpenPostsFilter: () => void;
-   onClosePostsFilter: () => void;
-
-
+   about: About;
+   onSetAbout: (value: About) => void;
+   sort: SortByValue;
+   onSetSort: (sort: SortByValue) => void;
 }
 
 const usePostsFilterStore = create<PostsFilterStore>((set) => ({
-    postsFilterIsOpen: false,
-    onOpenPostsFilter: () => set({postsFilterIsOpen: true}),
-    onClosePostsFilter: () => set({postsFilterIsOpen: false}),
- 
+    about: "General",
+    sort: "-lastCommentedAt",
+    onSetAbout: (about: About) => set({about}),
+    onSetSort: (sort: SortByValue) => set({sort}),
 }))
 
 export default usePostsFilterStore
