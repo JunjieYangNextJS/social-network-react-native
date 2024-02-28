@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+
 import PostCard from "../../Posts/PostCard";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";

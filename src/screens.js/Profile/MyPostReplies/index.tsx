@@ -8,21 +8,12 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import PostCard from "../../Posts/PostCard";
+import { useNavigation } from "@react-navigation/native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { FlashList } from "@shopify/flash-list";
-import * as SplashScreen from "expo-splash-screen";
-import { RootStackParamList } from "../../../navigators/RootStackNavigator";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useGetMyPostReplies,
-  useGetMyPosts,
-} from "../../../react-query-hooks/useUser/useGetMyCreations";
+import { useGetMyPostReplies } from "../../../react-query-hooks/useUser/useGetMyCreations";
 import { Post, PostComment, PostReply } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import PostReplyContainer from "../../PostComment/PostReplyContainer";

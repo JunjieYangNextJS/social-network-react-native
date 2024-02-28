@@ -90,6 +90,9 @@ export default function PostCard({
       case "Posts":
         postRoute = "Post";
         otherUserRoute = "OtherUser";
+      case "PostsSearch":
+        postRoute = "Post";
+        otherUserRoute = "OtherUser";
       case "OtherUser":
         postRoute = "Post";
         otherUserRoute = "OtherUser";
