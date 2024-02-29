@@ -44,13 +44,13 @@ const ChatConfigMenu = ({ chatRoomId }: IChatConfigMenu) => {
     if (userChatInfo.pinned) {
       onOpenDialog(
         "Unpin this chat?",
-        "Pinned chats will always be at the top.",
+        "Pinned chats will be marked as pinned.",
         () => mutate({ chatRoomId, boolean: false, method: "pinned" })
       );
     } else {
       onOpenDialog(
         "Pin this chat?",
-        "Pinned chats will always be at the top.",
+        "Pinned chats will be marked as pinned.",
         () => mutate({ chatRoomId, boolean: true, method: "pinned" })
       );
     }

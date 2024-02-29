@@ -9,7 +9,13 @@ import {
 } from "react-native";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Avatar,
+  Button,
+  Icon,
+  Text,
+} from "react-native-paper";
 import { FlashList } from "@shopify/flash-list";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -63,6 +69,8 @@ export default function Chat({ navigation, route }: Props) {
 
       if (!otherUser || !userChatInfo) return null;
 
+      const { totalUnread, pinned, left, muted } = userChatInfo;
+
       const navigateToChatRoom = () => {
         navigation.navigate("ChatRoom", {
           chatRoomId: _id,
@@ -73,49 +81,44 @@ export default function Chat({ navigation, route }: Props) {
 
       return (
         <Pressable onPress={navigateToChatRoom}>
-          <View style={styles.itemContainer}>
-            <View style={styles.userInfoContainer}>
-              <Avatar.Image
-                size={50}
-                source={() => (
-                  <Image
-                    source={{
-                      uri: otherUser.user.photo,
-                    }}
-                    style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
-                  />
-                )}
-              />
+          {!left && (
+            <View style={styles.itemContainer}>
+              <View style={styles.userInfoContainer}>
+                <Avatar.Image
+                  size={50}
+                  source={() => (
+                    <Image
+                      source={{
+                        uri: otherUser.user.photo,
+                      }}
+                      style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+                    />
+                  )}
+                />
 
-              <View style={styles.descriptionContainer}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    marginBottom: 2,
-                    color: "white",
-                    maxWidth: 170,
-                  }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {otherUser.user.profileName}
-                </Text>
-                <Text
-                  style={{ color: colors.dimmed, maxWidth: 170 }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {lastMessage}
-                </Text>
+                <View style={styles.descriptionContainer}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      marginBottom: 2,
+                      color: "white",
+                      maxWidth: 170,
+                    }}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {otherUser.user.profileName}
+                  </Text>
+                  <Text
+                    style={{ color: colors.dimmed, maxWidth: 170 }}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {lastMessage}
+                  </Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.rightTextsWrapper}>
-              <Text
-                style={{ color: colors.dimmed, fontSize: 12, paddingLeft: 10 }}
-              >
-                {calcTimeAgo(lastModified)}
-              </Text>
-              <View>
+              <View style={styles.rightTextsWrapper}>
                 <Text
                   style={{
                     color: colors.dimmed,
@@ -123,12 +126,33 @@ export default function Chat({ navigation, route }: Props) {
                     paddingLeft: 10,
                   }}
                 >
-                  {userChatInfo.totalUnread > 0 &&
-                    `Unread: ${userChatInfo.totalUnread}`}
+                  {calcTimeAgo(lastModified)}
                 </Text>
+                <View
+                  style={{
+                    paddingLeft: 10,
+                    paddingTop: 4,
+                    display: "flex",
+                    flexDirection: "row",
+
+                    alignItems: "center",
+                  }}
+                >
+                  {pinned && <Icon source="pin" size={14} />}
+                  {muted && <Icon source="volume-mute" size={14} />}
+                  <Text
+                    style={{
+                      color: colors.dimmed,
+                      fontSize: 12,
+                      paddingLeft: 3,
+                    }}
+                  >
+                    {totalUnread > 0 && `Unread: ${totalUnread}`}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
+          )}
         </Pressable>
       );
     },
