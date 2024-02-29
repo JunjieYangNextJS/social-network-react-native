@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   Text,
@@ -19,6 +19,7 @@ import PostsStackNavigator from "./PostsStackNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import useGetWillNotifyNotifications from "../react-query-hooks/useNotifications/useGetWillNotifyNotifications";
 import { View } from "react-native";
+import { Image } from "expo-image";
 
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -29,9 +30,27 @@ export default function BottomTabNavigator() {
   const { data: user } = useUser();
   const { data: count } = useGetWillNotifyNotifications();
 
+  const allTotalUnread = useMemo(() => {
+    if (!user) return 0;
+    return user.chatRooms
+      .map((chatRoom) =>
+        chatRoom.users.find((target) => target.user._id === user.id)
+      )
+      .map((value) => value?.totalUnread)
+      .reduce(
+        (accumulator: any, currentValue) => accumulator + currentValue,
+        0
+      ) as number;
+  }, [user?.chatRooms]);
+
   if (!user || typeof count !== "number") return <ActivityIndicator />;
 
-  const getNotiIcon = (focused: boolean, size: number, color: string) => {
+  const getIconWithBadge = (
+    source: string,
+    size: number,
+    color: string,
+    count: number
+  ) => {
     return (
       <View>
         <Badge
@@ -41,16 +60,13 @@ export default function BottomTabNavigator() {
             bottom: 12,
             left: 16,
             backgroundColor: "orange",
+            zIndex: 10,
           }}
           visible={count > 0}
         >
           {count > 99 ? "99+" : count}
         </Badge>
-        <Icon
-          source={focused ? "bell" : "bell-outline"}
-          size={size}
-          color={color}
-        />
+        <Icon source={source} size={size} color={color} />
       </View>
     );
   };
@@ -75,7 +91,19 @@ export default function BottomTabNavigator() {
           // tabBarStyle: { display: "none" },
           // tabBarLabelStyle: { display: "none" },
           tabBarIcon: ({ color, size, focused }) => {
-            return <Avatar.Image size={22} source={{ uri: user.photo }} />;
+            return (
+              <Avatar.Image
+                size={23}
+                source={() => (
+                  <Image
+                    source={{
+                      uri: user.photo,
+                    }}
+                    style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+                  />
+                )}
+              />
+            );
           },
         }}
       />
@@ -107,7 +135,12 @@ export default function BottomTabNavigator() {
           // tabBarStyle: { display: "none" },
           // tabBarLabelStyle: { display: "none" },
           tabBarIcon: ({ color, size, focused }) => {
-            return getNotiIcon(focused, size, color);
+            return getIconWithBadge(
+              focused ? "bell" : "bell-outline",
+              size,
+              color,
+              count
+            );
           },
         }}
       />
@@ -119,12 +152,11 @@ export default function BottomTabNavigator() {
           // tabBarStyle: { display: "none" },
           // tabBarLabelStyle: { display: "none" },
           tabBarIcon: ({ color, size, focused }) => {
-            return (
-              <Icon
-                source={focused ? "chat-processing" : "chat-processing-outline"}
-                size={size}
-                color={color}
-              />
+            return getIconWithBadge(
+              focused ? "chat-processing" : "chat-processing-outline",
+              size,
+              color,
+              allTotalUnread
             );
           },
         }}

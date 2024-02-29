@@ -124,7 +124,7 @@ export default function Chat({ navigation, route }: Props) {
                   }}
                 >
                   {userChatInfo.totalUnread > 0 &&
-                    `unread: ${userChatInfo.totalUnread}`}
+                    `Unread: ${userChatInfo.totalUnread}`}
                 </Text>
               </View>
             </View>
