@@ -24,6 +24,7 @@ import MessageBubble from "./MessageBubble";
 import MessageBottomSheetModal from "./MessageBottomSheetModal";
 import { FlashList, MasonryFlashListRef } from "@shopify/flash-list";
 import { useDidUpdate } from "../../hooks/useDidUpdate";
+import useEraseUnreadCount from "../../react-query-hooks/useChat/useEraseUnreadCount";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -37,9 +38,18 @@ export default function ChatRoom({ navigation, route }: Props) {
   const { data: user } = useUser();
   const [visible, setVisible] = useState(false);
 
-  // scroll to last message ref
+  // erase unread count
+  const { mutate: eraseUnreadCount } = useEraseUnreadCount();
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        eraseUnreadCount({ chatRoom: chatRoomId });
+      }),
+    [navigation]
+  );
 
-  const messagesEndRef = useRef<any>(null); // Optional for more direct access
+  // scroll to last message ref
+  const messagesEndRef = useRef<any>(null);
   useLayoutEffect(() => {
     const timeout = setTimeout(() => {
       messagesEndRef?.current?.scrollToEnd({

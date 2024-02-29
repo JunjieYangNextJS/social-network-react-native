@@ -3,6 +3,7 @@ import React from "react";
 import { Stack } from "./RootStackNavigator";
 import Chat from "../screens.js/Chat";
 import ChatRoom from "../screens.js/ChatRoom";
+import ChatConfigMenu from "../screens.js/ChatRoom/ChatConfigMenu";
 
 export default function ChatStackNavigator() {
   return (
@@ -18,7 +19,12 @@ export default function ChatStackNavigator() {
       <Stack.Screen
         name="ChatRoom"
         component={ChatRoom}
-        options={{ headerTitle: " " }}
+        options={({ route }) => ({
+          headerTitle: " ",
+          headerRight: () => (
+            <ChatConfigMenu chatRoomId={route.params.chatRoomId} />
+          ),
+        })}
       />
     </Stack.Navigator>
   );

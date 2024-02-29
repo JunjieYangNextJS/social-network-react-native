@@ -7,13 +7,13 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
 import { FlashList } from "@shopify/flash-list";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useUser from "../../react-query-hooks/useUser/useUser";
@@ -36,6 +36,16 @@ export default function Chat({ navigation, route }: Props) {
   }
 
   const { chatRooms } = user;
+  // const isFocused = useIsFocused();
+
+  // console.log(user.chatRooms);
+
+  // const chatRooms = useMemo(() => {
+  //   const chatRooms = withEmptyChatRooms.filter(
+  //     (room) => room.lastMessage !== undefined
+  //   );
+  //   return chatRooms;
+  // }, [withEmptyChatRooms, isFocused]);
 
   if (chatRooms.length < 1) {
     return (
@@ -49,8 +59,9 @@ export default function Chat({ navigation, route }: Props) {
         itemData.item as ChatRoom;
 
       const otherUser = users.find((item) => item.user._id !== user._id);
+      const userChatInfo = users.find((item) => item.user._id === user._id);
 
-      if (!otherUser) return null;
+      if (!otherUser || !userChatInfo) return null;
 
       const navigateToChatRoom = () => {
         navigation.navigate("ChatRoom", {
@@ -98,12 +109,24 @@ export default function Chat({ navigation, route }: Props) {
                 </Text>
               </View>
             </View>
-            <View>
+            <View style={styles.rightTextsWrapper}>
               <Text
                 style={{ color: colors.dimmed, fontSize: 12, paddingLeft: 10 }}
               >
                 {calcTimeAgo(lastModified)}
               </Text>
+              <View>
+                <Text
+                  style={{
+                    color: colors.dimmed,
+                    fontSize: 12,
+                    paddingLeft: 10,
+                  }}
+                >
+                  {userChatInfo.totalUnread > 0 &&
+                    `unread: ${userChatInfo.totalUnread}`}
+                </Text>
+              </View>
             </View>
           </View>
         </Pressable>
@@ -154,8 +177,9 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     marginLeft: 10,
   },
-  buttonsWrapper: {
+  rightTextsWrapper: {
     display: "flex",
-    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
 });

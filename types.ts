@@ -131,9 +131,9 @@ export type ChatRoom = {
     _id: string,
     totalMessages: number,
     lastModified: string,
-    lastMessage: string,
+    lastMessage?: string,
     users: {
-        totalUnread: string,
+        totalUnread: number,
         left: boolean,
         pinned: boolean,
         muted: boolean,

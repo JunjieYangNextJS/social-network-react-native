@@ -19,8 +19,6 @@ import PostsStackNavigator from "./PostsStackNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import useGetWillNotifyNotifications from "../react-query-hooks/useNotifications/useGetWillNotifyNotifications";
 import { View } from "react-native";
-import { Stack } from "./RootStackNavigator";
-import OtherUser from "../screens.js/OtherUser";
 
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -73,7 +71,7 @@ export default function BottomTabNavigator() {
         name="ProfileStackNavigator"
         component={ProfileStackNavigator}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: "Home",
           // tabBarStyle: { display: "none" },
           // tabBarLabelStyle: { display: "none" },
           tabBarIcon: ({ color, size, focused }) => {

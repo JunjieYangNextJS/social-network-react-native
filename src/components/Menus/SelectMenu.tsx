@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { Button, Menu, Divider, IconButton } from "react-native-paper";
 import { SelectArray } from "../../../types";
 import { useAppTheme } from "../../theme";
-import { useFormikContext } from "formik";
 
 interface ISelectMenu {
   data: SelectArray;
