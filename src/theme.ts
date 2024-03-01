@@ -15,6 +15,7 @@ const theme = {
       orange: "#FF7900",
       black: "#000000",
       white: "#FFFFFF",
+      
       liked: "#F22625",
       trash: "#ba0000",
       bookmarked: "#DBD33E",

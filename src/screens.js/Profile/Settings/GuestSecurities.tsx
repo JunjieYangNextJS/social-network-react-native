@@ -31,15 +31,19 @@ const validationSchema = yup.object({
       8,
       "Password should be of minimum 8 characters length and has an uppercase and an number"
     )
-    .test("isValidPass", " is not valid", (value: any, context) => {
-      const hasUpperCase = /[A-Z]/.test(value);
-      const hasNumber = /[0-9]/.test(value);
+    .test(
+      "isValidPass",
+      "Password should be of minimum 8 characters length and has an uppercase and an number",
+      (value: any, context) => {
+        const hasUpperCase = /[A-Z]/.test(value);
+        const hasNumber = /[0-9]/.test(value);
 
-      if (hasUpperCase && hasNumber) {
-        return true;
+        if (hasUpperCase && hasNumber) {
+          return true;
+        }
+        return false;
       }
-      return false;
-    })
+    )
     .required("Password is required"),
   passwordConfirm: yup
     .string()
@@ -129,13 +133,11 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 </Button>
               </View>
 
-              {error && (
-                <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
-                  <Text variant="titleSmall" style={{ color: colors.trash }}>
-                    {error?.toString()}
-                  </Text>
-                </View>
-              )}
+              <View style={{ marginHorizontal: 20, marginTop: 5 }}>
+                <Text variant="titleSmall" style={{ color: colors.liked }}>
+                  {error?.toString()}
+                </Text>
+              </View>
 
               <View style={styles.body}>
                 <View style={styles.inputLabelWrapper}>
