@@ -24,6 +24,15 @@ export default function useConvertGuestToUser() {
             Authorization: `Bearer ${token}`,
           },
         })
+        .catch(err => {
+          // console.log(err.response.status)
+          // if (err.response.status === 403)
+          //   setErrorMessage('Ouch, You have been forbidden to view this page');
+          // if (err.response.status === 404) setErrorMessage(404);
+          // if (err.response.status === 302) setErrorMessage(302);
+       
+          return Promise.reject(err.response.data.error.message)
+        })
         .then((res) => res.data);
     },
     onSuccess: async (data) => {

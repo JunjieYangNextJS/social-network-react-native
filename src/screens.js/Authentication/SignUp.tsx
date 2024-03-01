@@ -79,12 +79,12 @@ export default function SignUp({ navigation }: Props) {
     if (error && error instanceof AxiosError) {
       if (error?.response?.status === 400) {
         setResponseError("Your username or email is taken.");
-      } else if (error?.response?.status === 401) {
-        setResponseError("Human verify failed");
       } else if (error?.response?.status === 403) {
         setResponseError("This username is not allowed");
       } else {
-        setResponseError("Registration wasn't successful");
+        setResponseError(
+          "Registration wasn't successful, please try another time"
+        );
       }
     }
   }, [error]);

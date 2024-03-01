@@ -63,7 +63,7 @@ const GuestSecurities = ({ user }: { user: User }) => {
     birthDay: 1,
   });
 
-  const { mutate, isPending } = useConvertGuestToUser();
+  const { mutate, isPending, error } = useConvertGuestToUser();
 
   const setDate = (event: DateTimePickerEvent, date: Date | undefined) => {
     const {
@@ -129,6 +129,14 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 </Button>
               </View>
 
+              {error && (
+                <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
+                  <Text variant="titleSmall" style={{ color: colors.trash }}>
+                    {error?.toString()}
+                  </Text>
+                </View>
+              )}
+
               <View style={styles.body}>
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Username</Text>
@@ -167,6 +175,7 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 </View>
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Password</Text>
+
                   <PasswordInput
                     placeholder="********"
                     defaultStyle={styles.input}
