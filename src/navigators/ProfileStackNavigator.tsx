@@ -75,6 +75,7 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
         queryClient.removeQueries({ queryKey: ["user", { exact: true }] });
         await deleteItemAsync("token");
         setLogout();
+        // parentNavigation?.navigate("Posts");
         onOpenToast("success", "Logout was successful");
       }
     } catch (err) {

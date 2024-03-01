@@ -13,7 +13,7 @@ const onLogout = async () => {
     const token = await getItemAsync("token");
    
     try {
-      console.log('?')
+ 
       const res = await axios.get(`${baseUrl}/users/logout`, {
         headers: {
           Authorization: `Bearer ${token}`,

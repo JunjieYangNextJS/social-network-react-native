@@ -1,34 +1,23 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   StyleSheet,
   GestureResponderEvent,
   TextInput,
   useWindowDimensions,
-  Keyboard,
 } from "react-native";
 import { Text, Button, HelperText } from "react-native-paper";
-import {
-  BottomSheetModal,
-  BottomSheetTextInput,
-  useBottomSheetModal,
-} from "@gorhom/bottom-sheet";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAppTheme } from "../../../theme";
 import * as yup from "yup";
-import { Formik, FormikErrors, ErrorMessage } from "formik";
+import { Formik } from "formik";
 import { User } from "../../../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { useDidUpdate } from "../../../hooks/useDidUpdate";
-import PasswordBottomSheet from "./PasswordBottomSheet";
-import { useChangeEmailOrUsername } from "../../../react-query-hooks/useAuth/useChangeEmailOrUsername";
-import UsernameBottomSheet from "./UsernameBottomSheet";
-import EmailBottomSheet from "./EmailBottomSheet";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { useChangeBirthday } from "../../../react-query-hooks/useAuth/useChangeBirthday";
 import useConvertGuestToUser from "../../../react-query-hooks/useAuth/useConvertGuestToUser";
+import PasswordInput from "../../../components/PasswordInput";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -59,12 +48,9 @@ const validationSchema = yup.object({
 });
 
 const GuestSecurities = ({ user }: { user: User }) => {
-  const { username, email, birthDay, birthMonth, birthYear } = user;
+  const { username, email } = user;
 
   const { colors } = useAppTheme();
-  const { dismiss } = useBottomSheetModal();
-  const { height } = useWindowDimensions();
-  const { top: statusBarHeight } = useSafeAreaInsets();
 
   //   date
   const [inputDate, setInputDate] = useState<{
@@ -96,18 +82,6 @@ const GuestSecurities = ({ user }: { user: User }) => {
       });
     }
   };
-
-  // const birthdayHasNotChanged =
-  //   inputDate.birthDay === birthDay &&
-  //   inputDate.birthMonth === birthMonth &&
-  //   inputDate.birthYear === birthYear;
-
-  // const cannotSaveBirthdayNow =
-  //   !inputDate.birthYear ||
-  //   !inputDate.birthMonth ||
-  //   !inputDate.birthDay ||
-  //   birthdayHasNotChanged ||
-  //   isPending;
 
   //   refs
   const ref_input2 = useRef<any>();
@@ -193,9 +167,9 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 </View>
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Password</Text>
-                  <TextInput
+                  <PasswordInput
                     placeholder="********"
-                    style={styles.input}
+                    defaultStyle={styles.input}
                     placeholderTextColor={colors.placeholder}
                     onChangeText={handleChange("password")}
                     returnKeyType="next"
@@ -210,9 +184,9 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 </View>
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Confirm Password</Text>
-                  <TextInput
+                  <PasswordInput
                     placeholder="********"
-                    style={styles.input}
+                    defaultStyle={styles.input}
                     placeholderTextColor={colors.placeholder}
                     onChangeText={handleChange("passwordConfirm")}
                     ref={ref_input4}
@@ -236,12 +210,6 @@ const GuestSecurities = ({ user }: { user: User }) => {
                       maximumDate={new Date()}
                       themeVariant="dark"
                     />
-                    {/* <Button
-                    onPress={handleSaveBirthday}
-                    disabled={cannotSaveBirthdayNow}
-                  >
-                    Save
-                  </Button> */}
                   </View>
                 </View>
               </View>
@@ -284,6 +252,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#141414",
     color: "white",
     flex: 1,
+    height: 40,
   },
 
   label: {
