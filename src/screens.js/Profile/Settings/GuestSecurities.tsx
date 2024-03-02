@@ -117,6 +117,12 @@ const GuestSecurities = ({ user }: { user: User }) => {
           submitCount,
           dirty,
         }) => {
+          const isInvalid =
+            values.email === "" ||
+            values.password === "" ||
+            values.username === "" ||
+            values.passwordConfirm === "";
+
           return (
             <View>
               <View style={styles.header}>
@@ -127,7 +133,7 @@ const GuestSecurities = ({ user }: { user: User }) => {
 
                 <Button
                   onPress={(e: GestureResponderEvent) => handleSubmit()}
-                  disabled={isPending || !dirty}
+                  disabled={isPending || isInvalid}
                 >
                   Save
                 </Button>

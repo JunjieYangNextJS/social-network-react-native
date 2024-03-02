@@ -84,6 +84,8 @@ const Login = ({ navigation }: Props) => {
           submitCount,
           dirty,
         }) => {
+          const isInvalid = values.password === "" || values.username === "";
+
           return (
             <View>
               <View style={styles.header}>
@@ -96,7 +98,7 @@ const Login = ({ navigation }: Props) => {
 
                 <Button
                   onPress={(e: GestureResponderEvent) => handleSubmit()}
-                  disabled={isPending || guestIsPending || !dirty}
+                  disabled={isPending || guestIsPending || isInvalid}
                 >
                   Login
                 </Button>
@@ -119,6 +121,7 @@ const Login = ({ navigation }: Props) => {
                     onChangeText={handleChange("username")}
                     returnKeyType="next"
                     onSubmitEditing={() => ref_input2.current.focus()}
+                    autoFocus={true}
                   />
                 </View>
                 <View style={styles.helperTextWrapper}>
@@ -158,7 +161,9 @@ const Login = ({ navigation }: Props) => {
                 <Button onPress={() => navigation.navigate("SignUp")}>
                   Sign up
                 </Button>
-                <Button>Forgot password?</Button>
+                <Button onPress={() => navigation.navigate("ForgotMyPassword")}>
+                  Forgot password?
+                </Button>
               </View>
             </View>
           );

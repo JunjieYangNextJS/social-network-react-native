@@ -114,8 +114,13 @@ const SignUp = () => {
           errors,
           isSubmitting,
           submitCount,
-          dirty,
         }) => {
+          const isInvalid =
+            values.email === "" ||
+            values.password === "" ||
+            values.username === "" ||
+            values.passwordConfirm === "";
+
           return (
             <View>
               <View style={styles.header}>
@@ -128,7 +133,7 @@ const SignUp = () => {
 
                 <Button
                   onPress={(e: GestureResponderEvent) => handleSubmit()}
-                  disabled={isPending || !dirty}
+                  disabled={isPending || isInvalid}
                 >
                   Create
                 </Button>
@@ -151,6 +156,7 @@ const SignUp = () => {
                     onChangeText={handleChange("username")}
                     returnKeyType="next"
                     onSubmitEditing={() => ref_input2.current.focus()}
+                    autoFocus={true}
                   />
                 </View>
                 <View style={styles.helperTextWrapper}>

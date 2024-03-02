@@ -6,12 +6,20 @@ import { User } from '../../../types';
 
 export function useForgotPassword() {
     return useMutation({
-        mutationFn: values =>
-        axios
-          .post(`${baseUrl}users/forgotPassword`, values, {
-            withCredentials: true,
+        mutationFn: async (values: { email: string }) => {
+          const token = await getItemAsync("token");
+          return  axios
+          .post(`${baseUrl}/users/forgotPassword`, values, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           
+          }).catch(err => {
+           
+            return Promise.reject(err.response.data.error.message)
           })
+        }
+       
     
     }
     );
