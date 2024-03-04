@@ -21,6 +21,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PressableAvatar from "../../components/PressableAvatar";
+import RenderHtml from "react-native-render-html";
+import { useWindowDimensions } from "react-native";
 
 interface IPostCard {
   id: string;
@@ -81,6 +83,7 @@ export default function PostCard({
   subscribers,
 }: IPostCard) {
   const route = useRoute();
+  const { width } = useWindowDimensions();
 
   const targetRoutes = useMemo(() => {
     let postRoute: "Post" | "N_Post" | "P_Post";
@@ -142,6 +145,14 @@ export default function PostCard({
     });
   };
 
+  // const source = useMemo(() => {
+  //   return {
+  //     html: content,
+  //   };
+  // }, [content]);
+
+  if (!content) return null;
+
   // const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
 
   return (
@@ -184,11 +195,25 @@ export default function PostCard({
 
         <Card.Content>
           <View style={styles.content}>
-            <HTMLView
+            {/* <HTMLView
               value={content}
               stylesheet={HTMLViewStyles}
               nodeComponentProps={{ selectable: true }}
               // renderNode={renderNode}
+            /> */}
+            <RenderHtml
+              source={{
+                html: content,
+              }}
+              contentWidth={width}
+              tagsStyles={tagsStyles}
+              renderersProps={{
+                img: {
+                  enableExperimentalPercentWidth: true,
+                },
+              }}
+              enableExperimentalBRCollapsing={true}
+              // defaultTextProps={{ selectable: true }}
             />
           </View>
         </Card.Content>
@@ -314,13 +339,4 @@ const HTMLViewDefault = {
   lineHeight: 22,
 };
 
-const HTMLStylesObj = injectHTMLViewStyle(HTMLViewDefault);
-
-const HTMLViewStyles = StyleSheet.create({
-  ...HTMLStylesObj,
-  img: {
-    width: 100,
-    height: 100,
-    resizeMode: "cover", // Or 'cover', 'stretch' as needed
-  },
-});
+const tagsStyles = injectHTMLViewStyle(HTMLViewDefault);

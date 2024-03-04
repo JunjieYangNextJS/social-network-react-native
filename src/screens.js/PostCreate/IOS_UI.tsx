@@ -65,17 +65,17 @@ export default function IOS_UI({
   isSubmitting,
 }: IIos_UI) {
   const inputAccessoryViewID = "uniqueID";
-  const inputRef = useRef<TextInput | null>(null); // Create a ref for the TextInput
+  // const inputRef = useRef<TextInput | null>(null); // Create a ref for the TextInput
 
-  useFocusEffect(
-    useCallback(() => {
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus(); // Focus the input when screen comes into focus
-        }
-      }, 600);
-    }, [inputRef.current])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     setTimeout(() => {
+  //       if (inputRef.current) {
+  //         inputRef.current.focus(); // Focus the input when screen comes into focus
+  //       }
+  //     }, 600);
+  //   }, [inputRef.current])
+  // );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -93,7 +93,8 @@ export default function IOS_UI({
                 onChangeText={onSetTitle}
                 style={styles.title}
                 inputAccessoryViewID={inputAccessoryViewID}
-                ref={inputRef}
+                // ref={inputRef}
+                autoFocus={true}
               />
             </View>
             <View style={[styles.inputWrapper, {}]}>

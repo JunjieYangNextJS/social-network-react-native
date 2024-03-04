@@ -1,5 +1,10 @@
 import React from "react";
-import { View, Text as NativeText, StyleSheet } from "react-native";
+import {
+  View,
+  Text as NativeText,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 import { Image } from "expo-image";
 import {
   Avatar,
@@ -23,6 +28,8 @@ import PressableAvatar from "../../components/PressableAvatar";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PostPoll from "./PostPoll";
 import PostStoryActionMenu from "../../components/Menus/PostStoryActionMenu";
+import RenderHtml from "react-native-render-html";
+import CustomImageRenderer from "../../components/CustomImageRenderer";
 
 interface IPostContent {
   post: Post;
@@ -110,6 +117,7 @@ export default function PostContent({
   } = post;
 
   const { mutate: handleDeletePost, status: deleteStatus } = useDeletePost();
+  const { width } = useWindowDimensions();
 
   return (
     <Card style={styles.card}>
@@ -137,10 +145,27 @@ export default function PostContent({
 
         <Card.Content>
           <View style={styles.content}>
-            <HTMLView
+            {/* <HTMLView
               value={content}
-              stylesheet={HTMLViewStyles}
+              stylesheet={tagsStyles}
               nodeComponentProps={{ selectable: true }}
+            /> */}
+            <RenderHtml
+              source={{
+                html: content,
+              }}
+              contentWidth={width}
+              tagsStyles={tagsStyles}
+              renderersProps={{
+                img: {
+                  enableExperimentalPercentWidth: true,
+                },
+              }}
+              enableExperimentalBRCollapsing={true}
+              defaultTextProps={{ selectable: true }}
+              // renderers={{
+              //   img: CustomImageRenderer,
+              // }}
             />
           </View>
         </Card.Content>
@@ -207,7 +232,7 @@ const styles = StyleSheet.create({
   titleWrapper: {
     display: "flex",
     alignItems: "center",
-    paddingBottom: 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
   },
 
@@ -283,13 +308,4 @@ const HTMLViewDefault = {
   lineHeight: 22,
 };
 
-const HTMLStylesObj = injectHTMLViewStyle(HTMLViewDefault);
-
-const HTMLViewStyles = StyleSheet.create({
-  ...HTMLStylesObj,
-  img: {
-    width: 100,
-    height: 100,
-    resizeMode: "cover", // Or 'cover', 'stretch' as needed
-  },
-});
+const tagsStyles = injectHTMLViewStyle(HTMLViewDefault);

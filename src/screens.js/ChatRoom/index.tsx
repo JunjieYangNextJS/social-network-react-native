@@ -140,6 +140,14 @@ export default function ChatRoom({ navigation, route }: Props) {
               index,
             };
           }}
+          // keyboardDismissMode="interactive"
+          // automaticallyAdjustContentInsets={false}
+          // contentInsetAdjustmentBehavior="never"
+          // maintainVisibleContentPosition={{
+          //   minIndexForVisible: 0,
+          //   autoscrollToTopThreshold: 100,
+          // }}
+          // automaticallyAdjustKeyboardInsets={true}
         />
       </View>
 

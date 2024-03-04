@@ -12,9 +12,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { useAppTheme } from "../../theme";
 import { Button } from "react-native-paper";
-import useReplyBottomSheetStore from "../../store/useReplyBottomSheetStore";
-import HTMLView from "react-native-htmlview";
-import useCreatePostReply from "../../react-query-hooks/usePostReplies/useCreatePostReply";
+
 import useCreatePostComment from "../../react-query-hooks/usePostComments/useCreatePostComment";
 
 interface ICommentBottomSheet {
