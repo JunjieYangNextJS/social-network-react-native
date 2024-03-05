@@ -10,8 +10,7 @@ import {
   Text,
 } from "react-native-paper";
 import { User } from "../../../types";
-import { WebView } from "react-native-webview";
-import HTMLView from "react-native-htmlview";
+
 import calcTimeAgo from "../../utils/calcTimeAgo";
 import BookmarkLikeMoreIconGroups from "../../components/IconButtonGroups/BookmarkLikeMoreIconGroups";
 import useDeletePost from "../../react-query-hooks/usePosts/useDeletePost";
@@ -212,7 +211,9 @@ export default function PostCard({
                   enableExperimentalPercentWidth: true,
                 },
               }}
+              enableExperimentalMarginCollapsing={true}
               enableExperimentalBRCollapsing={true}
+              enableExperimentalGhostLinesPrevention={true}
               // defaultTextProps={{ selectable: true }}
             />
           </View>
@@ -296,6 +297,7 @@ const styles = StyleSheet.create({
 
   content: {
     // overflow: "hidden",
+    marginTop: -10,
   },
 
   footer: {

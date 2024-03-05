@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import BottomSheet, {
   BottomSheetModalProvider,
   BottomSheetTextInput,
@@ -13,10 +13,13 @@ import BottomSheet, {
 import { useAppTheme } from "../../theme";
 import { Button } from "react-native-paper";
 import useReplyBottomSheetStore from "../../store/useReplyBottomSheetStore";
-import HTMLView from "react-native-htmlview";
+
+import RenderHtml from "react-native-render-html";
 import useCreatePostReply from "../../react-query-hooks/usePostReplies/useCreatePostReply";
 
 const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
+  const { width } = useWindowDimensions();
+
   const theme = useAppTheme();
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -110,11 +113,20 @@ const ReplyBottomSheet = ({ postCommentId }: { postCommentId: string }) => {
             <View style={styles.ReplyToContainer}>
               {replyTo && <Text style={{ color: "white" }}>Replying to </Text>}
 
-              <HTMLView
+              {/* <HTMLView
                 value={`<span>${replyTo}</span>`}
                 stylesheet={HTMLViewStyles}
 
                 // renderNode={renderNode}
+              /> */}
+              <RenderHtml
+                source={{ html: `<span>${replyTo}</span>` }}
+                contentWidth={width}
+                tagsStyles={{
+                  span: {
+                    color: "#FFF",
+                  },
+                }}
               />
             </View>
 
@@ -176,11 +188,5 @@ const styles = StyleSheet.create({
     // justifyContent: "space-between",
     paddingLeft: 12,
     alignItems: "center",
-  },
-});
-
-const HTMLViewStyles = StyleSheet.create({
-  span: {
-    color: "#FFF",
   },
 });

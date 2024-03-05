@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text as NativeText, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text as NativeText,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+} from "react-native";
 import { Image } from "expo-image";
 import {
   Avatar,
@@ -10,22 +16,20 @@ import {
   Menu,
   Text,
 } from "react-native-paper";
-import HTMLView from "react-native-htmlview";
+
 import { PostReply } from "../../../types";
 import calcTimeAgo from "../../utils/calcTimeAgo";
 import LikeMoreIconGroupsForReply from "../../components/IconButtonGroups/LikeMoreIconGroupsForReply";
 import { openURL } from "expo-linking";
 import useDeletePostReply from "./../../react-query-hooks/usePostReplies/useDeletePostReply";
-import CopyTextMenu from "../../components/Menus/CopyTextMenu";
-import { stripHtml } from "string-strip-html";
+
 import useReplyBottomSheetStore from "../../store/useReplyBottomSheetStore";
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
 import PressableAvatar from "../../components/PressableAvatar";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../navigators/RootStackNavigator";
 
-interface IPostReplyContent {
+import RenderHTML from "react-native-render-html";
+
+interface IPostReplyContainer {
   postReply: PostReply;
   userId?: string;
   userUsername: string;
@@ -42,7 +46,7 @@ export default function PostReplyContainer({
   userUsername,
   navigateToUserPage,
   navigateToPostComment,
-}: IPostReplyContent) {
+}: IPostReplyContainer) {
   const {
     _id: id,
     post,
@@ -54,6 +58,8 @@ export default function PostReplyContainer({
     editedAt,
     postComment,
   } = postReply;
+
+  const { width } = useWindowDimensions();
 
   const { mutate: handleDeleteItem, status } = useDeletePostReply(
     post._id,
@@ -92,7 +98,7 @@ export default function PostReplyContainer({
             />
             <Card.Content>
               <View style={styles.content}>
-                <HTMLView
+                {/* <HTMLView
                   value={content}
                   nodeComponentProps={{ selectable: true }}
                   stylesheet={HTMLViewStyles}
@@ -105,6 +111,25 @@ export default function PostReplyContainer({
                         console.error("Error opening link:", error);
                       });
                   }}
+                /> */}
+                <RenderHTML
+                  source={{
+                    html: content,
+                  }}
+                  contentWidth={width}
+                  tagsStyles={tagsStyles}
+                  renderersProps={{
+                    img: {
+                      enableExperimentalPercentWidth: true,
+                    },
+                  }}
+                  enableExperimentalMarginCollapsing={true}
+                  enableExperimentalBRCollapsing={true}
+                  enableExperimentalGhostLinesPrevention={true}
+                  defaultTextProps={{ selectable: true }}
+                  // renderers={{
+                  //   img: CustomImageRenderer,
+                  // }}
                 />
               </View>
             </Card.Content>
@@ -157,19 +182,24 @@ export default function PostReplyContainer({
             />
             <Card.Content>
               <View style={styles.content}>
-                <HTMLView
-                  value={content}
-                  nodeComponentProps={{ selectable: true }}
-                  stylesheet={HTMLViewStyles}
-                  onLinkPress={(url) => {
-                    openURL(url)
-                      .then((result) => {
-                        console.log("Link opened successfully:", result);
-                      })
-                      .catch((error) => {
-                        console.error("Error opening link:", error);
-                      });
+                <RenderHTML
+                  source={{
+                    html: content,
                   }}
+                  contentWidth={width}
+                  tagsStyles={tagsStyles}
+                  renderersProps={{
+                    img: {
+                      enableExperimentalPercentWidth: true,
+                    },
+                  }}
+                  enableExperimentalMarginCollapsing={true}
+                  enableExperimentalBRCollapsing={true}
+                  enableExperimentalGhostLinesPrevention={true}
+                  defaultTextProps={{ selectable: true }}
+                  // renderers={{
+                  //   img: CustomImageRenderer,
+                  // }}
                 />
               </View>
             </Card.Content>
@@ -235,7 +265,8 @@ const styles = StyleSheet.create({
 
   content: {
     // overflow: "hidden",
-    paddingBottom: 20,
+    marginTop: -10,
+    paddingBottom: 7,
   },
 
   footer: {
@@ -285,14 +316,4 @@ const HTMLViewDefault = {
   lineHeight: 22,
 };
 
-const HTMLStylesObj = injectHTMLViewStyle(HTMLViewDefault);
-
-const HTMLViewStyles = StyleSheet.create({
-  ...HTMLStylesObj,
-
-  img: {
-    width: 100,
-    height: 100,
-    resizeMode: "cover", // Or 'cover', 'stretch' as needed
-  },
-} as any);
+const tagsStyles = injectHTMLViewStyle(HTMLViewDefault);

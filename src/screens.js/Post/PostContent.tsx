@@ -5,22 +5,14 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from "react-native";
-import { Image } from "expo-image";
-import {
-  Avatar,
-  Button,
-  Card,
-  Icon,
-  IconButton,
-  Text,
-} from "react-native-paper";
+
+import { Card, Text } from "react-native-paper";
 import { Post, User } from "../../../types";
-import { WebView } from "react-native-webview";
-import HTMLView from "react-native-htmlview";
+
 import calcTimeAgo from "../../utils/calcTimeAgo";
 import BookmarkLikeMoreIconGroups from "../../components/IconButtonGroups/BookmarkLikeMoreIconGroups";
 import useDeletePost from "../../react-query-hooks/usePosts/useDeletePost";
-import { useNavigation } from "@react-navigation/native";
+
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import injectHTMLViewStyle from "../../utils/injectHTMLViewStyles";
@@ -29,7 +21,6 @@ import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import PostPoll from "./PostPoll";
 import PostStoryActionMenu from "../../components/Menus/PostStoryActionMenu";
 import RenderHtml from "react-native-render-html";
-import CustomImageRenderer from "../../components/CustomImageRenderer";
 
 interface IPostContent {
   post: Post;
@@ -47,48 +38,6 @@ interface IPostContent {
     profileImage: string | undefined
   ) => void;
 }
-
-// const customRenderer = {
-//   img: (
-//     node: any,
-//     index: any,
-//     siblings: any,
-//     parent: any,
-//     defaultRenderer: any
-//   ) => {
-//     const { src } = node.attribs;
-//     return (
-//       <Image
-//         source={{ uri: src }}
-//         style={{ width: node.style.width, height: node.style.height }}
-//       />
-//     );
-//   },
-// };
-
-// function renderNode(
-//   node: any,
-//   index: any,
-//   siblings: any,
-//   parent: any,
-//   defaultRenderer: any
-// ) {
-//   if (node.name == "img") {
-//     const { src, alt, width, height, props, style } = node.attribs;
-//     console.log(style);
-
-//     return (
-//       <View key={index}>
-//         <Image
-//           source={{ uri: src }}
-//           style={{ width, height }}
-//           alt={alt}
-//           contentFit="cover"
-//         />
-//       </View>
-//     );
-//   }
-// }
 
 export default function PostContent({
   post,
@@ -145,11 +94,6 @@ export default function PostContent({
 
         <Card.Content>
           <View style={styles.content}>
-            {/* <HTMLView
-              value={content}
-              stylesheet={tagsStyles}
-              nodeComponentProps={{ selectable: true }}
-            /> */}
             <RenderHtml
               source={{
                 html: content,
@@ -161,7 +105,9 @@ export default function PostContent({
                   enableExperimentalPercentWidth: true,
                 },
               }}
+              enableExperimentalMarginCollapsing={true}
               enableExperimentalBRCollapsing={true}
+              enableExperimentalGhostLinesPrevention={true}
               defaultTextProps={{ selectable: true }}
               // renderers={{
               //   img: CustomImageRenderer,
@@ -264,6 +210,8 @@ const styles = StyleSheet.create({
 
   content: {
     // overflow: "hidden",
+    marginTop: -10,
+    marginBottom: -10,
   },
 
   footer: {

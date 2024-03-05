@@ -1,5 +1,10 @@
 import React from "react";
-import { View, Text as NativeText, StyleSheet } from "react-native";
+import {
+  View,
+  Text as NativeText,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 import { Image } from "expo-image";
 import {
   Avatar,
@@ -10,8 +15,7 @@ import {
   Text,
 } from "react-native-paper";
 import { PostComment, User } from "../../../../types";
-import { WebView } from "react-native-webview";
-import HTMLView from "react-native-htmlview";
+
 import calcTimeAgo from "../../../utils/calcTimeAgo";
 import BookmarkLikeMoreIconGroups from "../../../components/IconButtonGroups/BookmarkLikeMoreIconGroups";
 import useDeletePostComment from "../../../react-query-hooks/usePostComments/useDeletePostComment";
@@ -19,6 +23,7 @@ import useDeletePostComment from "../../../react-query-hooks/usePostComments/use
 import injectHTMLViewStyle from "../../../utils/injectHTMLViewStyles";
 import PressableAvatar from "../../../components/PressableAvatar";
 import CommentActionMenu from "../../../components/Menus/CommentActionMenu";
+import RenderHTML from "react-native-render-html";
 
 interface IPostCommentContent {
   postComment: PostComment;
@@ -55,6 +60,8 @@ export default function PostCommentContent({
     if (withoutIconsGroup) navigateToPostComment(false);
   };
 
+  const { width } = useWindowDimensions();
+
   return (
     <Card style={styles.card} onPress={navWithoutIconsGroup}>
       <View style={styles.wrapper}>
@@ -79,11 +86,24 @@ export default function PostCommentContent({
 
         <Card.Content>
           <View style={styles.content}>
-            <HTMLView
-              value={content}
-              stylesheet={HTMLViewStyles}
-              nodeComponentProps={{ selectable: true }}
-              // renderNode={renderNode}
+            <RenderHTML
+              source={{
+                html: content,
+              }}
+              contentWidth={width}
+              tagsStyles={tagsStyles}
+              renderersProps={{
+                img: {
+                  enableExperimentalPercentWidth: true,
+                },
+              }}
+              enableExperimentalMarginCollapsing={true}
+              enableExperimentalBRCollapsing={true}
+              enableExperimentalGhostLinesPrevention={true}
+              defaultTextProps={{ selectable: true }}
+              // renderers={{
+              //   img: CustomImageRenderer,
+              // }}
             />
           </View>
         </Card.Content>
@@ -162,19 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    paddingBottom: 30,
-    paddingHorizontal: 20,
-  },
-
-  title: {
-    fontWeight: "bold",
-    fontSize: 21,
-    lineHeight: 27,
-  },
-
   profileName: {
     fontSize: 15,
   },
@@ -197,7 +204,9 @@ const styles = StyleSheet.create({
 
   content: {
     // overflow: "hidden",
-    paddingBottom: 20,
+    paddingBottom: 10,
+    marginTop: -12,
+    // marginHorizontal: 5,
   },
 
   footer: {
@@ -247,13 +256,4 @@ const HTMLViewDefault = {
   lineHeight: 22,
 };
 
-const HTMLStylesObj = injectHTMLViewStyle(HTMLViewDefault);
-
-const HTMLViewStyles = StyleSheet.create({
-  ...HTMLStylesObj,
-  img: {
-    width: 100,
-    height: 100,
-    resizeMode: "cover", // Or 'cover', 'stretch' as needed
-  },
-});
+const tagsStyles = injectHTMLViewStyle(HTMLViewDefault);

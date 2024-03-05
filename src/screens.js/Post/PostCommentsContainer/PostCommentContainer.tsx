@@ -79,6 +79,17 @@ export default function PostCommentContainer({
                 />
               ))}
           </List.Section>
+          {/* <View>
+            {replies &&
+              replies.map((reply) => (
+                <PostReplyContent
+                  reply={reply}
+                  key={reply._id}
+                  navigation={navigation}
+                  navigateToUserPage={navigateToUserPage}
+                />
+              ))}
+          </View> */}
         </Pressable>
       </View>
     </View>

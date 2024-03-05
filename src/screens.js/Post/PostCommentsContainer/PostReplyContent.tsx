@@ -1,14 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { Avatar, Divider, List, Text } from "react-native-paper";
 import { PostReply } from "../../../../types";
-import HTMLView from "react-native-htmlview";
-import { Image } from "expo-image";
+
 import injectHTMLViewStyle from "../../../utils/injectHTMLViewStyles";
 import { RootStackParamList } from "../../../navigators/RootStackNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import PressableAvatar from "../../../components/PressableAvatar";
 import { useRoute } from "@react-navigation/native";
+import RenderHTML from "react-native-render-html";
 
 interface IPostReplyContent {
   reply: PostReply;
@@ -26,17 +26,78 @@ export default function PostReplyContent({
   navigateToUserPage,
 }: IPostReplyContent) {
   const { content, replier } = reply;
+  const { width } = useWindowDimensions();
+
+  // return (
+  //   <View>
+  //     <View
+  //       style={{
+  //         display: "flex",
+  //         flexDirection: "row",
+  //         // justifyContent: "center",
+  //         alignItems: "center",
+  //       }}
+  //     >
+  //       <PressableAvatar
+  //         photo={replier.photo}
+  //         size={38}
+  //         navigateToUserPage={() =>
+  //           navigateToUserPage(replier.username, replier.profileImage)
+  //         }
+  //       />
+  //       <RenderHTML
+  //         source={{
+  //           html: content.replace(/(\r\n|\n|\r)/gm, ""),
+  //         }}
+  //         contentWidth={width}
+  //         tagsStyles={tagsStyles}
+  //         renderersProps={{
+  //           img: {
+  //             enableExperimentalPercentWidth: true,
+  //           },
+  //         }}
+  //         enableExperimentalMarginCollapsing={true}
+  //         enableExperimentalBRCollapsing={true}
+  //         enableExperimentalGhostLinesPrevention={true}
+  //         defaultTextProps={{ selectable: true }}
+  //         // renderers={{
+  //         //   img: CustomImageRenderer,
+  //         // }}
+  //       />
+  //     </View>
+  //     <Divider horizontalInset={true} />
+  //   </View>
+  // );
 
   return (
     <>
       <List.Item
         style={styles.listItem}
         title={
-          <HTMLView
-            value={content.replace(/(\r\n|\n|\r)/gm, "")}
-            stylesheet={HTMLViewStyles}
-            addLineBreaks={false}
-            nodeComponentProps={{ selectable: true }}
+          // <HTMLView
+          //   value={content.replace(/(\r\n|\n|\r)/gm, "")}
+          //   stylesheet={HTMLViewStyles}
+          //   addLineBreaks={false}
+          //   nodeComponentProps={{ selectable: true }}
+          // />
+          <RenderHTML
+            source={{
+              html: content.replace(/(\r\n|\n|\r)/gm, ""),
+            }}
+            contentWidth={width}
+            tagsStyles={tagsStyles}
+            renderersProps={{
+              img: {
+                enableExperimentalPercentWidth: true,
+              },
+            }}
+            enableExperimentalMarginCollapsing={true}
+            enableExperimentalBRCollapsing={true}
+            enableExperimentalGhostLinesPrevention={true}
+            defaultTextProps={{ selectable: true }}
+            // renderers={{
+            //   img: CustomImageRenderer,
+            // }}
           />
         }
         titleNumberOfLines={10}
@@ -78,25 +139,27 @@ const HTMLViewDefault = {
   color: "#FFF",
   overflow: "hidden",
   lineHeight: 20,
-  marginTop: 6,
+  margin: 0,
+  padding: 0,
+  marginTop: 4,
 
   // marginBottom: 5,
 };
 
-const HTMLStylesObj = injectHTMLViewStyle(HTMLViewDefault);
+const tagsStyles = injectHTMLViewStyle(HTMLViewDefault);
 
-const HTMLViewStyles = StyleSheet.create({
-  ...HTMLStylesObj,
+// const HTMLViewStyles = StyleSheet.create({
+//   ...HTMLStylesObj,
 
-  //   u: HTMLViewDefault,
+//   //   u: HTMLViewDefault,
 
-  //   i: HTMLViewDefault,
+//   //   i: HTMLViewDefault,
 
-  //   s: HTMLViewDefault,
+//   //   s: HTMLViewDefault,
 
-  img: {
-    width: 100,
-    height: 100,
-    resizeMode: "cover", // Or 'cover', 'stretch' as needed
-  },
-} as any);
+//   img: {
+//     width: 100,
+//     height: 100,
+//     resizeMode: "cover", // Or 'cover', 'stretch' as needed
+//   },
+// } as any);
