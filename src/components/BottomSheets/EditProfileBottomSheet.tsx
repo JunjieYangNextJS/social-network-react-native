@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   Keyboard,
 } from "react-native";
-import { Text, Button, HelperText } from "react-native-paper";
+import { Text, Button, HelperText, Avatar } from "react-native-paper";
 import {
   BottomSheetModal,
   BottomSheetTextInput,
@@ -23,6 +23,13 @@ import SexualityBottomSheet from "./SexualityBottomSheet";
 import BioBottomSheet from "./BioBottomSheet";
 import { usePatchUserWithoutPhoto } from "../../react-query-hooks/useUser/usePatchUser";
 import { useDidUpdate } from "../../hooks/useDidUpdate";
+import { Image } from "expo-image";
+import AvatarOverlay from "../AvatarOverlay";
+import useToastStore from "../../store/useToastStore";
+import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
+import { getItemAsync } from "expo-secure-store";
+import axios from "axios";
+import baseUrl from "../../utils/baseUrl";
 
 const validationSchema = yup.object({
   profileName: yup.string(),
@@ -36,13 +43,71 @@ const validationSchema = yup.object({
 });
 
 const EditProfileBottomSheet = ({ user }: { user: User }) => {
-  const { profileName, location, gender, sexuality, twitter, bio } = user;
+  const { profileName, location, gender, sexuality, twitter, bio, photo } =
+    user;
 
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
   const { height } = useWindowDimensions();
   const { top: statusBarHeight } = useSafeAreaInsets();
   const { mutate: patchUser, isSuccess } = usePatchUserWithoutPhoto();
+  const { onOpenToast } = useToastStore();
+
+  const [imageUri, setImageUri] = useState<string | null>(null);
+
+  const onSetImageUri = (uri: string) => {
+    setImageUri(uri);
+  };
+
+  const fetchImage = async (uri: string) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    return blob;
+  };
+
+  const handleImageUpload = async () => {
+    if (!imageUri) return;
+
+    const result = await manipulateAsync(
+      imageUri,
+      [{ resize: { width: 500, height: 500 } }],
+      {
+        compress: 1,
+        format: SaveFormat.JPEG,
+      }
+    );
+
+    const file = await fetchImage(result.uri);
+
+    const token = await getItemAsync("token");
+
+    const s3Url = await axios
+      .get(`${baseUrl}/users/expoPostStoryImageUpload`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((err) => {
+        onOpenToast("error", "");
+        return Promise.reject(err);
+      })
+      .then((res) => res.data.url);
+
+    await fetch(s3Url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: file,
+    });
+
+    const imageUrl = s3Url.split("?")[0];
+
+    return imageUrl;
+  };
+
+  console.log("uri:", imageUri);
 
   useDidUpdate(() => {
     dismiss("EditProfile");
@@ -103,9 +168,15 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
               twitter: twitter || "",
               bio: bio || "",
             }}
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
               // console.log(values, "values");
-              patchUser(values);
+
+              if (imageUri) {
+                const newPhoto = await handleImageUpload();
+                patchUser({ ...values, photo: newPhoto });
+              } else {
+                patchUser({ ...values, photo });
+              }
 
               //   SignUpUser(values);
             }}
@@ -126,13 +197,26 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
                   <Button onPress={() => dismiss("EditProfile")}>Cancel</Button>
                   <Text variant="titleMedium">Edit Profile</Text>
                   <Button
-                    disabled={!dirty}
+                    disabled={!dirty && !imageUri}
                     onPress={(e: GestureResponderEvent) => handleSubmit()}
                   >
                     Save
                   </Button>
                 </View>
                 <View style={styles.body}>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <AvatarOverlay
+                      imageUri={imageUri || photo}
+                      onSetImageUri={onSetImageUri}
+                    />
+                  </View>
                   <View style={styles.inputLabelWrapper}>
                     <Text style={styles.label}>Profile Name</Text>
                     <TextInput

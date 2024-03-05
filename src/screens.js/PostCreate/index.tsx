@@ -3,6 +3,7 @@ import {
   ScrollView,
   InputAccessoryView,
   SafeAreaView,
+  View,
 } from "react-native";
 import React, { useState } from "react";
 import { IconButton } from "react-native-paper";
@@ -271,6 +272,7 @@ export default function PostCreate({ navigation }: Props) {
               pollDays={values.pollDays}
               onSetPollDays={handleChange("pollDays")}
             />
+
             {Platform.OS === "ios" ? (
               <IOS_UI
                 title={values.title}

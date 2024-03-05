@@ -32,12 +32,14 @@ export default function Android_UI({
             value={title}
             onChangeText={(text) => onSetTitle(text)}
             style={styles.title}
+            autoFocus={true}
           />
         </View>
         <View style={styles.inputWrapper}>
           <TextInput
             placeholder="Content (optional)"
             placeholderTextColor="#b0b0b0"
+            style={styles.content}
             multiline={true}
             // label="Email"
             value={content}

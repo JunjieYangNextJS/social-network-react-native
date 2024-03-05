@@ -35,6 +35,7 @@ import { getItemAsync } from 'expo-secure-store';
         sexuality: string;
         twitter: string;
         bio: string;
+        photo: string;
     }) => {
         const token = await getItemAsync('token')
         return axios

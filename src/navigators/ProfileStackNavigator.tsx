@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useState } from "react";
 import Profile from "../screens.js/Profile";
 import { Stack } from "./RootStackNavigator";
 import {
@@ -13,13 +13,20 @@ import {
 
 import OtherUser from "../screens.js/OtherUser";
 import Post from "../screens.js/Post";
-import { Avatar, Icon, IconButton, Text } from "react-native-paper";
+import {
+  Avatar,
+  Icon,
+  IconButton,
+  Modal,
+  Portal,
+  Text,
+} from "react-native-paper";
 import FriendList from "../screens.js/Profile/FriendList";
 import PostComment from "../screens.js/PostComment";
 import UserInfoContainer from "../components/UserInfoContainer";
 import useUser from "../react-query-hooks/useUser/useUser";
 import { User } from "../../types";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Image, ImageBackground } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MyPosts from "./../screens.js/Profile/MyPosts/index";
@@ -142,6 +149,9 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
 const DrawerNav = () => {
   const { data: user } = useUser();
   const { top: statusBarHeight } = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const [fullSizeImgVisible, setFullSizeImgVisible] = useState(false);
+
   if (!user) return null;
   return (
     <Drawer.Navigator
