@@ -20,6 +20,7 @@ import {
   Modal,
   Portal,
   Text,
+  TouchableRipple,
 } from "react-native-paper";
 import FriendList from "../screens.js/Profile/FriendList";
 import PostComment from "../screens.js/PostComment";
@@ -47,9 +48,16 @@ import HiddenPosts from "../screens.js/Profile/HiddenPosts";
 import BlockedUsers from "../screens.js/Profile/BlockedUsers";
 import Privacy from "../screens.js/Profile/Privacy";
 import { useNavigation } from "@react-navigation/native";
-
+import * as ImagePicker from "expo-image-picker";
 import Securities from "../screens.js/Profile/Settings";
 import ChatRoom from "../screens.js/ChatRoom";
+import pickImage from "../utils/pickImage";
+import { useDidUpdate } from "../hooks/useDidUpdate";
+import handleImageUpload from "../utils/handleImageUpload";
+import {
+  usePatchUserProfileImage,
+  usePatchUserWithoutPhoto,
+} from "../react-query-hooks/useUser/usePatchUser";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -150,9 +158,19 @@ const DrawerNav = () => {
   const { data: user } = useUser();
   const { top: statusBarHeight } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const [fullSizeImgVisible, setFullSizeImgVisible] = useState(false);
+  // const [fullSizeImgVisible, setFullSizeImgVisible] = useState(false);
+  const [imageUri, setImageUri] = useState("");
+  const { onOpenToast } = useToastStore();
+  const { mutate: patchUser, isSuccess } = usePatchUserProfileImage();
 
   if (!user) return null;
+
+  useDidUpdate(async () => {
+    if (!imageUri) return;
+    const newPhoto = await handleImageUpload(imageUri, onOpenToast);
+    patchUser({ profileImage: newPhoto });
+  }, [imageUri]);
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawer {...props} user={user} />}
@@ -176,39 +194,49 @@ const DrawerNav = () => {
         component={Profile}
         options={{
           header: () => (
-            <ImageBackground
-              source={{
-                uri: user?.profileImage,
-              }}
-              style={{ height: 160 }}
-            >
-              <View
-                style={{
-                  // probably some styling needed
-                  marginTop: statusBarHeight,
-                  // borderWidth: 1,
-                  // padding: 5,
-                  // borderRadius: 100,
-                  // width: 50,
-                  // height: 50,
+            <TouchableRipple onPress={() => pickImage(setImageUri)}>
+              <ImageBackground
+                source={{
+                  uri: imageUri || user?.profileImage,
                 }}
+                style={{ height: 160 }}
               >
-                <DrawerToggleButton tintColor="#fff" />
-              </View>
+                <View
+                  style={{
+                    // probably some styling needed
+                    marginTop: statusBarHeight,
+                    // borderWidth: 1,
+                    // padding: 5,
+                    // borderRadius: 100,
+                    // width: 50,
+                    // height: 50,
+                  }}
+                  onStartShouldSetResponder={(event) => true}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <DrawerToggleButton tintColor="#fff" />
+                </View>
 
-              <Avatar.Image
-                size={100}
-                source={() => (
-                  <Image
-                    source={{
-                      uri: user?.photo,
-                    }}
-                    style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
-                  />
-                )}
-                style={styles.avatar}
-              />
-            </ImageBackground>
+                <Avatar.Image
+                  size={100}
+                  source={() => (
+                    <Image
+                      source={{
+                        uri: user?.photo,
+                      }}
+                      style={[{ flex: 1, borderRadius: 100, width: "100%" }]}
+                    />
+                  )}
+                  style={styles.avatar}
+                  onStartShouldSetResponder={(event) => true}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                  }}
+                />
+              </ImageBackground>
+            </TouchableRipple>
           ),
         }}
       />

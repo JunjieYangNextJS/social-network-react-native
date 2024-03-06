@@ -30,6 +30,7 @@ import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
 import { getItemAsync } from "expo-secure-store";
 import axios from "axios";
 import baseUrl from "../../utils/baseUrl";
+import handleImageUpload from "../../utils/handleImageUpload";
 
 const validationSchema = yup.object({
   profileName: yup.string(),
@@ -43,8 +44,16 @@ const validationSchema = yup.object({
 });
 
 const EditProfileBottomSheet = ({ user }: { user: User }) => {
-  const { profileName, location, gender, sexuality, twitter, bio, photo } =
-    user;
+  const {
+    profileName,
+    location,
+    gender,
+    sexuality,
+    twitter,
+    bio,
+    photo,
+    profileImage,
+  } = user;
 
   const { colors } = useAppTheme();
   const { dismiss } = useBottomSheetModal();
@@ -59,55 +68,53 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
     setImageUri(uri);
   };
 
-  const fetchImage = async (uri: string) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
+  // const fetchImage = async (uri: string) => {
+  //   const response = await fetch(uri);
+  //   const blob = await response.blob();
 
-    return blob;
-  };
+  //   return blob;
+  // };
 
-  const handleImageUpload = async () => {
-    if (!imageUri) return;
+  // const handleImageUpload = async () => {
+  //   if (!imageUri) return;
 
-    const result = await manipulateAsync(
-      imageUri,
-      [{ resize: { width: 500, height: 500 } }],
-      {
-        compress: 1,
-        format: SaveFormat.JPEG,
-      }
-    );
+  //   const result = await manipulateAsync(
+  //     imageUri,
+  //     [{ resize: { width: 500, height: 500 } }],
+  //     {
+  //       compress: 1,
+  //       format: SaveFormat.JPEG,
+  //     }
+  //   );
 
-    const file = await fetchImage(result.uri);
+  //   const file = await fetchImage(result.uri);
 
-    const token = await getItemAsync("token");
+  //   const token = await getItemAsync("token");
 
-    const s3Url = await axios
-      .get(`${baseUrl}/users/expoPostStoryImageUpload`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .catch((err) => {
-        onOpenToast("error", "");
-        return Promise.reject(err);
-      })
-      .then((res) => res.data.url);
+  //   const s3Url = await axios
+  //     .get(`${baseUrl}/users/expoPostStoryImageUpload`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .catch((err) => {
+  //       onOpenToast("error", "");
+  //       return Promise.reject(err);
+  //     })
+  //     .then((res) => res.data.url);
 
-    await fetch(s3Url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: file,
-    });
+  //   await fetch(s3Url, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //     body: file,
+  //   });
 
-    const imageUrl = s3Url.split("?")[0];
+  //   const imageUrl = s3Url.split("?")[0];
 
-    return imageUrl;
-  };
-
-  console.log("uri:", imageUri);
+  //   return imageUrl;
+  // };
 
   useDidUpdate(() => {
     dismiss("EditProfile");
@@ -172,7 +179,7 @@ const EditProfileBottomSheet = ({ user }: { user: User }) => {
               // console.log(values, "values");
 
               if (imageUri) {
-                const newPhoto = await handleImageUpload();
+                const newPhoto = await handleImageUpload(imageUri, onOpenToast);
                 patchUser({ ...values, photo: newPhoto });
               } else {
                 patchUser({ ...values, photo });

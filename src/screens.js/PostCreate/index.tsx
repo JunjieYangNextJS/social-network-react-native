@@ -28,6 +28,7 @@ import useToastStore from "../../store/useToastStore";
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 import PollDialog from "../../components/Dialogs/PollDialog";
 import DraftsDialog from "../../components/Dialogs/DraftsDialog";
+import handleImageUpload from "../../utils/handleImageUpload";
 // import { TextInput } from "react-native-paper";
 
 const validationSchema = yup.object({
@@ -111,53 +112,53 @@ export default function PostCreate({ navigation }: Props) {
     });
   };
 
-  const fetchImage = async (uri: string) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
+  // const fetchImage = async (uri: string) => {
+  //   const response = await fetch(uri);
+  //   const blob = await response.blob();
 
-    return blob;
-  };
+  //   return blob;
+  // };
 
-  const handleImageUpload = async () => {
-    if (!imageUri) return;
+  // const handleImageUpload = async () => {
+  //   if (!imageUri) return;
 
-    const result = await manipulateAsync(
-      imageUri,
-      [{ resize: { width: 500, height: 500 } }],
-      {
-        compress: 1,
-        format: SaveFormat.JPEG,
-      }
-    );
+  //   const result = await manipulateAsync(
+  //     imageUri,
+  //     [{ resize: { width: 500, height: 500 } }],
+  //     {
+  //       compress: 1,
+  //       format: SaveFormat.JPEG,
+  //     }
+  //   );
 
-    const file = await fetchImage(result.uri);
+  //   const file = await fetchImage(result.uri);
 
-    const token = await getItemAsync("token");
+  //   const token = await getItemAsync("token");
 
-    const s3Url = await axios
-      .get(`${baseUrl}/users/expoPostStoryImageUpload`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .catch((err) => {
-        onOpenToast("error", "");
-        return Promise.reject(err);
-      })
-      .then((res) => res.data.url);
+  //   const s3Url = await axios
+  //     .get(`${baseUrl}/users/expoPostStoryImageUpload`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .catch((err) => {
+  //       onOpenToast("error", "");
+  //       return Promise.reject(err);
+  //     })
+  //     .then((res) => res.data.url);
 
-    await fetch(s3Url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: file,
-    });
+  //   await fetch(s3Url, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //     body: file,
+  //   });
 
-    const imageUrl = s3Url.split("?")[0];
+  //   const imageUrl = s3Url.split("?")[0];
 
-    return imageUrl;
-  };
+  //   return imageUrl;
+  // };
 
   return (
     <>
@@ -200,7 +201,7 @@ export default function PostCreate({ navigation }: Props) {
             let content = values.content;
 
             if (imageUri) {
-              const imageUrl = await handleImageUpload();
+              const imageUrl = await handleImageUpload(imageUri, onOpenToast);
 
               const newString = `<img src=${imageUrl} />`;
               content = newString + content;

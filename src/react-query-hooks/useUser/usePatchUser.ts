@@ -36,6 +36,7 @@ import { getItemAsync } from 'expo-secure-store';
         twitter: string;
         bio: string;
         photo: string;
+       
     }) => {
         const token = await getItemAsync('token')
         return axios
@@ -57,6 +58,37 @@ import { getItemAsync } from 'expo-secure-store';
     },
     );
   };
+
+  export function usePatchUserProfileImage() {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async (values: {
+        profileImage: string;
+       
+       
+    }) => {
+        const token = await getItemAsync('token')
+        return axios
+        .patch(`${baseUrl}/users/updateMeWithoutPhoto`, values, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+  
+        })
+        .then(res => res.data)
+      }
+        ,
+
+      onSuccess: (_, variables) => {
+            // queryClient.invalidateQueries({queryKey: ['user'], exact: true});
+            queryClient.setQueryData(['user'], (prev: User) => ({...prev, ...variables}));
+            
+        }
+    },
+    );
+  };
+
+
 
   export function usePatchUserPrivacy() {
     const queryClient = useQueryClient();

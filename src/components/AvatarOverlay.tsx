@@ -4,11 +4,7 @@ import { Avatar } from "react-native-paper";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
-import { getItemAsync } from "expo-secure-store";
-import axios from "axios";
-import baseUrl from "../utils/baseUrl";
-import useToastStore from "../store/useToastStore";
+import pickImage from "../utils/pickImage";
 
 interface IAvatarOverlay {
   onSetImageUri: (uri: string) => void;
@@ -16,27 +12,8 @@ interface IAvatarOverlay {
 }
 
 const AvatarOverlay = ({ onSetImageUri, imageUri }: IAvatarOverlay) => {
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.2,
-    });
-
-    if (!result.canceled) {
-      onSetImageUri(result.assets[0].uri);
-    }
-  };
-
   return (
     <View style={styles.avatarContainer}>
-      {/* <ImagePickerIconButton
-        size={50}
-        style={styles.button}
-        onSetImageUri={onSetImageUri}
-      /> */}
       <View style={styles.button}>
         <Ionicons
           name="camera-outline"
@@ -45,20 +22,9 @@ const AvatarOverlay = ({ onSetImageUri, imageUri }: IAvatarOverlay) => {
           style={styles.icon}
         />
       </View>
-      <Pressable onPress={pickImage}>
+      <Pressable onPress={() => pickImage(onSetImageUri)}>
         <Image source={{ uri: imageUri }} style={styles.avatar} />
       </Pressable>
-      {/* <Avatar.Image
-        size={50}
-        source={() => (
-          <Image
-            source={{
-              uri,
-            }}
-            style={[styles.avatar, { flex: 1, width: "100%" }]}
-          />
-        )}
-      /> */}
     </View>
   );
 };
