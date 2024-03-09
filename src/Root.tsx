@@ -30,6 +30,7 @@ function Navigation({
 
   return (
     <NavigationContainer onReady={onLayoutRootView} theme={DarkTheme}>
+      {/* <AuthStackNavigator /> */}
       {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );

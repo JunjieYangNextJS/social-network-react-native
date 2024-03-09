@@ -94,7 +94,7 @@ export default function IOS_UI({
                 style={styles.title}
                 inputAccessoryViewID={inputAccessoryViewID}
                 // ref={inputRef}
-                autoFocus={true}
+                // autoFocus={true}
               />
             </View>
             <View style={[styles.inputWrapper, {}]}>
