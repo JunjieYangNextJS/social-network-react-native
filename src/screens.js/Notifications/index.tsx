@@ -57,7 +57,9 @@ export default function Notifications() {
   if (data.length < 1) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text>You don't have any notifications at the moment.</Text>
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You don't have any notifications at the moment.
+        </Text>
       </SafeAreaView>
     );
   }

@@ -34,8 +34,11 @@ export default function PostPoll({
 
   const totalVotes = poll.reduce((n, { votes }) => n + votes, 0);
 
+  const votingHasEnded = Date.parse(pollEndsAt) < Date.now();
+
   const handleVote = async (id: string) => {
-    if (Date.parse(pollEndsAt) < Date.now()) return;
+    console.log("h");
+    if (votingHasEnded) return;
 
     if (voted === id) {
       patchPostVotes({ post: postId, removeId: voted });
@@ -69,7 +72,20 @@ export default function PostPoll({
         <Text style={styles.text}>{totalVotes} people voted</Text>
       </View>
       {poll.map(({ _id, votes, label }) =>
-        voted ? (
+        votingHasEnded ? (
+          <View style={styles.progressBarWrapper} key={_id}>
+            <Pressable onPress={() => handleVote(_id)}>
+              <ProgressBar
+                progress={votes / totalVotes || 0}
+                style={styles.progressBar}
+                color={voted === _id ? theme.colors.primary : "#e3d2fc"}
+              />
+              <Text style={styles.progressText}>
+                {label}: {Math.round((votes / totalVotes) * 100) || 0}%
+              </Text>
+            </Pressable>
+          </View>
+        ) : voted ? (
           <View style={styles.progressBarWrapper} key={_id}>
             <Pressable onPress={() => handleVote(_id)}>
               <ProgressBar
@@ -88,7 +104,7 @@ export default function PostPoll({
               <ProgressBar
                 progress={0}
                 style={styles.progressBar}
-                color={voted === _id ? theme.colors.primary : "#e3d2fc"}
+                color={"#e3d2fc"}
               />
               <Text style={styles.progressText}>{label}</Text>
             </Pressable>
@@ -96,7 +112,9 @@ export default function PostPoll({
         )
       )}
       <View style={styles.textWrapper}>
-        <Text style={styles.text}>Voting ends {calcTimeAgo(pollEndsAt)}</Text>
+        <Text style={styles.text}>
+          Voting {votingHasEnded ? "ended" : "ends"} {calcTimeAgo(pollEndsAt)}
+        </Text>
       </View>
     </View>
   );

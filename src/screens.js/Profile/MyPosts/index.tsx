@@ -12,6 +12,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useGetMyPosts } from "../../../react-query-hooks/useUser/useGetMyCreations";
 import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
+import { Text } from "react-native-paper";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPosts">;
 
@@ -45,7 +46,31 @@ const MyPosts = ({}: Props) => {
   );
 
   if (!shownPosts) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  if (shownPosts.length < 1) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't created any posts.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (

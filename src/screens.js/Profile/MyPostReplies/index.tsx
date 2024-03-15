@@ -17,6 +17,7 @@ import { useGetMyPostReplies } from "../../../react-query-hooks/useUser/useGetMy
 import { Post, PostComment, PostReply } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import PostReplyContainer from "../../PostComment/PostReplyContainer";
+import { useCallback } from "react";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPostReplies">;
 
@@ -24,31 +25,58 @@ const MyPostReplies = ({}: Props) => {
   const { data: postReplies } = useGetMyPostReplies();
   const parentNavigation = useNavigation().getParent();
 
+  const renderPostItem = useCallback(
+    (itemData: any) => {
+      const item: PostReply = itemData.item;
+
+      const navigateToPostComment = () => {
+        parentNavigation?.navigate("P_PostComment", {
+          postCommentId: item.postComment,
+          postTitle: item.post.title,
+        });
+      };
+
+      return (
+        <View style={{ marginTop: 7 }}>
+          <PostReplyContainer
+            postReply={item}
+            userUsername="Me"
+            navigateToUserPage={() => {}}
+            navigateToPostComment={navigateToPostComment}
+          />
+        </View>
+      );
+    },
+    [postReplies]
+  );
+
   if (!postReplies) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
   }
 
-  const renderPostItem = (itemData: any) => {
-    const item: PostReply = itemData.item;
-
-    const navigateToPostComment = () => {
-      parentNavigation?.navigate("P_PostComment", {
-        postCommentId: item.postComment,
-        postTitle: item.post.title,
-      });
-    };
-
+  if (postReplies.length < 1) {
     return (
-      <View style={{ marginTop: 7 }}>
-        <PostReplyContainer
-          postReply={item}
-          userUsername="Me"
-          navigateToUserPage={() => {}}
-          navigateToPostComment={navigateToPostComment}
-        />
-      </View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't left a reply yet.
+        </Text>
+      </SafeAreaView>
     );
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>

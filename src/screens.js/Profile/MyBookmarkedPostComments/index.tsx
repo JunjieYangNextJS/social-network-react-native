@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -20,6 +19,7 @@ import { Post, PostComment } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import PostCommentContent from "../../Post/PostCommentsContainer/PostCommentContent";
 import { useGetBookmarkedPostComments } from "../../../react-query-hooks/useUser/useGetBookmarked";
+import { Text } from "react-native-paper";
 
 type Props = NativeStackScreenProps<
   ProfileDrawerParamList,
@@ -58,7 +58,31 @@ const MyBookmarkedPostComments = ({}: Props) => {
   );
 
   if (!postComments) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  if (postComments.length < 1) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't bookmarked any comments.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (

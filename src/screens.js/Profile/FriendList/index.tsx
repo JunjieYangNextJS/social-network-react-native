@@ -29,13 +29,33 @@ export default function FriendList({ navigation, route }: Props) {
   const parentNavigation = useNavigation().getParent();
 
   if (!user) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
   }
 
   const { friendList } = user;
 
   if (friendList.length < 1) {
-    return <Text style={styles.noFriends}>You haven't added any friend.</Text>;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't added any friend.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   const renderItem = useCallback(

@@ -60,14 +60,42 @@ export default function BlockedUsers({ navigation, route }: Props) {
     [user]
   );
 
-  if (!user || !blockedUsers) {
-    return <ActivityIndicator />;
+  // if (!user || !blockedUsers) {
+  //   return <ActivityIndicator />;
+  // }
+
+  // //   const { blockedUsers } = user;
+
+  // if (blockedUsers.length < 1) {
+  //   return <Text style={styles.noFriends}>You haven't blocked any user.</Text>;
+  // }
+
+  if (!blockedUsers || !user) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
   }
 
-  //   const { blockedUsers } = user;
-
   if (blockedUsers.length < 1) {
-    return <Text style={styles.noFriends}>You haven't blocked any user.</Text>;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't blocked any user.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (

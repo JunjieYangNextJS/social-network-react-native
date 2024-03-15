@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -22,6 +21,8 @@ import {
 import { Post, PostComment } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import PostCommentContent from "../../Post/PostCommentsContainer/PostCommentContent";
+import { Text } from "react-native-paper";
+import { useCallback } from "react";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyPostComments">;
 
@@ -33,33 +34,60 @@ const MyPostComments = ({}: Props) => {
   } = useGetMyPostComments();
   const parentNavigation = useNavigation().getParent();
 
+  const renderPostItem = useCallback(
+    (itemData: any) => {
+      const item: PostComment = itemData.item;
+
+      const navigateToPostComment = () => {
+        parentNavigation?.navigate("P_PostComment", {
+          postCommentId: item._id,
+          postTitle: item.post.title,
+        });
+      };
+
+      return (
+        <View style={{ marginTop: 7 }}>
+          <PostCommentContent
+            postComment={item}
+            userBookmarkedPostComments={[""]}
+            userId=""
+            withoutIconsGroup={true}
+            navigateToPostComment={navigateToPostComment}
+            navigateToUserPage={() => {}}
+          />
+        </View>
+      );
+    },
+    [postComments]
+  );
+
   if (!postComments) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
   }
 
-  const renderPostItem = (itemData: any) => {
-    const item: PostComment = itemData.item;
-
-    const navigateToPostComment = () => {
-      parentNavigation?.navigate("P_PostComment", {
-        postCommentId: item._id,
-        postTitle: item.post.title,
-      });
-    };
-
+  if (postComments.length < 1) {
     return (
-      <View style={{ marginTop: 7 }}>
-        <PostCommentContent
-          postComment={item}
-          userBookmarkedPostComments={[""]}
-          userId=""
-          withoutIconsGroup={true}
-          navigateToPostComment={navigateToPostComment}
-          navigateToUserPage={() => {}}
-        />
-      </View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't left a comment yet.
+        </Text>
+      </SafeAreaView>
     );
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -20,6 +19,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import { useGetLikedPosts } from "../../../react-query-hooks/useUser/useGetLiked";
+import { Text } from "react-native-paper";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyLikedPosts">;
 
@@ -53,7 +53,31 @@ const MyLikedPosts = ({}: Props) => {
   );
 
   if (!shownPosts) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  if (shownPosts.length < 1) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't liked any posts.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (

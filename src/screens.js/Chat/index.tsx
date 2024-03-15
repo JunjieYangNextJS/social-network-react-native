@@ -38,7 +38,11 @@ export default function Chat({ navigation, route }: Props) {
   const { colors } = useAppTheme();
 
   if (!user) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
   }
 
   const { chatRooms } = user;
@@ -55,7 +59,11 @@ export default function Chat({ navigation, route }: Props) {
 
   if (chatRooms.length < 1) {
     return (
-      <Text style={styles.noFriends}>You haven't chatted with anyone yet.</Text>
+      <SafeAreaView style={{ flex: 1, marginTop: 10 }}>
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't chatted with anyone yet.
+        </Text>
+      </SafeAreaView>
     );
   }
 
@@ -163,11 +171,11 @@ export default function Chat({ navigation, route }: Props) {
     <SafeAreaView
       style={[{ minHeight: height - top - bottom }, styles.container]}
     >
-      <FlatList
+      <FlashList
         data={chatRooms}
         keyExtractor={(item: ChatRoom) => item._id}
         renderItem={renderItem}
-        // estimatedItemSize={chatRooms.length}
+        estimatedItemSize={chatRooms.length}
       />
     </SafeAreaView>
   );

@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -21,6 +20,7 @@ import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 
 import { useGetBookmarkedPosts } from "../../../react-query-hooks/useUser/useGetBookmarked";
+import { Text } from "react-native-paper";
 
 type Props = NativeStackScreenProps<
   ProfileDrawerParamList,
@@ -57,7 +57,31 @@ const MyBookmarkedPosts = ({}: Props) => {
   );
 
   if (!shownPosts) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  if (shownPosts.length < 1) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ marginHorizontal: 10, fontSize: 16 }}>
+          You haven't bookmarked any posts.
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (
