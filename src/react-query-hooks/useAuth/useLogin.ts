@@ -33,9 +33,10 @@ export function useGuestLogin() {
     const queryClient = useQueryClient();
     const {setAuthenticated} = useUserTokenStore();
     return useMutation({
-      mutationFn: () =>
+      mutationFn: (values: {createdThrough : string | null,
+      modelName: string | null}) =>
         axios
-          .post(`${baseUrl}/users/guestLogin`, {})
+          .post(`${baseUrl}/users/guestLogin`, values)
           .catch(err => {
            
             return Promise.reject(err.response.data.error.message)

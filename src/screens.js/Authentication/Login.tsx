@@ -21,6 +21,7 @@ import {
 } from "../../react-query-hooks/useAuth/useLogin";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigators/AuthStackNavigator";
+import * as Device from "expo-device";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
 
@@ -57,6 +58,12 @@ const Login = ({ navigation }: Props) => {
     isPending: guestIsPending,
     // error: guestIsError,
   } = useGuestLogin();
+
+  const handleLoginGuest = () => {
+    const modelName = Device.modelName;
+    const createdThrough = Device.osName;
+    loginGuest({ modelName, createdThrough });
+  };
 
   //   refs
   const ref_input2 = useRef<any>();
@@ -149,7 +156,7 @@ const Login = ({ navigation }: Props) => {
               </View>
               <View style={{ paddingHorizontal: 60 }}>
                 <Button
-                  onPress={() => loginGuest()}
+                  onPress={handleLoginGuest}
                   disabled={isPending || guestIsPending}
                 >
                   Continue as guest
@@ -258,7 +265,7 @@ export default Login;
 // } from "../../react-query-hooks/useAuth/useLogin";
 // import * as SecureStore from "expo-secure-store";
 // import { useTheme } from "react-native-paper";
-// import * as Linking from "expo-linking";
+
 // import useUserTokenStore from "../../store/useUserTokenStore";
 
 // // import { useAppTheme } from "../../../App";

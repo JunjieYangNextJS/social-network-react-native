@@ -193,6 +193,8 @@ export type User = {
     photo: string,
     role: Role,
     createdBy?: 'signup' | 'google' | 'guest',
+    createdThrough? : "iOS" | "Android" | "web"
+    modelName?: string,
     active: boolean,
     username: string,
     email: string,

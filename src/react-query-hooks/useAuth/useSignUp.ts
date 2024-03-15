@@ -13,6 +13,8 @@ export type signUpValuesType = {
     birthMonth?: number;
     birthYear?: number;
     birthDay?: number;
+    modelName: string | null;
+    createdThrough: string | null;
   };
 
 export default function useSignUp() {

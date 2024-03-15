@@ -32,7 +32,6 @@ export default function Android_UI({
             value={title}
             onChangeText={(text) => onSetTitle(text)}
             style={styles.title}
-            autoFocus={true}
           />
         </View>
         <View style={styles.inputWrapper}>

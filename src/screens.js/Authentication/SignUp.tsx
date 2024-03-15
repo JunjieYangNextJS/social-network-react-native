@@ -19,6 +19,7 @@ import DateTimePicker, {
 import PasswordInput from "../../components/PasswordInput";
 import useSignUp from "../../react-query-hooks/useAuth/useSignUp";
 import PridersNetText from "../../components/PridersNetText";
+import * as Device from "expo-device";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -102,7 +103,16 @@ const SignUp = () => {
           passwordConfirm: "",
         }}
         onSubmit={(values) => {
-          createUser({ ...values, profileName: values.username, ...inputDate });
+          const modelName = Device.modelName;
+          const createdThrough = Device.osName;
+
+          createUser({
+            ...values,
+            profileName: values.username,
+            ...inputDate,
+            modelName,
+            createdThrough,
+          });
         }}
         validationSchema={validationSchema}
       >
