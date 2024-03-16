@@ -58,6 +58,7 @@ import {
   usePatchUserProfileImage,
   usePatchUserWithoutPhoto,
 } from "../react-query-hooks/useUser/usePatchUser";
+import { CommonActions } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator<ProfileDrawerParamList>();
 
@@ -82,6 +83,7 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
   const { onOpenToast } = useToastStore();
   const { setLogout } = useUserTokenStore();
   const parentNavigation = useNavigation().getParent();
+  const navigation = useNavigation();
 
   const onLogout = async () => {
     try {
@@ -89,9 +91,11 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
       if (res.data.status === "success") {
         queryClient.removeQueries({ queryKey: ["user", { exact: true }] });
         await deleteItemAsync("token");
+
         setLogout();
+
         // parentNavigation?.navigate("Posts");
-        onOpenToast("success", "Logout was successful");
+        // onOpenToast("success", "Logout was successful");
       }
     } catch (err) {
       onOpenToast("error", "Logout failed");
