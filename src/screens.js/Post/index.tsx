@@ -31,7 +31,7 @@ type Props = NativeStackScreenProps<
 export default function Post({ navigation, route }: Props) {
   const postId = route.params.postId;
 
-  const { data: post } = usePost(postId);
+  const { data: post, error } = usePost(postId);
   const { data: user } = useUser();
 
   // useLayoutEffect(() => {
@@ -47,6 +47,9 @@ export default function Post({ navigation, route }: Props) {
   //     ),
   //   });
   // }, []);
+  if (error) {
+    return <Text style={styles.error}>{error?.toString()}</Text>;
+  }
 
   if (!post || !user) {
     return <ActivityIndicator />;
@@ -120,5 +123,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+  },
+  error: {
+    fontSize: 20,
+    margin: 35,
+    // marginTop: 35,
+    // marginLeft: 35,
+    lineHeight: 30,
   },
 });
