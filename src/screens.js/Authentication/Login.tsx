@@ -20,10 +20,11 @@ import {
   useLogin,
 } from "../../react-query-hooks/useAuth/useLogin";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AuthStackParamList } from "../../navigators/AuthStackNavigator";
+// import { AuthStackParamList } from "../../navigators/AuthStackNavigator";
 import * as Device from "expo-device";
+import { RootStackParamList } from "../../navigators/RootStackNavigator";
 
-type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
+type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),

@@ -45,6 +45,14 @@ const Posts = ({}: Props) => {
     return filtered;
   }, [posts, user]);
 
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen gains focus
+      refetchUsers();
+      refetchPosts();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
+
   const onLayout = useCallback(async () => {
     if (shownPosts) {
       // This tells the splash screen to hide immediately! If we call this after

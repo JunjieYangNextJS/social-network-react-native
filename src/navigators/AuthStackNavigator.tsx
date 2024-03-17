@@ -3,14 +3,15 @@ import React from "react";
 import Login from "../screens.js/Authentication/Login";
 import SignUp from "../screens.js/Authentication/SignUp";
 import ForgotMyPassword from "../screens.js/Authentication/ForgotMyPassword";
+import { Stack } from "./RootStackNavigator";
 
-export type AuthStackParamList = {
-  Login: any;
-  SignUp: any;
-  ForgotMyPassword: any;
-};
+// export type AuthStackParamList = {
+//   Login: any;
+//   SignUp: any;
+//   ForgotMyPassword: any;
+// };
 
-const Stack = createNativeStackNavigator<AuthStackParamList>();
+// const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function AuthStackNavigator() {
   return (

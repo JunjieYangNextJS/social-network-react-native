@@ -89,7 +89,17 @@ const CustomDrawer = (props: DrawerContentComponentProps & { user: User }) => {
     try {
       const res = await axios.get(`${baseUrl}/users/logout`);
       if (res.data.status === "success") {
-        queryClient.removeQueries({ queryKey: ["user", { exact: true }] });
+        // queryClient.removeQueries({ queryKey: ["user"], exact: true });
+        // queryClient.removeQueries({
+        //   queryKey: ["myFollowingPeoplePosts"],
+        //   exact: true,
+        // });
+        // queryClient.removeQueries({
+        //   queryKey: ["notifications"],
+        //   exact: true,
+        // });
+        queryClient.clear();
+
         await deleteItemAsync("token");
 
         setLogout();

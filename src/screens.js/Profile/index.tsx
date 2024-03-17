@@ -27,7 +27,7 @@ import MyFollowingPeoplePosts from "./MyFollowingPeoplePosts";
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "Profile">;
 
 export default function Profile({ route, navigation }: Props) {
-  const { data: user, isError, isPending } = useUser();
+  const { data: user, isError } = useUser();
 
   const { top: statusBarHeight, bottom: bottomNavigatorHeight } =
     useSafeAreaInsets();
@@ -108,7 +108,7 @@ export default function Profile({ route, navigation }: Props) {
   //   });
   // }, [navigation, user, isError]);
 
-  if (!user || isPending) {
+  if (!user) {
     return <ActivityIndicator />;
   }
 

@@ -34,6 +34,11 @@ export type RootStackParamList = {
   ProfileStackNavigator: any;
   NotificationsStackNavigator: any;
   PostsStackNavigator: any;
+
+  // Auth stack
+  Login: any;
+  SignUp: any;
+  ForgotMyPassword: any;
 };
 
 export type RootStackParamParent =
