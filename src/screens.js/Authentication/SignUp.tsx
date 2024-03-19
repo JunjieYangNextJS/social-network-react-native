@@ -6,6 +6,7 @@ import {
   TextInput,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from "react-native";
 import { Text, Button, HelperText } from "react-native-paper";
 
@@ -68,6 +69,11 @@ const SignUp = () => {
   });
 
   const { mutate: createUser, isPending, error } = useSignUp();
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+
+  const handleShowDatePicker = () => {
+    setIsDatePickerVisible(true);
+  };
 
   const setDate = (event: DateTimePickerEvent, date: Date | undefined) => {
     const {
@@ -228,16 +234,55 @@ const SignUp = () => {
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Date of Birth</Text>
                   <View style={styles.datePicker}>
-                    <DateTimePicker
-                      mode="date"
-                      value={new Date(1993, 1, 1)}
-                      onChange={(
-                        event: DateTimePickerEvent,
-                        date: Date | undefined
-                      ) => setDate(event, date)}
-                      maximumDate={new Date()}
-                      themeVariant="dark"
-                    />
+                    {Platform.OS === "ios" ? (
+                      <DateTimePicker
+                        mode="date"
+                        value={
+                          new Date(
+                            inputDate.birthYear || 1993,
+                            (inputDate.birthMonth &&
+                              inputDate.birthMonth - 1) ||
+                              1,
+                            inputDate.birthDay || 1
+                          )
+                        }
+                        onChange={(
+                          event: DateTimePickerEvent,
+                          date: Date | undefined
+                        ) => setDate(event, date)}
+                        maximumDate={new Date()}
+                        themeVariant="dark"
+                      />
+                    ) : (
+                      <>
+                        <Button onPress={handleShowDatePicker}>
+                          Show Date Picker
+                        </Button>
+                        {isDatePickerVisible && (
+                          <DateTimePicker
+                            mode="date"
+                            value={
+                              new Date(
+                                inputDate.birthYear || 1993,
+                                (inputDate.birthMonth &&
+                                  inputDate.birthMonth - 1) ||
+                                  1,
+                                inputDate.birthDay || 1
+                              )
+                            }
+                            onChange={(
+                              event: DateTimePickerEvent,
+                              date: Date | undefined
+                            ) => {
+                              setDate(event, date);
+                              setIsDatePickerVisible(false);
+                            }}
+                            maximumDate={new Date()}
+                            themeVariant="dark"
+                          />
+                        )}
+                      </>
+                    )}
                   </View>
                 </View>
               </View>
