@@ -4,6 +4,7 @@ import { useForgotPassword } from "../../react-query-hooks/useAuth/usePassword";
 import { useInterval } from "../../hooks/useInterval";
 import { useDidUpdate } from "../../hooks/useDidUpdate";
 import {
+  Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -145,7 +146,7 @@ export default function ForgotMyPassword() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
     // padding: 24,
     // justifyContent: "center",
   },

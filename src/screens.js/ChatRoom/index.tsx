@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   FlatList,
+  Platform,
 } from "react-native";
 import React, {
   useCallback,
@@ -163,7 +164,7 @@ export default function ChatRoom({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
     flexDirection: "column",
   },
 

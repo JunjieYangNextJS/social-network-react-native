@@ -27,6 +27,7 @@ import { FlashList } from "@shopify/flash-list";
 import * as SplashScreen from "expo-splash-screen";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
 import { useMyFollowingPeoplePosts } from "../../react-query-hooks/useUser/useMyFollowingPeoplePosts";
+import { useFocusEffect } from "@react-navigation/native";
 
 //   type Props = NativeStackScreenProps<RootStackParamList, "Posts">;
 
@@ -35,8 +36,15 @@ interface IMyFollowingPeoplePosts {
 }
 
 const MyFollowingPeoplePosts = ({ user }: IMyFollowingPeoplePosts) => {
-  const { data: posts, isSuccess } = useMyFollowingPeoplePosts();
+  const { data: posts, isSuccess, refetch } = useMyFollowingPeoplePosts();
   const { height } = useWindowDimensions();
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen gains focus
+      refetch();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
 
   const shownPosts = useMemo(() => {
     if (!posts) return;

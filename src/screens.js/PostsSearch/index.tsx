@@ -1,4 +1,10 @@
-import { View, SafeAreaView, StyleSheet, StatusBar } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Platform,
+} from "react-native";
 import React, { useCallback, useState } from "react";
 import { Searchbar, SegmentedButtons, Text } from "react-native-paper";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
@@ -10,6 +16,7 @@ import useSearchUsers from "../../react-query-hooks/useUser/useSearchUsers";
 import UserInfoContainer from "../../components/UserInfoContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "PostsSearch">;
 
@@ -21,8 +28,19 @@ export default function PostsSearch({ navigation }: Props) {
   // segment
   const [value, setValue] = useState("posts");
 
-  const { data: posts } = useSearchPosts(debounced, value === "posts");
-  const { data: users } = useSearchUsers(debounced, value === "users");
+  const { data: posts, refetch: refetchPosts } = useSearchPosts(
+    debounced,
+    value === "posts"
+  );
+  const { data: users, refetch } = useSearchUsers(debounced, value === "users");
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen gains focus
+      refetch();
+      refetchPosts();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
 
   const renderPostItem = useCallback(
     (itemData: any) => {
@@ -144,7 +162,7 @@ export default function PostsSearch({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
   itemContainer: {
     display: "flex",

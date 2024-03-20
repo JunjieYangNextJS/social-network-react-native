@@ -4,7 +4,13 @@ import baseUrl from "../../../utils/baseUrl";
 import axios from "axios";
 import { getItemAsync } from "expo-secure-store";
 import { useQuery } from "@tanstack/react-query";
-import { StatusBar, StyleSheet, View, SafeAreaView } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Platform,
+} from "react-native";
 import PostCommentContainer from "./PostCommentContainer";
 import { PostComment } from "../../../../types";
 import { ActivityIndicator, Text } from "react-native-paper";
@@ -86,7 +92,7 @@ export default function PostCommentsContainer({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
     minHeight: 2,
     marginBottom: "11%",
   },

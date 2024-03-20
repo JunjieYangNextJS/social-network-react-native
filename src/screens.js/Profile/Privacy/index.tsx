@@ -4,6 +4,7 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -178,7 +179,7 @@ export default function Privacy() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
   itemsWrapper: { padding: 30 },
   item: {

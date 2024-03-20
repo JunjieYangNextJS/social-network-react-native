@@ -6,6 +6,7 @@ import {
   StatusBar,
   Image,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -20,11 +21,19 @@ import { Post } from "../../../../types";
 import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigator";
 import { useGetLikedPosts } from "../../../react-query-hooks/useUser/useGetLiked";
 import { Text } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<ProfileDrawerParamList, "MyLikedPosts">;
 
 const MyLikedPosts = ({}: Props) => {
-  const { data: shownPosts } = useGetLikedPosts();
+  const { data: shownPosts, refetch } = useGetLikedPosts();
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen gains focus
+      refetch();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
 
   const renderPostItem = useCallback(
     (itemData: any) => {
@@ -95,7 +104,7 @@ const MyLikedPosts = ({}: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
 });
 

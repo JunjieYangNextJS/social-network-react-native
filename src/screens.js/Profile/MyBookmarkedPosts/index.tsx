@@ -6,6 +6,7 @@ import {
   StatusBar,
   Image,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -21,6 +22,7 @@ import { ProfileDrawerParamList } from "../../../navigators/ProfileStackNavigato
 
 import { useGetBookmarkedPosts } from "../../../react-query-hooks/useUser/useGetBookmarked";
 import { Text } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<
   ProfileDrawerParamList,
@@ -28,7 +30,14 @@ type Props = NativeStackScreenProps<
 >;
 
 const MyBookmarkedPosts = ({}: Props) => {
-  const { data: shownPosts } = useGetBookmarkedPosts();
+  const { data: shownPosts, refetch } = useGetBookmarkedPosts();
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen gains focus
+      refetch();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
 
   const renderPostItem = useCallback(
     (itemData: any) => {
@@ -99,7 +108,7 @@ const MyBookmarkedPosts = ({}: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
 });
 

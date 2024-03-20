@@ -1,11 +1,12 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useEffect, useLayoutEffect } from "react";
 import {
   View,
   ScrollView,
   SafeAreaView,
   StyleSheet,
   StatusBar,
+  Platform,
 } from "react-native";
 import { ActivityIndicator, Button, Divider, Text } from "react-native-paper";
 import { HeaderBackButton } from "@react-navigation/elements";
@@ -16,6 +17,7 @@ import PostCommentContent from "../Post/PostCommentsContainer/PostCommentContent
 import PostRepliesContainer from "./PostRepliesContainer";
 import ReplyBottomSheet from "../../components/BottomSheets/ReplyBottomSheet";
 import { RootStackParamList } from "../../navigators/RootStackNavigator";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -25,10 +27,18 @@ type Props = NativeStackScreenProps<
 export default function PostComment({ route, navigation }: Props) {
   const { postCommentId, postTitle } = route.params;
 
-  const { data } = useGetPostComment(postCommentId);
+  const { data, refetch } = useGetPostComment(postCommentId);
 
   // console.log(data?.post.title, "data");
-  const { data: user } = useUser();
+  const { data: user, refetch: refetchUser } = useUser();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchUser();
+      // Refetch data when the screen gains focus
+      refetch();
+    }, []) // Empty dependency array ensures refetch on every focus
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -137,6 +147,6 @@ export default function PostComment({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
 });

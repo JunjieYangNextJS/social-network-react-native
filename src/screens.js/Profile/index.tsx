@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect, useState } from "react";
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -154,7 +155,7 @@ export default function Profile({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
   error: {
     fontSize: 20,

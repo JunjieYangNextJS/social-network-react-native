@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -122,7 +123,7 @@ export default function Post({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
   },
   error: {
     fontSize: 20,
