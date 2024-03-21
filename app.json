@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "social-network-mobile",
-    "slug": "social-network-mobile",
+    "name": "social-network-mobile-master",
+    "slug": "social-network-mobile-master",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +24,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.jjyusa2010.socialnetworkmobilemaster"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ff5426f1-cdd6-44a0-ab0e-3a7f852eeabc"
+      }
+    },
+    "owner": "jjyusa2010",
+    "plugins": [
+      [
+        "expo-dev-launcher",
+        {
+          "launchModeExperimental": "most-recent"
+        }
+      ]
+    ]
   }
 }
