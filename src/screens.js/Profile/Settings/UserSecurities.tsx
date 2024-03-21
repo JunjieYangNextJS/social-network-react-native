@@ -28,6 +28,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useChangeBirthday } from "../../../react-query-hooks/useAuth/useChangeBirthday";
+import DateTimePickerWrapper from "../../../components/DateTimePickerWrapper";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -199,7 +200,7 @@ const UserSecurities = ({ user }: { user: User }) => {
               <View style={styles.inputLabelWrapper}>
                 <Text style={styles.label}>Date of Birth</Text>
                 <View style={styles.datePicker}>
-                  <DateTimePicker
+                  {/* <DateTimePicker
                     mode="date"
                     value={
                       birthYear && birthMonth && birthDay
@@ -212,6 +213,10 @@ const UserSecurities = ({ user }: { user: User }) => {
                     ) => setDate(event, date)}
                     maximumDate={new Date()}
                     themeVariant="dark"
+                  /> */}
+                  <DateTimePickerWrapper
+                    setDate={setDate}
+                    inputDate={inputDate}
                   />
                   <Button
                     onPress={handleSaveBirthday}

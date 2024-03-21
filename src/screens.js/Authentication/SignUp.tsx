@@ -21,6 +21,7 @@ import PasswordInput from "../../components/PasswordInput";
 import useSignUp from "../../react-query-hooks/useAuth/useSignUp";
 import PridersNetText from "../../components/PridersNetText";
 import * as Device from "expo-device";
+import DateTimePickerWrapper from "../../components/DateTimePickerWrapper";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -234,7 +235,7 @@ const SignUp = () => {
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Date of Birth</Text>
                   <View style={styles.datePicker}>
-                    {Platform.OS === "ios" ? (
+                    {/* {Platform.OS === "ios" ? (
                       <DateTimePicker
                         mode="date"
                         value={
@@ -282,7 +283,11 @@ const SignUp = () => {
                           />
                         )}
                       </>
-                    )}
+                    )} */}
+                    <DateTimePickerWrapper
+                      setDate={setDate}
+                      inputDate={inputDate}
+                    />
                   </View>
                 </View>
               </View>

@@ -18,6 +18,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import useConvertGuestToUser from "../../../react-query-hooks/useAuth/useConvertGuestToUser";
 import PasswordInput from "../../../components/PasswordInput";
+import DateTimePickerWrapper from "../../../components/DateTimePickerWrapper";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -217,7 +218,7 @@ const GuestSecurities = ({ user }: { user: User }) => {
                 <View style={styles.inputLabelWrapper}>
                   <Text style={styles.label}>Date of Birth</Text>
                   <View style={styles.datePicker}>
-                    <DateTimePicker
+                    {/* <DateTimePicker
                       mode="date"
                       value={new Date(1993, 1, 1)}
                       onChange={(
@@ -226,6 +227,10 @@ const GuestSecurities = ({ user }: { user: User }) => {
                       ) => setDate(event, date)}
                       maximumDate={new Date()}
                       themeVariant="dark"
+                    /> */}
+                    <DateTimePickerWrapper
+                      setDate={setDate}
+                      inputDate={inputDate}
                     />
                   </View>
                 </View>
