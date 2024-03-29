@@ -19,6 +19,7 @@ import DateTimePicker, {
 import useConvertGuestToUser from "../../../react-query-hooks/useAuth/useConvertGuestToUser";
 import PasswordInput from "../../../components/PasswordInput";
 import DateTimePickerWrapper from "../../../components/DateTimePickerWrapper";
+import DeleteAccountButton from "./DeleteAccountButton";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -233,6 +234,9 @@ const GuestSecurities = ({ user }: { user: User }) => {
                       inputDate={inputDate}
                     />
                   </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <DeleteAccountButton isGuest={true} />
                 </View>
               </View>
             </View>

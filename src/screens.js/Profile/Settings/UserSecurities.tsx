@@ -29,6 +29,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { useChangeBirthday } from "../../../react-query-hooks/useAuth/useChangeBirthday";
 import DateTimePickerWrapper from "../../../components/DateTimePickerWrapper";
+import DeleteAccountButton from "./DeleteAccountButton";
 
 const validationSchema = yup.object({
   username: yup.string().required("Name is required"),
@@ -225,6 +226,9 @@ const UserSecurities = ({ user }: { user: User }) => {
                     Save
                   </Button>
                 </View>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <DeleteAccountButton isGuest={false} />
               </View>
             </View>
 

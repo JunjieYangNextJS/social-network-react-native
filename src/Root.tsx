@@ -15,6 +15,8 @@ import BottomTabNavigator from "./navigators/BottomTabNavigator";
 import AuthStackNavigator from "./navigators/AuthStackNavigator";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import FriendRequestDialog from "./components/Dialogs/FriendRequestDialog";
+import * as Linking from "expo-linking";
+import { Stack } from "./navigators/RootStackNavigator";
 
 function Navigation({
   onLayoutRootView,
@@ -28,13 +30,59 @@ function Navigation({
 
   const authenticated = useUserTokenStore((state) => state.authenticated);
 
+  const [linkingData, setLinkingData] = useState<any>(null);
+
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        ProfileStackNavigator: {
+          screens: {
+            Security: "Security",
+          },
+        },
+      },
+    },
+  };
+
+  const handleDeepLink = (event: any) => {
+    let data = Linking.parse(event.url);
+    setLinkingData(data);
+  };
+
+  useEffect(() => {
+    const subscription = Linking.addEventListener("url", handleDeepLink);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
-    <NavigationContainer onReady={onLayoutRootView} theme={DarkTheme}>
+    <NavigationContainer
+      onReady={onLayoutRootView}
+      theme={DarkTheme}
+      linking={linking as any}
+    >
       {/* <AuthStackNavigator /> */}
       {authenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
+      {/* <Stack.Navigator>
+        {authenticated ? (
+          <Stack.Screen
+            name="BottomTabNavigator"
+            component={BottomTabNavigator}
+          />
+        ) : (
+          <Stack.Screen
+            name="AuthStackNavigator"
+            component={AuthStackNavigator}
+          />
+        )}
+      </Stack.Navigator> */}
     </NavigationContainer>
   );
 }
+
+const prefix = Linking.createURL("/");
 
 export default function Root() {
   const [appIsReady, setAppIsReady] = useState(false);

@@ -35,7 +35,7 @@ const Posts = ({}: Props) => {
 
     refetch: refetchPosts,
   } = usePosts(about, sort);
-  const { data: user, refetch: refetchUsers } = useUser();
+  const { data: user, refetch: refetchUser } = useUser();
 
   const shownPosts = useMemo(() => {
     if (!user || !posts) return;
@@ -49,7 +49,7 @@ const Posts = ({}: Props) => {
   useFocusEffect(
     useCallback(() => {
       // Refetch data when the screen gains focus
-      refetchUsers();
+      refetchUser();
       refetchPosts();
     }, []) // Empty dependency array ensures refetch on every focus
   );
@@ -115,7 +115,7 @@ const Posts = ({}: Props) => {
         data={shownPosts}
         keyExtractor={(item: Post) => item._id}
         renderItem={renderPostItem}
-        estimatedItemSize={posts.length}
+        estimatedItemSize={shownPosts.length}
       />
     </SafeAreaView>
   );

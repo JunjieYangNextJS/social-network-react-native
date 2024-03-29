@@ -43,6 +43,7 @@
           "launchModeExperimental": "most-recent"
         }
       ]
-    ]
+    ],
+    "scheme": "priders"
   }
 }
