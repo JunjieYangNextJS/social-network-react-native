@@ -17,7 +17,7 @@ const fetchImage = async (uri: string) => {
 
     const result = await manipulateAsync(
       imageUri,
-      [{ resize: { width: 500, height: 500 } }],
+      [{ resize: { width: 1000 } }],
       {
         compress: 1,
         format: SaveFormat.JPEG,

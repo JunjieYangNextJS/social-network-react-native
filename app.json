@@ -3,7 +3,7 @@
     "name": "social-network-mobile-master",
     "slug": "social-network-mobile-master",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -44,6 +44,6 @@
         }
       ]
     ],
-    "scheme": "priders"
+    "scheme": "exp://"
   }
 }
