@@ -23,7 +23,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "PostsSearch">;
 export default function PostsSearch({ navigation }: Props) {
   // search
   const [searchQuery, setSearchQuery] = useState("");
-  const [debounced] = useDebouncedValue(searchQuery, 200);
+  const [debounced] = useDebouncedValue(searchQuery, 300);
 
   // segment
   const [value, setValue] = useState("posts");

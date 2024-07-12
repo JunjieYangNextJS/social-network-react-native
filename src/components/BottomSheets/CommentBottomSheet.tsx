@@ -37,17 +37,6 @@ const CommentBottomSheet = ({ postId, poster }: ICommentBottomSheet) => {
 
   const [text, setText] = useState("");
 
-  // useEffect(() => {
-  //   if (willReply) {
-  //     setTimeout(() => {
-  //       if (textInputRef.current) {
-  //         textInputRef.current.focus();
-  //         setFooterVisible(true);
-  //       }
-  //     }, 500); // Delay for visual smoothness
-  //   }
-  // }, [willReply]);
-
   useEffect(() => {
     if (isSuccess) {
       textInputRef.current.blur();

@@ -1,5 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
-import React from "react";
+import React, { useCallback } from "react";
 import baseUrl from "../../../utils/baseUrl";
 import axios from "axios";
 import { getItemAsync } from "expo-secure-store";
@@ -55,6 +55,21 @@ export default function PostCommentsContainer({
     queryFn: fetchPostComments,
   });
 
+  const renderPostItem = useCallback(
+    (itemData: any) => {
+      return (
+        <PostCommentContainer
+          postComment={itemData.item}
+          userId={userId}
+          userBookmarkedPostComments={userBookmarkedPostComments}
+          navigateToUserPage={navigateToUserPage}
+          postCommentScreenRoute={postCommentScreenRoute}
+        />
+      );
+    },
+    [data]
+  );
+
   if (!data) {
     return <ActivityIndicator />;
   }
@@ -63,37 +78,26 @@ export default function PostCommentsContainer({
     return null;
   }
 
-  const renderPostItem = (itemData: any) => {
-    return (
-      <PostCommentContainer
-        postComment={itemData.item}
-        userId={userId}
-        userBookmarkedPostComments={userBookmarkedPostComments}
-        navigateToUserPage={navigateToUserPage}
-        postCommentScreenRoute={postCommentScreenRoute}
-      />
-    );
-  };
-
   // console.log(data?.[data.length - 9]?.postReplies, "yes");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlashList
         data={data}
         renderItem={renderPostItem}
         keyExtractor={(item: PostComment) => item._id}
         estimatedItemSize={data.length}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     marginTop: Platform.OS === "ios" ? StatusBar.currentHeight || 0 : 0,
-    minHeight: 2,
+    minHeight: 50,
     marginBottom: "11%",
   },
 });

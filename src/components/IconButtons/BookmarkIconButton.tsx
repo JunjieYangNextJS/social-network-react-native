@@ -53,10 +53,6 @@ export default function BookmarkIconButton({
         .then((res) => res.data);
     },
 
-    // onMutate: async (values) => {
-    //   await queryClient.cancelQueries({ queryKey: ["user"] });
-    // },
-
     onError: () => {
       onOpenToast("error", "");
       setBookmarked((prev) => !prev);

@@ -37,7 +37,6 @@ export default function PostPoll({
   const votingHasEnded = Date.parse(pollEndsAt) < Date.now();
 
   const handleVote = async (id: string) => {
-    console.log("h");
     if (votingHasEnded) return;
 
     if (voted === id) {

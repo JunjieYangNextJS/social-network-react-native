@@ -40,16 +40,11 @@ const PasswordInput = React.forwardRef<TextInput, IPasswordInput>(
     return (
       <View
         style={{
-          // position: "relative",
           flex: 1,
           height: 40,
-          // paddingHorizontal: 13,
-          // paddingVertical: 10,
         }}
       >
-        {/* Wrap TextInput with View */}
         <TextInput
-          // value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           secureTextEntry={!showPassword}
@@ -57,7 +52,7 @@ const PasswordInput = React.forwardRef<TextInput, IPasswordInput>(
           style={[
             defaultStyle,
             { flex: 1, paddingHorizontal: 13, paddingRight: 40 },
-          ]} // Add paddingRight
+          ]}
           returnKeyType={returnKeyType}
           onSubmitEditing={onSubmitEditing}
           ref={ref}
@@ -67,13 +62,13 @@ const PasswordInput = React.forwardRef<TextInput, IPasswordInput>(
           style={{
             position: "absolute",
             right: 10,
-            top: 8, // Adjust the positioning of the icon as needed
+            top: 8,
           }}
         >
           {showPassword ? (
-            <Ionicons name="eye-off" size={20} color="gray" /> // Expo icon
+            <Ionicons name="eye-off" size={20} color="gray" />
           ) : (
-            <Ionicons name="eye" size={20} color="gray" /> // Expo icon
+            <Ionicons name="eye" size={20} color="gray" />
           )}
         </Pressable>
       </View>

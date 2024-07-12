@@ -25,7 +25,7 @@ export default function useSignUp() {
       .post(`${baseUrl}/users/signUp`, values, {     
       })
       .catch(err => {
-        console.log(err)
+       
         return Promise.reject(err.response.data.error.message)
       })
       .then((res) => (res.data))),

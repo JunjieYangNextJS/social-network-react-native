@@ -35,19 +35,6 @@ export default function Post({ navigation, route }: Props) {
   const { data: post, error } = usePost(postId);
   const { data: user } = useUser();
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerBackTitle: "Posts",
-  //     headerLeft: (props) => (
-  //       <HeaderBackButton
-  //         {...props}
-  //         onPress={() => {
-  //           navigation.navigate("Posts");
-  //         }}
-  //       />
-  //     ),
-  //   });
-  // }, []);
   if (error) {
     return <Text style={styles.error}>{error?.toString()}</Text>;
   }

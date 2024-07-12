@@ -26,13 +26,6 @@ export default function ForgotMyPassword() {
   const [seconds, setSeconds] = useState(60);
   const interval = useInterval(() => setSeconds((s) => s - 1), 1000);
 
-  //   useDidUpdate(() => {
-  //     if (isPending) {
-  //       // setValue("");
-  //       interval.start();
-  //     }
-  //   }, [isPending]);
-
   useDidUpdate(() => {
     if (seconds === 0) {
       interval.stop();
