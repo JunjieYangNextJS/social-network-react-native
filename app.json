@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.jjyusa2010.socialnetworkmobilemaster"
+      "package": "com.jjyusa2010.socialnetworkmobilemaster",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -41,6 +42,20 @@
         "expo-dev-launcher",
         {
           "launchModeExperimental": "most-recent"
+        }
+      ],
+      
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
         }
       ]
     ],
